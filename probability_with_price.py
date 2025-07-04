@@ -27,15 +27,15 @@ df['entropy_prev'] = df['entropy'].shift(1)
 df['P'] = np.exp(-np.abs((df['entropy'] - df['entropy_prev']) / df['entropy']))
 
 transition_percentages = {
-    'neutral->neutral': '',
-    'neutral->bull': '',
-    'neutral->bear': '',
-    'bull->neutral': '',
-    'bull->bull': '',
-    'bull->bear': '',
-    'bear->neutral': '',
-    'bear->bull': '',
-    'bear->bear': ''
+    'neutral->neutral': '78.7%',
+    'neutral->bull': '5.8%',
+    'neutral->bear': '4.0%',
+    'bull->neutral': '6.2%',
+    'bull->bull': '0.0%',
+    'bull->bear': '0.6%',
+    'bear->neutral': '3.7%',
+    'bear->bull': '1.0%',
+    'bear->bear': '0.0%'
 }
 
 # 4. Define color mapping (tab10 for accessibility)

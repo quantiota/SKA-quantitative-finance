@@ -1,0 +1,43 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{pgfplotstable}
+\begin{document}
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=10cm, height=7cm,
+			xlabel={\textbf{Trade ID}},
+			ylabel={\textbf{Entropy}},
+			title={\textbf{Entropy Trajectories by Price Return}},
+			legend style={at={(0.98,0.98)},anchor=north east, draw=none, font=\small},
+			tick label style={font=\small},
+			label style={font=\bfseries\small},
+			title style={font=\bfseries\small},
+			every axis plot/.append style={thick},
+			grid=major,
+			% Axis limits removed for automatic scaling
+			]
+			\addplot+[only marks, mark=*, mark size=0.05pt, color=red, opacity=0.7]
+			table [x=trade_sequence, y=entropy, col sep=comma] {bear_trajectory_norm.csv};
+			\addlegendentry{Price return negative (bear, red)}
+			
+			\addplot+[only marks, mark=*, mark size=0.05pt, color=green!70!black, opacity=0.7]
+			table [x=trade_sequence, y=entropy, col sep=comma] {bull_trajectory_norm.csv};
+			\addlegendentry{Price return positive (bull, green)}
+			
+			\addplot+[only marks, mark=*, mark size=0.05pt, color=blue, opacity=0.7]
+			table [x=trade_sequence, y=entropy, col sep=comma] {neutral_trajectory_norm.csv};
+			\addlegendentry{Price return zero (neutral, blue)}
+			
+			% Data source box - THREE TRAJECTORIES
+			\node[draw, fill=gray!10, align=center, font=\tiny, 
+			anchor=south east, inner sep=2pt] 
+			at (rel axis cs:0.98,0.02) {
+				\textbf{XRPUSDT Binance} \\
+				2025-07-03 11:35:58-11:40:59 UTC \\
+				Trades: 1202575642 - 1202579224 \\
+				Bear: 166 | Bull: 244 | Neutral: 3173
+			};
+		\end{axis}
+	\end{tikzpicture}
+\end{document}
