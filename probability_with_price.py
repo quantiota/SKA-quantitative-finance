@@ -26,23 +26,20 @@ df.loc[df['regime_prev'].isna(), 'transition'] = None
 df['entropy_prev'] = df['entropy'].shift(1)
 df['P'] = np.exp(-np.abs((df['entropy'] - df['entropy_prev']) / df['entropy']))
 
-transition_percentages = {
-    'neutral->neutral': '78.7%',
-    'neutral->bull': '5.8%',
-    'neutral->bear': '4.0%',
-    'bull->neutral': '6.2%',
-    'bull->bull': '0.0%',
-    'bull->bear': '0.6%',
-    'bear->neutral': '3.7%',
-    'bear->bull': '1.0%',
-    'bear->bear': '0.0%'
-}
+# --- Compute transition percentages dynamically ---
+transition_counts = df['transition'].value_counts(dropna=True)
+transition_percentages = (transition_counts / transition_counts.sum() * 100).round(1).astype(str) + '%'
 
-# 4. Define color mapping (tab10 for accessibility)
-transition_keys = [
+# List of all transitions to guarantee completeness
+all_transitions = [
     'neutral->neutral', 'bull->neutral', 'neutral->bull', 'neutral->bear',
     'bear->neutral', 'bear->bull', 'bull->bear', 'bear->bear', 'bull->bull'
 ]
+# Fill missing transitions with '0.0%'
+transition_percentages = {k: transition_percentages.get(k, '0.0%') for k in all_transitions}
+
+# 4. Define color mapping (tab10 for accessibility)
+transition_keys = all_transitions
 cmap = cm.get_cmap('tab10', len(transition_keys))
 transition_colors = {k: cmap(i) for i, k in enumerate(transition_keys)}
 
@@ -97,7 +94,7 @@ formula_text = (
     "\n"
     r"$H_{i-1}$: previous entropy"
      "\n"
-    r"$H_{i}$: trade sequence"
+    r"$i$: trade sequence"
 )
 dummy = mlines.Line2D([], [], color='none')  # No visible handle
 
@@ -109,15 +106,9 @@ formula_leg = ax1.legend(
 )
 ax1.add_artist(leg)
 
-
 # 7. Bottom plot: price line, robust conversion to 1D arrays
 trade_seq = np.asarray(df['trade_sequence'])
 prices = np.asarray(df['price'])
-
-# Optional: quick check output for debugging, can comment out later
-print("trade_seq shape:", trade_seq.shape)
-print("prices shape:", prices.shape)
-print(prices[:5])
 
 ax2.plot(trade_seq, prices, color='gray', linewidth=1.5, zorder=2)
 ax2.set_xlabel('Trade Sequence')
