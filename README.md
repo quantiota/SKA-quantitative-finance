@@ -44,10 +44,9 @@ Install dependencies via pip:
 pip install pandas numpy matplotlib
 ```
 
-*Optional: For TikZ/PGFPlots LaTeX plots, install a LaTeX distribution such as TeX Live or MikTeX.*
+
 
 ---
-
 ## Usage
 
 **1. Data Preparation:**
@@ -64,8 +63,9 @@ This will:
 
 * Load and preprocess data
 * Compute entropy, price return, and regime
-* Output: `bull_trajectory_norm.csv`, `bear_trajectory_norm.csv`, `neutral_trajectory_norm.csv`
-* Print summary stats and generate LaTeX code for TikZ/PGFPlots entropy plots
+* Output:
+  * `transition_bull_bull.csv`, ..., `transition_neutral_neutral.csv` (all 9 transition CSVs)
+* Print summary stats and generate entropy plots
 
 **3. Transition Probability and Price Visualization:**
 Run:
@@ -76,30 +76,28 @@ python probability_with_price.py
 
 This will:
 
-* Combine the CSVs
-* Compute regime transitions and entropy-based transition probabilities
-* Produce: `probability_with_price.png` (and `.svg`)
-  (Scatter plot of transition probabilities, color-coded by regime change, overlaid with price)
-
-**4. (Optional) Publication-Ready Entropy Plots:**
-Copy the TikZ/LaTeX code from the terminal output (`export.py` prints it) and compile it with your LaTeX engine to produce a PDF entropy plot.
+* Combine the 9 transition CSVs
+* Compute regime transitions and entropy-based transition probabilities for every trade
+* Produce: `probability_with_price.png` and `.svg`
+  (Scatter plot of transition probabilities, color/shape-coded by transition, overlaid with price)
 
 ---
 
 ## Outputs
 
-* `bull_trajectory_norm.csv`, `bear_trajectory_norm.csv`, `neutral_trajectory_norm.csv`
+* `transition_bull_bull.csv`, ..., `transition_neutral_neutral.csv`
 * `probability_with_price.png`, `probability_with_price.svg`
-* `entropy_trajectories.pdf` (from LaTeX)
-* TikZ code snippets for academic figures
+
+
 
 ---
 
 ## Example Insights
 
-* **Neutral regime dominance**: Most trades are neutral (~78%), reflecting market consolidation phases.
-* **Entropy transitions highlight volatility clusters**: Sudden shifts in regime and drops in transition probability reveal where price and uncertainty spike together.
-* **Direct LaTeX integration**: Reproducible, publication-quality visuals for scientific communication.
+* **Neutral regime dominance:** Most trades are neutral (often 75–80%), reflecting market consolidation phases.
+* **Universal transition probabilities:** Certain transitions (like neutral→neutral) occur with universal, information-theoretically constant probabilities—uncovered only by SKA.
+* **Entropy transitions highlight volatility clusters:** Sudden shifts in regime and drops in transition probability reveal where price and uncertainty spike together.
+* **Direct LaTeX integration:** Reproducible, publication-quality visuals for scientific communication.
 
 ---
 
