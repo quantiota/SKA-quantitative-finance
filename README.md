@@ -1,16 +1,16 @@
 
-# SKA-quant
+# SKA Quantitative Finance
 
 ## Real-Time Quantitative Research with Structured Knowledge Accumulation
 
-**SKA-quant** is a real-time quantitative research project for high-frequency financial data, powered by the **Structured Knowledge Accumulation (SKA)** framework ([arXiv:2503.13942](https://arxiv.org/abs/2503.13942), [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)).
+**SKA Quantitative Finance** is a real-time quantitative research project for high-frequency financial data, powered by the **Structured Knowledge Accumulation (SKA)** framework ([arXiv:2503.13942](https://arxiv.org/abs/2503.13942), [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)).
 SKA provides a fundamentally new approach to learning and market analysis based on **entropy-driven, forward-only, biologically plausible algorithms**. Instead of relying on classical backpropagation, SKA uses a **layer-wise, entropy-minimizing process** to structure knowledge and decision-making over time, enabling deep insight into both neural networks and real-time market microstructure.
 
 ---
 
 ## Project Description
 
-SKA-quant processes tick-level trade data (e.g., from cryptocurrency markets) to compute **entropy trajectories** and classify each trade into one of three market regimes: **bull**, **bear**, or **neutral**.
+SKA Quantitaive Finance processes tick-level trade data (e.g., from cryptocurrency markets) to compute **entropy trajectories** and classify each trade into one of three market regimes: **bull**, **bear**, or **neutral**.
 By continuously measuring entropy (market disorder) and aligning it with observed decision probabilities, SKA-quant offers a dynamic and granular view of how market structure evolves at the smallest time scales.
 
 * **Structured Knowledge Accumulation (SKA)**: A neural and market learning paradigm where entropy is minimized locally, layer-by-layer, without backpropagation or global optimization.
