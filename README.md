@@ -27,7 +27,7 @@ For full theoretical details, see the [first SKA paper](https://arxiv.org/abs/25
 * **Entropy Computation and Regime Classification**: Implements SKA's entropy and structured knowledge equations for both neural and market data.
 * **Export of Normalized Trajectories**: Outputs separate CSV files for each regime (bull, bear, neutral) containing trade sequence, price, and entropy.
 * **Entropy Transition Probability Modeling**: Quantifies regime change likelihoods using entropy-based transition probabilities.
-* **Visualization Tools**: Plots for entropy trajectories (publication-ready TikZ/PGFPlots/LaTeX) and for transition probabilities vs price.
+
 
 ---
 
