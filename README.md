@@ -31,7 +31,7 @@ For full theoretical details, see the [first SKA paper](https://arxiv.org/abs/25
 ---
 ## SKA vs. Markov Regime Models
 
-For a detailed exploration of how SKA’s entropy-based transition probabilities reveal the hidden information-theoretic basis for constant regime switching—mirroring and explaining the empirical success of Markov chain models in finance—see the [SKA_vs_Markov.md](SKA_vs_Markov.md) document included in this repository.
+For a detailed exploration of how SKA’s entropy-based transition probabilities reveal the hidden information-theoretic basis for constant regime switching—mirroring and explaining the empirical success of Markov chain models in finance—see the [SKA_vs_Markov.md](https://github.com/quantiota/SKA-quantitative-finance/blob/main/ska_vs_markov.md) document included in this repository.
 
 ---
 
