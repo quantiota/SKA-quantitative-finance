@@ -16,7 +16,7 @@ The **Structured Knowledge Accumulation (SKA)** framework takes a fundamentally 
 - SKA does not assume or fit transition probabilities.
 - Instead, it defines **regime transitions** (bull, bear, neutral) in real time, using a forward-only, entropy-minimizing learning law.
 - For each transition, SKA calculates an **information-theoretic probability** based on the *relative change in entropy*:
-- 
+ 
   $P = \exp\left(-\left| \frac{H_{\text{after}} - H_{\text{before}}}{H_{\text{after}}} \right|\right)$
 
 - When these probabilities are plotted for each transition type, they form **quantized, constant “bands”**—each regime pair has its own characteristic information-processing cost.
