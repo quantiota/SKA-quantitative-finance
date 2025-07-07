@@ -28,6 +28,10 @@ For full theoretical details, see the [first SKA paper](https://arxiv.org/abs/25
 * **Export of Normalized Trajectories**: Outputs separate CSV files for each regime (bull, bear, neutral) containing trade sequence, price, and entropy.
 * **Entropy Transition Probability Modeling**: Quantifies regime change likelihoods using entropy-based transition probabilities.
 
+---
+## SKA vs. Markov Regime Models
+
+For a detailed exploration of how SKA’s entropy-based transition probabilities reveal the hidden information-theoretic basis for constant regime switching—mirroring and explaining the empirical success of Markov chain models in finance—see the [SKA_vs_Markov.md](./SKA_vs_Markov.md) document included in this repository.
 
 ---
 
