@@ -43,5 +43,4 @@ The **Structured Knowledge Accumulation (SKA)** framework takes a fundamentally 
 
 > **The constant transition probabilities found in Markov regime-switching models are not arbitrary—they are “universal constants” revealed by the geometry of entropy in the SKA framework. SKA thus provides a deep, mechanistic reason for the success of Markov models in finance and beyond.**
 
-## (Optional Figure Caption)
-> *Figure: SKA entropy-based transition probabilities (color bands) and Markov regime transition matrix: two perspectives on the same hidden law of market dynamics.*
+
