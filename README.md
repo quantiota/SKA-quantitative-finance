@@ -105,6 +105,14 @@ This will:
 
 ---
 
+
+
+> **For Industry Partners and Quantitative Finance Teams:**  
+> The SKA-quantitative-finance project introduces a novel, information-theoretic framework for real-time regime detection and market analysis, grounded in entropy minimization and biologically plausible learning. Unlike traditional models, SKA uncovers hidden structure and regime dynamics directly from high-frequency data—enabling new insights for trading, risk management, and alpha generation. We welcome inquiries from financial institutions, quant teams, and technology partners interested in exploring or validating SKA’s edge in practical market environments.
+
+
+ ---
+
 ## Citing SKA
 
 If you use SKA Quantitative Finance, please cite:
