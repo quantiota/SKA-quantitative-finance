@@ -101,14 +101,15 @@ This will:
 * **Neutral regime dominance:** Most trades are neutral (often 75–80%), reflecting market consolidation phases.
 * **Universal transition probabilities:** Certain transitions (like neutral→neutral) occur with universal, information-theoretically constant probabilities—uncovered only by SKA.
 * **Entropy transitions highlight volatility clusters:** Sudden shifts in regime and drops in transition probability reveal where price and uncertainty spike together.
-* **Direct LaTeX integration:** Reproducible, publication-quality visuals for scientific communication.
+
 
 ---
 
 
 
-> **For Industry Partners and Quantitative Finance Teams:**  
-> The SKA-quantitative-finance project introduces a novel, information-theoretic framework for real-time regime detection and market analysis, grounded in entropy minimization and biologically plausible learning. Unlike traditional models, SKA uncovers hidden structure and regime dynamics directly from high-frequency data—enabling new insights for trading, risk management, and alpha generation. We welcome inquiries from financial institutions, quant teams, and technology partners interested in exploring or validating SKA’s edge in practical market environments.
+## For Industry Partners and Quantitative Finance Teams:
+
+The SKA-quantitative-finance project introduces a novel, information-theoretic framework for real-time regime detection and market analysis, grounded in entropy minimization and biologically plausible learning. Unlike traditional models, SKA uncovers hidden structure and regime dynamics directly from high-frequency data—enabling new insights for trading, risk management, and alpha generation. We welcome inquiries from financial institutions, quant teams, and technology partners interested in exploring or validating SKA’s edge in practical market environments.
 
 
  ---
