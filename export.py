@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load your data
-data = pd.read_csv('questdb-query-1751958417525.csv')
+data = pd.read_csv('questdb-query-1751544843847.csv')
 data['timestamp'] = pd.to_datetime(data['timestamp'])
 
 print(f"Loaded {len(data)} total trades")
