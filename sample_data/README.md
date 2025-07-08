@@ -45,6 +45,13 @@ The same cycling phenomenon is observed during downtrends, where rapid alternati
   
 * **This structure is not easily visible in classical Markov or state-count plots.**
 
+## Background: Markov Chain and Regime-Switching Models
+
+The standard approach in quantitative finance for modeling trends and market regimes is the **Markov chain/regime-switching model**. The canonical reference is:
+
+> Hamilton, J.D. (1994). *Time Series Analysis*. Princeton University Press.
+
+These models define an uptrend as a persistent run of `bull` states, detected by high self-transition probabilities (`P(bull→bull)`). Most classical quant analysis, including academic and industry research, follows this paradigm.
 
 
 
