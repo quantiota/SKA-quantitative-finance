@@ -29,7 +29,7 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 
 The following figure, generated with SKA entropy learning from questdb-query-1752003744108.csv file, illustrates a key market microstructure insight:
 
-Uptrends are not composed of persistent `bull→bull` transitions. Instead, they are driven by rapid alternation between `neutral→bull` and `bull→neutral` states.
+Uptrends are not composed of persistent `bull→bull` transitions. Instead, they are driven by rapid alternation between `neutral→bull` and `bull→neutral` state transition.
 
  This regime cycling is *simultaneously* visible with price movement and entropy-based transition probability, a structure that is hard to detect with classical quant or Markov chain analysis.
 
@@ -45,10 +45,7 @@ Uptrends are not composed of persistent `bull→bull` transitions. Instead, they
 * **This structure is not easily visible in classical Markov or state-count plots.**
 
 
-*Want to explore this insight with your own data? Load the provided CSVs, run the SKA pipeline, and see if your market shows similar regime cycling.*
 
-
-Let me know if you want a compact paragraph for above or below the figure as well!
 
 
 
