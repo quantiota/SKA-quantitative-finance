@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load your data
-data = pd.read_csv('questdb-query-1751544843847.csv')
+data = pd.read_csv('questdb-query-1751958417525.csv')
 data['timestamp'] = pd.to_datetime(data['timestamp'])
 
 print(f"Loaded {len(data)} total trades")
@@ -121,7 +121,7 @@ plt.annotate(
     bbox=dict(boxstyle='round,pad=0.3', facecolor='whitesmoke', edgecolor='gray', alpha=0.95)
 )
 
-plt.savefig('entropy_vs_treade_id.png')
+plt.savefig('entropy_vs_trade_id.png')
 plt.show()
 
 print("\nDone. All transitions exported and multi-band plot generated.")

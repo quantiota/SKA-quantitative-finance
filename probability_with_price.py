@@ -117,3 +117,12 @@ plt.savefig('probability_with_price.png', dpi=300, bbox_inches='tight')
 plt.savefig('probability_with_price.svg', bbox_inches='tight')
 plt.show()
 
+
+print("Entropy-Based Transition Probabilities (mean P for each type):")
+for ttype in all_transitions:
+    mask = df['transition'] == ttype
+    if mask.any():
+        mean_P = df.loc[mask, 'P'].mean()
+        print(f"{ttype:18}: {mean_P:.5f}")
+    else:
+        print(f"{ttype:18}: (no transitions)")
