@@ -24,7 +24,6 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 - Facilitate open scientific discussion and peer review
 
 
----
 
 ## Example Insight: Regime Cycling in Trends
 
@@ -45,11 +44,9 @@ Uptrends are not composed of persistent 'bull→bull' transitions. Instead, they
   
 * **This structure is not easily visible in classical Markov or state-count plots.**
 
----
 
 *Want to explore this insight with your own data? Load the provided CSVs, run the SKA pipeline, and see if your market shows similar regime cycling.*
 
----
 
 Let me know if you want a compact paragraph for above or below the figure as well!
 
@@ -68,5 +65,5 @@ Let me know if you want a compact paragraph for above or below the figure as wel
 - Only the non real-time (batch) code is available in the [arXiv repository](https://github.com/quantiota/Arxiv).
 - **Coming soon:** Real-time SKA learning will be available via an API, allowing researchers and quants to test SKA analytics on their own data streams.
 
----
+
 
