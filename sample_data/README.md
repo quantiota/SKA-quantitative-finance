@@ -9,11 +9,10 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
   - `trade_id` – unique identifier for each trade
   - `timestamp` – ISO8601 datetime of the trade
   - `price` – executed trade price (float)
-  - `volume` – traded amount (float)
+  - `quantity` – traded amount (float)
   - `entropy` – computed entropy value for the trade (float)
-  - `side` – trade direction (`buy` or `sell`)
-  - `buyer_id` – (if available) ID of buyer participant
-  - `seller_id` – (if available) ID of seller participant
+  - `buyer_order_id` – (if available) ID of buyer participant
+  - `seller_order_id` – (if available) ID of seller participant
 
   *(Some columns may be absent or additional columns may appear, depending on the dataset.)*
 
