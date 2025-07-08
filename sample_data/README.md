@@ -27,7 +27,7 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 
 ## Example Insight: Regime Cycling in Trends
 
-The following figure, generated with SKA entropy learning, illustrates a key market microstructure insight:
+The following figure, generated with SKA entropy learning from questdb-query-1752003744108.csv file, illustrates a key market microstructure insight:
 
 Uptrends are not composed of persistent `bull→bull` transitions. Instead, they are driven by rapid alternation between `neutral→bull` and `bull→neutral` states.**
 
@@ -38,7 +38,7 @@ Uptrends are not composed of persistent `bull→bull` transitions. Instead, they
 
 **Interpretation:**
 
-* During price uptrends (see bottom plot), the transitions with highest frequency are **neutral→bull** and **bull→neutral.
+* During price uptrends (see bottom plot), the transitions with highest frequency are **neutral→bull** and **bull→neutral**.
 * **Persistent “bull→bull” transitions are rare!** (As shown in both the legend and transition matrix.)
 * SKA’s entropy-driven, trade-by-trade visualization makes this *market regime cycling* visible—revealing a universal information-processing law of market behavior.
   
