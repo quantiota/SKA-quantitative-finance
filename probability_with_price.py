@@ -26,7 +26,6 @@ for ttype in transition_palette.keys():
         dfs.append(df_t)
     except FileNotFoundError:
         print(f"Warning: File not found: {fname}")
-# Only keep non-empty dataframes
 dfs = [df_t for df_t in dfs if not df_t.empty]
 df = pd.concat(dfs, ignore_index=True)
 df = df.sort_values('trade_sequence').reset_index(drop=True)
@@ -39,7 +38,6 @@ df['P'] = np.exp(-np.abs((df['entropy'] - df['entropy_prev']) / df['entropy']))
 transition_counts = df['transition'].value_counts(dropna=True)
 transition_percentages = (transition_counts / transition_counts.sum() * 100).round(1).astype(str) + '%'
 
-# Guarantee all 9 transitions (fill missing with 0.0%)
 all_transitions = list(transition_palette.keys())
 transition_percentages = {k: transition_percentages.get(k, '0.0%') for k in all_transitions}
 
@@ -79,12 +77,15 @@ ax1.set_ylabel(r'Transition Probability $P = e^{-|\Delta H/H|}$')
 ax1.set_title('Transition Probability and Price by Trade Sequence and Transition Type')
 ax1.grid(True, which='major', linestyle='--', linewidth=0.5, alpha=0.25, zorder=1)
 
+# --- 6. All right-side annotation boxes as artists (legend objects) ---
+# 6.1. Transition type legend
 leg = ax1.legend(
     title="Transition Type", markerscale=1.15, bbox_to_anchor=(1.01, 1.01),
     loc='upper left', frameon=True, fancybox=True, framealpha=0.92, borderpad=1
 )
+ax1.add_artist(leg)
 
-# --- 6. Formula legend below main legend ---
+# 6.2. Formula legend
 formula_text = (
     r"$P_{i} = \exp\left( -\left| \frac{H_{i} - H_{i-1}}{H_{i}} \right| \right)$"
     "\n"
@@ -96,13 +97,52 @@ formula_text = (
     "\n"
     r"$i$: trade sequence"
 )
-dummy = mlines.Line2D([], [], color='none')  # No visible handle
+dummy = mlines.Line2D([], [], color='none')
 formula_leg = ax1.legend(
     [dummy], [formula_text],
     loc='upper left', bbox_to_anchor=(1.01, 0.50),
     fontsize=12, frameon=True, fancybox=True, framealpha=0.92, borderpad=1
 )
-ax1.add_artist(leg)
+ax1.add_artist(formula_leg)
+
+# 6.3. Matrix and Frobenius norm box
+labels = ['bull', 'bear', 'neutral']
+prob_matrix = np.array([
+    [
+        df.loc[df['transition']=='bull->bull', 'P'].mean() if (df['transition']=='bull->bull').any() else 0.0,
+        df.loc[df['transition']=='bull->bear', 'P'].mean() if (df['transition']=='bull->bear').any() else 0.0,
+        df.loc[df['transition']=='bull->neutral', 'P'].mean() if (df['transition']=='bull->neutral').any() else 0.0,
+    ],
+    [
+        df.loc[df['transition']=='bear->bull', 'P'].mean() if (df['transition']=='bear->bull').any() else 0.0,
+        df.loc[df['transition']=='bear->bear', 'P'].mean() if (df['transition']=='bear->bear').any() else 0.0,
+        df.loc[df['transition']=='bear->neutral', 'P'].mean() if (df['transition']=='bear->neutral').any() else 0.0,
+    ],
+    [
+        df.loc[df['transition']=='neutral->bull', 'P'].mean() if (df['transition']=='neutral->bull').any() else 0.0,
+        df.loc[df['transition']=='neutral->bear', 'P'].mean() if (df['transition']=='neutral->bear').any() else 0.0,
+        df.loc[df['transition']=='neutral->neutral', 'P'].mean() if (df['transition']=='neutral->neutral').any() else 0.0,
+    ]
+])
+frobenius_norm = np.linalg.norm(prob_matrix)
+matrix_str = '\n'.join(
+    [f"[{prob_matrix[i,0]:.3f}, {prob_matrix[i,1]:.3f}, {prob_matrix[i,2]:.3f}]" for i in range(3)]
+)
+frobenius_str = f"Frobenius norm: {frobenius_norm:.3f}"
+
+box_text = (
+    "Mean Entropy-Based\n"
+    "Transition Probability Matrix\n"
+    f"{matrix_str}\n\n"
+    f"{frobenius_str}"
+)
+dummy_box = mlines.Line2D([], [], color='none')
+matrix_leg = ax1.legend(
+    [dummy_box], [box_text],
+    loc='upper left', bbox_to_anchor=(1.01, 0.13),
+    fontsize=11, frameon=True, fancybox=True, framealpha=0.94, borderpad=1
+)
+ax1.add_artist(matrix_leg)
 
 # --- 7. Bottom plot: price line ---
 trade_seq = np.asarray(df['trade_sequence'])
@@ -117,7 +157,7 @@ plt.savefig('probability_with_price.png', dpi=300, bbox_inches='tight')
 plt.savefig('probability_with_price.svg', bbox_inches='tight')
 plt.show()
 
-
+# --- Terminal printout of probabilities, matrix, and norm ---
 print("Entropy-Based Transition Probabilities (mean P for each type):")
 for ttype in all_transitions:
     mask = df['transition'] == ttype
@@ -126,3 +166,8 @@ for ttype in all_transitions:
         print(f"{ttype:18}: {mean_P:.5f}")
     else:
         print(f"{ttype:18}: (no transitions)")
+
+print("\n=== Mean Entropy-Based Transition Probability Matrix ===")
+print(pd.DataFrame(prob_matrix, index=labels, columns=labels))
+print("\n=== Frobenius Norm ===")
+print(f"{frobenius_norm:.5f}")
