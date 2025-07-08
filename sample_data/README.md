@@ -21,7 +21,9 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 
 - Enable other researchers and quants to **replicate key figures** (entropy trajectories, regime transitions, probability bands) published in this repository
 - Allow independent analysis and benchmarking using the same datasets
+- With these sample data files, quantitative researchers can test and develop their own entropy-based BUY/SELL strategies, regime detection methods, or risk models—using the same high-frequency trade data and entropy measures analyzed in this project.
 - Facilitate open scientific discussion and peer review
+
 
 ## Usage
 
