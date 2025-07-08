@@ -24,6 +24,39 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 - Facilitate open scientific discussion and peer review
 
 
+---
+
+## Example Insight: Regime Cycling in Trends
+
+The following figure, generated with SKA entropy learning, illustrates a key market microstructure insight:
+
+Uptrends are not composed of persistent 'bull→bull' transitions. Instead, they are driven by rapid alternation between 'neutral→bull' and 'bull→neutral' states.**
+
+ This regime cycling is *simultaneously* visible with price movement and entropy-based transition probability, a structure that is hard to detect with classical quant or Markov chain analysis.
+
+
+![SKA Transition Probability Figure](probability_with_price.png)
+
+**Interpretation:**
+
+* During price uptrends (see bottom plot), the transitions with highest frequency are **neutral→bull** and **bull→neutral**.
+* **Persistent “bull→bull” transitions are rare!** (As shown in both the legend and transition matrix.)
+* SKA’s entropy-driven, trade-by-trade visualization makes this *market regime cycling* visible—revealing a universal information-processing law of market behavior.
+  
+* **This structure is not easily visible in classical Markov or state-count plots.**
+
+---
+
+*Want to explore this insight with your own data? Load the provided CSVs, run the SKA pipeline, and see if your market shows similar regime cycling.*
+
+---
+
+Let me know if you want a compact paragraph for above or below the figure as well!
+
+
+
+
+
 ## Usage
 
 - You are free to use these sample data files for academic research, non-commercial analysis, or backtesting.
