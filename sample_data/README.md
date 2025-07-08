@@ -48,10 +48,6 @@ The same cycling phenomenon is observed during downtrends, where rapid alternati
 
 
 
-
-
-
-
 ## Usage
 
 - You are free to use these sample data files for academic research, non-commercial analysis, or backtesting.
