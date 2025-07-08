@@ -38,7 +38,7 @@ Uptrends are not composed of persistent `bull→bull` transitions. Instead, they
 
 **Interpretation:**
 
-* During price uptrends (see bottom plot), the transitions with highest frequency are **neutral→bull** and **bull→neutral**.
+* During price uptrends (see bottom plot), the transitions with highest frequency are **neutral→bull** and **bull→neutral.
 * **Persistent “bull→bull” transitions are rare!** (As shown in both the legend and transition matrix.)
 * SKA’s entropy-driven, trade-by-trade visualization makes this *market regime cycling* visible—revealing a universal information-processing law of market behavior.
   
