@@ -4,7 +4,7 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 
 ## Contents
 
-- High-frequency trade/tick data samples (e.g., `XRPUSDT_2024-07-06.csv`)
+- High-frequency trade/tick data samples (e.g., `questdb-query-1752003744108`)
 - **Each CSV file includes the following columns:**
   - `trade_id` – unique identifier for each trade
   - `timestamp` – ISO8601 datetime of the trade
