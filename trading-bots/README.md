@@ -10,7 +10,7 @@ This folder contains ready-to-run trading algorithms designed to operate on the 
 
 1. Use any of the precomputed sample CSV files in `/sample_data`.
    - These files already contain entropy and regime information needed for SKA-based trading.
-2. Run any script in this folder. For example:
+2. Run any script in this folder.
 
 3. Review the output: trade signals, regime plots, and backtest results.
 
