@@ -31,7 +31,7 @@ The following figure, generated with SKA entropy learning from the file questdb-
 
 Uptrends are not composed of persistent `bull→bull` transitions. Instead, they are driven by rapid alternation between `neutral→bull` and `bull→neutral` transitions.
 
-This reveals that market trends are fundamentally constructed from paired regime transitions—specifically, the rapid cycling between `neutral→bull` and `bull→neutral` (for uptrends), or `neutral→bear` and `bear→neutral` (for downtrends). These paired transitions, rather than persistence in `a single state, are the true information-processing units of market trend.
+This reveals that market trends are fundamentally constructed from paired regime transitions—specifically, the rapid cycling between `neutral→bull` and `bull→neutral` (for uptrends), or `neutral→bear` and `bear→neutral` (for downtrends). These paired transitions, rather than persistence in a single state, are the true information-processing units of market trend.
 
 
  This regime cycling is simultaneously visible with both price movement and entropy-based transition probability—a structure that is hard to detect with classical quant or Markov chain analysis.
