@@ -21,9 +21,9 @@ Trading bots that **demonstrate robust, repeatable success** on the provided sam
 The goal: Deploy the most effective trading strategies as real-time, production-ready APIs for use in live trading or analytics pipelines.
 
 - **Criteria:**  
-- Consistent performance across multiple datasets  
-- Interpretability of signals (SKA regime logic preferred)  
-- Ease of API integration
+  - Consistent performance across multiple datasets  
+  - Interpretability of signals (SKA regime logic preferred)  
+  - Ease of API integration
 
 - **Roadmap:**  
 1. Benchmark strategies on `/sample_data`.
