@@ -56,6 +56,12 @@ The standard approach in quantitative finance for modeling trends and market reg
 
 These models define an uptrend as a persistent run of `bull` states, detected by high self-transition probabilities (`P(bull→bull)`). Most classical quant analysis, including academic and industry research, follows this paradigm.
 
+However, it is important to note that classical Markov chain and regime-switching models operate at a **coarser temporal resolution**—they characterize regime persistence and transitions over aggregated sequences or time windows.
+
+**In contrast, SKA works at a much finer, event-by-event resolution:**  
+By tracking entropy and regime transitions at the level of each trade (or event), SKA reveals market microstructure dynamics and paired regime cycling that remain invisible to traditional Markov/state-count approaches.
+
+
 
 
 ## Usage
