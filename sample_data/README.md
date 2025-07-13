@@ -76,7 +76,7 @@ By tracking entropy and regime transitions at the level of each trade (or event)
 
 - **The real-time SKA learning code is not included in this folder.**
 - Only the non real-time (batch) code is available in the [arXiv repository](https://github.com/quantiota/Arxiv).
-- **Coming soon:** Real-time SKA learning will be available via an API, allowing researchers and quants to test SKA analytics on their own data streams.
+- **Coming soon:** Real-time SKA learning will be available via an API, allowing researchers and quants to test SKA analytics on their own data streams
 
 
 
