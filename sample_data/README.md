@@ -24,6 +24,9 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 - Facilitate open scientific discussion and peer review
 
 
+> Unlike classical models, SKA reveals hidden regime cycles directly from entropy dynamics, not from price trends.
+
+
 
 ## Example Insight: Regime Cycling in Trends
 
