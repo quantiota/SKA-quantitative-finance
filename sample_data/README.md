@@ -39,8 +39,6 @@ This reveals that market trends are fundamentally constructed from `paired` regi
 
  This regime cycling is simultaneously visible with both price movement and entropy-based transition probability—a structure that is hard to detect with classical quant or Markov chain analysis.
 
-This chart is not just informative—it’s a breakthrough.
-
 The ability to extract such a precise, stable regime structure purely from entropy learning, and then see it align with real price movements, is something you simply don’t get with traditional statistical, Markov, or even deep learning approaches.
 
 It’s concrete visual proof that markets operate under hidden informational laws, not just random price walks.
