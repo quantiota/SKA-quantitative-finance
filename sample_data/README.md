@@ -30,20 +30,16 @@ This folder contains primary CSV files with raw trade data used for SKA-quantita
 
 ## Example Insight: Regime Cycling in Trends
 
-The following figure, generated with SKA entropy learning from the file questdb-query-1752003744108.csv, illustrates a key market microstructure insight:
+The following figure, generated with SKA entropy learning from the file `questdb-query-1752003744108.csv`, illustrates a key market microstructure insight:
 
 Uptrends are not composed of persistent `bull→bull` transitions. Instead, they are driven by rapid alternation between `neutral→bull` and `bull→neutral` transitions.
 
-This reveals that market trends are fundamentally constructed from `paired` regime transitions—specifically, the rapid cycling between `neutral→bull` and `bull→neutral` (for uptrends), or `neutral→bear` and `bear→neutral` (for downtrends). These `paired` transitions, rather than persistence in a single state, are the true information-processing units of market trend.
+This reveals that market trends are fundamentally constructed from `paired` regime transitions—specifically, the rapid cycling between `neutral→bull` and `bull→neutral` (for uptrends), or `neutral→bear` and `bear→neutral` (for downtrends). These paired transitions, rather than persistence in a single state, are the true information-processing units of market trend.
 
-
- This regime cycling is simultaneously visible with both price movement and entropy-based transition probability—a structure that is hard to detect with classical quant or Markov chain analysis.
-
-The ability to extract such a precise, stable regime structure purely from entropy learning, and then see it align with real price movements, is something you simply don’t get with traditional statistical, Markov, or even deep learning approaches.
-
-It’s concrete visual proof that markets operate under hidden informational laws, not just random price walks.
-
-For quants and researchers, this is a glimpse into the next generation of market analysis.
+> **Breakthrough:**
+> The regime cycling structure shown below is extracted purely from entropy learning—not from price or state aggregation.
+> The alignment between these entropy-driven regime transitions and actual price movements offers *concrete visual proof* that markets operate under hidden informational laws, not just random walks.
+> This provides quants and researchers with a glimpse into the next generation of market analysis.
 
 ![SKA Transition Probability Figure](probability_with_price.png)
 
@@ -52,14 +48,13 @@ For quants and researchers, this is a glimpse into the next generation of market
 * During price uptrends (see bottom plot), the transitions with highest frequency are **neutral→bull** and **bull→neutral**.
 * **Persistent “bull→bull” transitions are rare!** (As confirmed in the legend.)
 * SKA’s entropy-driven, trade-by-trade visualization makes this market regime cycling explicit—revealing a universal information-processing law of market behavior.
+* The same cycling phenomenon is observed during downtrends, where rapid alternation between **neutral→bear** and **bear→neutral** transitions dominates the price movement.
 
-The same cycling phenomenon is observed during downtrends, where rapid alternation between **neutral→bear** and **bear→neutral** transitions dominates the price movement.
-  
->This empirical result powerfully reinforces the foundation of the SKA entropy definition.
-The fact that the learned regime transitions—derived purely from entropy dynamics—are so closely aligned with actual price evolution demonstrates that SKA’s information-theoretic approach captures the true underlying structure of market behavior.
+> **Empirical foundation:**
+> This result powerfully reinforces the SKA entropy definition.
+> The learned regime transitions—derived purely from entropy dynamics—align so closely with price evolution that SKA’s information-theoretic approach clearly captures the *true underlying structure* of market behavior.
+> In other words, SKA’s entropy is not just a mathematical construct—it describes real, observable laws that govern how markets process information and evolve.
 
->In other words:
-SKA’s entropy isn’t just a mathematical construct. It describes real, observable laws that govern how markets process information and evolve over time.
 
 ## Background: Markov Chain and Regime-Switching Models
 
