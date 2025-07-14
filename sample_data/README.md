@@ -57,7 +57,7 @@ For quants and researchers, this is a glimpse into the next generation of market
 
 The same cycling phenomenon is observed during downtrends, where rapid alternation between **neutral→bear** and **bear→neutral** transitions dominates the price movement.
   
-* **This structure is not easily visible in classical Markov or state-count plots.**
+
 
 ## Background: Markov Chain and Regime-Switching Models
 
