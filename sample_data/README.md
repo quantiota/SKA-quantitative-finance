@@ -39,6 +39,11 @@ This reveals that market trends are fundamentally constructed from paired regime
 
  This regime cycling is simultaneously visible with both price movement and entropy-based transition probability—a structure that is hard to detect with classical quant or Markov chain analysis.
 
+Key Point:
+
+>The structures shown below are not derived from price, but from entropy dynamics alone.
+What’s remarkable is that these entropy-based regime cycles, derived independently from price, are nevertheless strongly correlated with actual price evolution—demonstrating SKA’s power to uncover the informational structure underlying market movements.
+
 ![SKA Transition Probability Figure](probability_with_price.png)
 
 **Interpretation:**
