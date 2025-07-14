@@ -60,7 +60,7 @@ The same cycling phenomenon is observed during downtrends, where rapid alternati
 >This empirical result powerfully reinforces the foundation of the SKA entropy definition.
 The fact that the learned regime transitions—derived purely from entropy dynamics—are so closely aligned with actual price evolution demonstrates that SKA’s information-theoretic approach captures the true underlying structure of market behavior.
 
-In other words:
+>In other words:
 SKA’s entropy isn’t just a mathematical construct. It describes real, observable laws that govern how markets process information and evolve over time.
 
 ## Background: Markov Chain and Regime-Switching Models
