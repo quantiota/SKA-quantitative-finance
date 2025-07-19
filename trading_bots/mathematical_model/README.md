@@ -35,28 +35,27 @@ $$
 
 where $\mathbf{I}$ is the identity operator.
 
-
 ## 3. Time‐Domain Probability Normalization
 
-Let \(T\) be the total length of our observation window. Define an operator \(\Delta\tau\) whose matrix elements
+Let $T$ be the total length of our observation window. Define an operator $\Delta\tau$ whose matrix elements
 
-\[
-\langle i \mid \Delta\tau \mid j\rangle \;=\;\Delta\tau_{ij}
-\]
+$$
+\LARGE \langle i \mid \Delta\tau \mid j\rangle = \Delta\tau_{ij}
+$$
 
-represent the total time spent transitioning from regime \(\lvert i\rangle\) to \(\lvert j\rangle\) during \(T\).  Then the **total statistical probability** satisfies
+represent the total time spent transitioning from regime $\lvert i\rangle$ to $\lvert j\rangle$ during $T$.  Then the **total statistical probability** satisfies
 
-\[
-\sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} \;=\;1.
-\]
+$$
+\sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
+$$
 
 We may therefore identify the empirical transition probability as
 
-\[
+$$
 P_{i\to j}
-\;=\;
-\frac{\langle i \mid \Delta\tau \mid j\rangle}{T},
-\]
+= \frac{\langle i \mid \Delta\tau \mid j\rangle}{T},
+$$
 
-which guarantees \(\sum_{i,j}P_{i\to j}=1\) by construction.
+which guarantees $\sum_{i,j}P_{i\to j}=1$ by construction.
+
 
