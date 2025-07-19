@@ -154,16 +154,15 @@ $$
 In the SKA framework, we compute **Pearson correlation** between the duration series of paired regime transitions. Specifically, we measure how the **timing patterns** of forward and reverse transitions relate to each other.
 
 **Mathematical Definition:**
-
-For regime pair $(i \leftrightarrow j)$, the correlation coefficient is:
-
-$$ \LARGE \rho_{i\!\leftrightarrow\!j} = \frac{\text{Cov}(\{\Delta\tau_{i\to j}\}, \{\Delta\tau_{j\to i}\})}{\sigma_{\Delta\tau_{i\to j}} \cdot \sigma_{\Delta\tau_{j\to i}}}$$
+$$\LARGE \rho_{i\!\leftrightarrow\!j} = \frac{\text{Cov}(\{\Delta\tau_{i\to j}\}, \{\Delta\tau_{j\to i}\})}{\sigma_{\Delta\tau_{i\to j}} \cdot \sigma_{\Delta\tau_{j\to i}}}$$
 
 **Computational Formula (equivalent):**
+$$\LARGE \rho_{i\!\leftrightarrow\!j} = \frac{\sum_{k=1}^{n}(\Delta\tau_{i\to j,k} - \overline{\Delta\tau_{i\to j}})(\Delta\tau_{j\to i,k} - \overline{\Delta\tau_{j\to i}})}{\sqrt{\sum_{k=1}^{n}(\Delta\tau_{i\to j,k} - \overline{\Delta\tau_{i\to j}})^2 \sum_{k=1}^{n}(\Delta\tau_{j\to i,k} - \overline{\Delta\tau_{j\to i}})^2}}$$
 
-$$ \LARGE\rho_{i\!\leftrightarrow\!j} = \frac{\sum_{k}(\Delta\tau_{i\to j,k} - \overline{\Delta\tau_{i\to j}})(\Delta\tau_{j\to i,k} - \overline{\Delta\tau_{j\to i}})}{\sqrt{\sum_{k}(\Delta\tau_{i\to j,k} - \overline{\Delta\tau_{i\to j}})^2 \sum_{k}(\Delta\tau_{j\to i,k} - \overline{\Delta\tau_{j\to i}})^2}}$$
+
 
 where:
+- $n = \min(|\{\Delta\tau_{i\to j}\}|, |\{\Delta\tau_{j\to i}\}|)$
 - $\{\Delta\tau_{i\to j}\}$ = series of durations for $i \to j$ transitions
 - $\{\Delta\tau_{j\to i}\}$ = series of durations for $j \to i$ transitions  
 - $\overline{\Delta\tau_{i\to j}}$ = mean duration for $i \to j$ transitions
