@@ -35,31 +35,31 @@ where $i,j\in\{\text{bull},\text{neutral},\text{bear}\}$ and $\delta_{ij}$ is th
 The basis spans the full regime space, so we have:
 
 $$
-\LARGE \mathbf{I} = \sum_{r\in\{\text{bull, neutral, bear}\}}\lvert r\rangle\langle r\rvert
+\Large \mathbf{I} = \sum_{r\in\{\text{bull, neutral, bear}\}}\lvert r\rangle\langle r\rvert
 $$
 
 where $\mathbf{I}$ is the identity operator.
 
 ## 3. Time‐Domain Probability Normalization
 
-Let $\large T$ be the total length of our observation window. Define an operator $\large \Delta\tau$ whose matrix elements
+Let $\Large T$ be the total length of our observation window. Define an operator $\Large \Delta\tau$ whose matrix elements
 
 $$
-\LARGE \langle i \mid \Delta\tau \mid j\rangle = \Delta\tau_{ij}
+\Large \langle i \mid \Delta\tau \mid j\rangle = \Delta\tau_{ij}
 $$
 
 represent the total time spent transitioning from regime $\lvert i\rangle$ to $\lvert j\rangle$ during $T$.  Then the **total statistical probability** satisfies
 
 $$
-\LARGE \sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
+\Large \sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
 $$
 
 We may therefore identify the empirical transition probability as
 
 $$
-\LARGE P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T},
+\Large P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T},
 $$
 
-which guarantees $\LARGE \sum_{i,j}P_{i\to j}=1$ by construction.
+which guarantees $\Large \sum_{i,j}P_{i\to j}=1$ by construction.
 
 
