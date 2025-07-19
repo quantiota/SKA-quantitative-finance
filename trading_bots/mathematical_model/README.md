@@ -75,8 +75,7 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
 1. **Regime sequence**
    You have a sequence of timestamped regime observations
 
-   $$
-     \{(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\},
+   $$ \{(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\},
      \quad r_k\in\{0,1,2\}.
    $$
 
@@ -84,8 +83,7 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
    Whenever you see a transition $r_k = i$ followed by $r_{k+1} = j$, record
 
    $$
-     \Delta\tau_{i\to j}\bigl(t_{k+1}\bigr)
-     = t_{k+1} - t_{k},
+     \Delta\tau_{i\to j}\bigl(t_{k+1}\bigr) = t_{k+1} - t_{k},
    $$
 
    the elapsed clock‐time between those two events.
@@ -94,12 +92,7 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
    Collect these durations in chronological order:
 
    $$
-     \{\Delta\tau_{i\to j}(t)\}
-     = \bigl\{
-       \Delta\tau_{i\to j}(t_{k_1}),\;
-       \Delta\tau_{i\to j}(t_{k_2}),\;
-       \dots
-     \bigr\},
+     \{\Delta\tau_{i\to j}(t)\} = \bigl\{\Delta\tau_{i\to j}(t_{k_1}),\; \Delta\tau_{i\to j}(t_{k_2}),\ \dots \bigr\},
    $$
 
    where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition.
