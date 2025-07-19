@@ -75,19 +75,19 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
 1. **Regime sequence**
    You have a sequence of timestamped regime observations
 
-   $$\Large {(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\ \quad r_k\in\{0,1,2\}}.$$
+   $\Large \{(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\}, \quad r_k\in\{0,1,2\}.$
 
 2. **Instantaneous transition time**
    Whenever you see a transition $r_k = i$ followed by $r_{k+1} = j$, record
 
-   $$\Large \Delta\tau_{i\to j}\bigl(t_{k+1}\bigr) = t_{k+1} - t_{k},$$
+   $\Large \Delta\tau_{i\to j}\bigl(t_{k+1}\bigr) = t_{k+1} - t_{k},$
 
    the elapsed clock‐time between those two events.
 
 3. **Building the series**
    Collect these durations in chronological order:
 
-  $$\Large {\Delta\tau_{i\to j}(t)\} = {\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots}.$$
+  $\Large \{\Delta\tau_{i\to j}(t)\} = \bigl\{\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots\bigr\},$
 
    where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition.
 
@@ -111,7 +111,9 @@ Within each window of length $T_{\rm corr}$, collect
 $\{\Delta\tau_{i\to j}(t)\}$ and $\{\Delta\tau_{j\to i}(t)\}$ for all $t \in [\,t_{\rm now}-T_{\rm corr},\,t_{\rm now}\,]$. Then define
 
 $$
-\rho_{i\!\leftrightarrow\!j} = \mathrm{PearsonCorr}\bigl(\{\Delta\tau_{i\to j}(t)\},\,\{\Delta\tau_{j\to i}(t)\}\bigr).
+\rho_{i\!\leftrightarrow\!j}
+=
+\mathrm{PearsonCorr}\bigl(\{\Delta\tau_{i\to j}(t)\},\,\{\Delta\tau_{j\to i}(t)\}\bigr).
 $$
 
 | Symbol            | Variable Name  | Regime Pairs      | Description                                                          |
@@ -139,4 +141,3 @@ $$
   * **+1** → perfect synchronization in this window
   * **–1** → perfect anti‑synchronization
   * **0** → no linear relationship
-
