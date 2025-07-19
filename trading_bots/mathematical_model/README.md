@@ -46,16 +46,15 @@ $$
 represent the total time spent transitioning from regime $\lvert i\rangle$ to $\lvert j\rangle$ during $T$.  Then the **total statistical probability** satisfies
 
 $$
-\sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
+\LARGE \sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
 $$
 
 We may therefore identify the empirical transition probability as
 
 $$
-P_{i\to j}
-= \frac{\langle i \mid \Delta\tau \mid j\rangle}{T},
+\LARGE P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T},
 $$
 
-which guarantees $\sum_{i,j}P_{i\to j}=1$ by construction.
+which guarantees $\LARGE \sum_{i,j}P_{i\to j}=1$ by construction.
 
 
