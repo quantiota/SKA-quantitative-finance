@@ -75,7 +75,7 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
 1. **Regime sequence**
    You have a sequence of timestamped regime observations
 
-   $$\Large \{(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\},\quad r_k\in\{0,1,2\}.$$
+   $$\Large {(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\},\quad r_k\in\{0,1,2\}.$$
 
 2. **Instantaneous transition time**
    Whenever you see a transition $r_k = i$ followed by $r_{k+1} = j$, record
