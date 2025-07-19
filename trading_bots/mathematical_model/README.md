@@ -130,7 +130,7 @@ $$
 
 * **Define your window**
   ```python
-  corr_time_window = 3600  # e.g. 1 hour (3600 seconds)
+  corr_time_window = 10  # e.g. 10 seconds
   ```
 
 * **Filter events**
