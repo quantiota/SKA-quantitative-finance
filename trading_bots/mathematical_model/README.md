@@ -129,9 +129,9 @@ $$
 ### 6.3 Developer Notes
 
 * **Define your window**
-  ```python
+```python
  corr_time_window = 60  # e.g. 1 minute (standard window)
-  ```
+ ```
 
 * **Filter events**
   Only include transitions with timestamp $t$ satisfying
