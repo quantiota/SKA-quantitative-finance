@@ -41,7 +41,7 @@ $$
 represent the total time spent transitioning from regime $\lvert i\rangle$ to $\lvert j\rangle$ during $T$. Then the **total statistical probability** satisfies
 
 $$
-\Large \sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
+\Large \displaystyle \sum_{i,j}\frac{\langle i \mid \Delta\tau \mid j\rangle}{T} = 1.
 $$
 
 We may therefore identify the empirical transition probability as
