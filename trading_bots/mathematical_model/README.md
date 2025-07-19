@@ -132,7 +132,6 @@ $$
 
   ```python
  corr_time_window = 60  # e.g. 1 minute (standard window)
-
   ```
 
 * **Filter events**
