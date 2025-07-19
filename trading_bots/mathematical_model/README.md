@@ -30,7 +30,7 @@ where $i,j\in\{\text{bull},\text{neutral},\text{bear}\}$ and $\delta_{ij}$ is th
 The basis spans the full regime space, so we have:
 
 $$
-\mathbf{I} = \sum_{r\in\{\text{bull, neutral, bear}\}}\lvert r\rangle\langle r\rvert
+\LARGE \mathbf{I} = \sum_{r\in\{\text{bull, neutral, bear}\}}\lvert r\rangle\langle r\rvert
 $$
 
 where $\mathbf{I}$ is the identity operator.
