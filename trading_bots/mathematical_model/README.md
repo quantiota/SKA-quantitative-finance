@@ -199,6 +199,7 @@ for idx in range(min(len(delta_tau_i_to_j), len(delta_tau_j_to_i))):
 ```
 
 **Step 3: Compute Pearson Correlation**
+
 Apply the computational formula from Section 7.1 using your preferred statistics library.
 
 ### **7.3 Correlation Interpretation**
