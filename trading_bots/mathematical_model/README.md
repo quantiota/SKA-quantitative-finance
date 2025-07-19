@@ -19,6 +19,7 @@ In our framework, we represent each market regime as a basis vector (ket) in an 
   $\lvert\text{neutral}\rangle$
 
 * **Bear Market**: 
+  
   $\lvert\text{bear}\rangle$
 
 These kets satisfy the orthonormality condition:
