@@ -233,14 +233,17 @@ Apply the computational formula from Section 7.1 using your preferred statistics
 
 **Window Size Selection:**
 ```python
-# Short window (high sensitivity)
-T_corr_short = 300   # 5 minutes - captures immediate patterns
+# High-frequency regime detection (immediate patterns)
+T_corr_micro = 30      # 30 seconds - ~107 expected transitions
+T_corr_short = 60      # 1 minute - ~213 expected transitions
 
-# Medium window (balanced)  
-T_corr_medium = 1800  # 30 minutes - standard operational window
+# Medium-term correlation analysis (balanced sensitivity)
+T_corr_medium = 120    # 2 minutes - ~426 expected transitions
+T_corr_balanced = 180  # 3 minutes - ~639 expected transitions
 
-# Long window (trend stability)
-T_corr_long = 3600   # 1 hour - captures longer-term correlations
+# Trend analysis (stable patterns)
+T_corr_trend = 300     # 5 minutes - ~1,065 expected transitions
+T_corr_stable = 600    # 10 minutes - ~2,130 expected transitions
 ```
 
 **Dynamic Window Adjustment:**
