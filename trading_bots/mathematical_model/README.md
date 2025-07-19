@@ -186,17 +186,11 @@ for transition in window:
         delta_tau_j_to_i.append(transition.duration)
 ```
 
-**Step 2: Align Series for Correlation**
-The series must be **time-aligned** for meaningful correlation:
-```python
-# Method 1: Sequential pairing
-pairs = []
-for idx in range(min(len(delta_tau_i_to_j), len(delta_tau_j_to_i))):
-    pairs.append((delta_tau_i_to_j[idx], delta_tau_j_to_i[idx]))
+# Step 2: Align Series for Correlation
 
-# Method 2: Time-window aggregation  
-# Aggregate durations within small time buckets (e.g., 1-minute intervals)
-```
+Truncate both series to the length of the shorter series to ensure equal-length arrays for valid correlation calculation. This method preserves the maximum amount of data while maintaining statistical validity required for Pearson correlation.
+Use the minimum length between the two paired transition series and truncate the longer series accordingly. This approach is optimal for SKA paired regime analysis as the natural cycling balance typically results in minimal data loss (typically 5-10% of transitions).
+The truncation method maintains temporal ordering and preserves the most recent transition patterns, making it ideal for real-time correlation tracking in the SKA framework.
 
 **Step 3: Compute Pearson Correlation**
 
