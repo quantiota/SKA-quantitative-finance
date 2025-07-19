@@ -11,15 +11,14 @@ This document presents a theoretical framework for modeling market-regime transi
 In our framework, we represent each market regime as a basis vector (ket) in an abstract state space:
 
 * **Bull Market**:
-* 
+
   $\lvert\text{bull}\rangle$
 
 * **Neutral Market**:
-* 
+  
   $\lvert\text{neutral}\rangle$
 
-* **Bear Market**:
-* 
+* **Bear Market**: 
   $\lvert\text{bear}\rangle$
 
 These kets satisfy the orthonormality condition:
