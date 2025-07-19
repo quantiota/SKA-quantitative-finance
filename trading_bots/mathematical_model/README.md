@@ -129,8 +129,10 @@ $$
 ### 6.3 Developer Notes
 
 * **Define your window**
+
   ```python
  corr_time_window = 60  # e.g. 1 minute (standard window)
+ 
   ```
 
 * **Filter events**
