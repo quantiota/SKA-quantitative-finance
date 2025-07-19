@@ -37,7 +37,7 @@ where $\mathbf{I}$ is the identity operator.
 
 ## 3. Time‐Domain Probability Normalization
 
-Let $T$ be the total length of our observation window. Define an operator $\Delta\tau$ whose matrix elements
+Let $\large T$ be the total length of our observation window. Define an operator $\large \Delta\tau$ whose matrix elements
 
 $$
 \LARGE \langle i \mid \Delta\tau \mid j\rangle = \Delta\tau_{ij}
