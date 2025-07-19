@@ -87,7 +87,9 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
 3. **Building the series**
    Collect these durations in chronological order:
 
-   $$\Large \{\Delta\tau_{i\to j}(t)\} = \bigl\{\Delta\tau_{i\to j}(t_{k_1}),\; \Delta\tau_{i\to j}(t_{k_2}),\ \dots \bigr\},$$
+  $$
+  \{\Delta\tau_{i\to j}(t)\} = \bigl\{\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots\bigr\}.
+  $$
 
    where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition.
 
@@ -139,3 +141,4 @@ $$
   * **+1** → perfect synchronization in this window
   * **–1** → perfect anti‑synchronization
   * **0** → no linear relationship
+
