@@ -20,7 +20,7 @@ In our framework, we represent each market regime as a basis vector (ket) in an 
 These kets satisfy the orthonormality condition:
 
 $$
-\langle i \vert j \rangle = \delta_{ij},
+\large \langle i \vert j \rangle = \delta_{ij},
 $$
 
 where $i,j\in\{\text{bull},\text{neutral},\text{bear}\}$ and $\delta_{ij}$ is the Kronecker delta.
