@@ -83,6 +83,7 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
    $$\Large \Delta\tau(t_k) = t_k - t_{k-1} \quad \text{where } t_k \neq t_{k-1}$$
 
 3. **Same-timestamp assignment**
+
    **When multiple trades occur at the same timestamp $t_k$, they all receive the same $\Delta\tau$ value:**
 
    $$\Large \Delta\tau_{i\to j}(t_k) = \Delta\tau(t_k) = t_k - t_{\text{prev}}$$
