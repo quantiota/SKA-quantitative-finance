@@ -63,3 +63,18 @@ $$
 which guarantees $\Large \sum_{i,j}P_{i\to j}=1$ by construction.
 
 
+## 5. Trend Regime Pairs
+
+We classify certain back‑and‑forth transitions between regimes as “trends.”  
+
+| Trend       | Paired Regime Transitions                                      | Variable Name        | Description                                        |
+|-------------|----------------------------------------------------------------|----------------------|----------------------------------------------------|
+| **Uptrend** | ⟨neutral\|Δτ\|bull⟩ and ⟨bull\|Δτ\|neutral⟩                          | `trend_up_pairs`     | Transitions between Neutral ⇆ Bull                  |
+| **Downtrend** | ⟨neutral\|Δτ\|bear⟩ and ⟨bear\|Δτ\|neutral⟩                        | `trend_down_pairs`   | Transitions between Neutral ⇆ Bear                  |
+
+**Notes for developers**  
+- Represent regimes by indices or enums (e.g. `0 = neutral`, `1 = bull`, `2 = bear`).  
+- Store each pair as a 2‑tuple of indices, e.g.  
+ - Use `trend_up_pairs = [(0,1), (1,0)]`  
+ - Use `trend_down_pairs = [(0,2), (2,0)]`  
+- Checking `(i,j) in trend_up_pairs` identifies uptrends; similarly for downtrends. 
