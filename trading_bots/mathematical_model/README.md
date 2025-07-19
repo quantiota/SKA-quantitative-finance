@@ -187,7 +187,7 @@ for transition in window:
         delta_tau_j_to_i.append(transition.duration)
 ```
 
-# Step 2: Align Series for Correlation
+**Step 2: Align Series for Correlation**
 
 Truncate both series to the length of the shorter series to ensure equal-length arrays for valid correlation calculation. This method preserves the maximum amount of data while maintaining statistical validity required for Pearson correlation.
 Use the minimum length between the two paired transition series and truncate the longer series accordingly. This approach is optimal for SKA paired regime analysis as the natural cycling balance typically results in minimal data loss (typically 5-10% of transitions).
