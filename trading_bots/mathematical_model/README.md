@@ -88,7 +88,7 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
    Collect these durations in chronological order:
 
   $$
-  \{\Delta\tau_{i\to j}(t)\} = \bigl{\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots\bigr}.
+  \{\Delta\tau_{i\to j}(t)\} = {\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots}.
   $$
 
    where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition.
