@@ -68,7 +68,7 @@ We classify certain back‑and‑forth transitions between regimes as "trends."
   - Use `trend_down_pairs = [(0,2), (2,0)]`
 - Checking `(i,j) in trend_up_pairs` identifies uptrends; similarly for downtrends
 
-## 5. Definition of $\{\Delta\tau_{i\to j}(t)\}$ (UPDATED)
+## 5. Definition of $\{\Delta\tau_{i\to j}(t)\}$
 
 $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations for transitions from regime $i$ to regime $j$. Concretely:
 
