@@ -174,7 +174,6 @@ where:
 ### **7.2 Practical Correlation Computation**
 
 **Step 1: Collect Transition Duration Series**
-
 ```python
 # Within time window T_corr
 delta_tau_i_to_j = []  # e.g., neutral→bull durations
