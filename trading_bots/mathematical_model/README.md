@@ -129,7 +129,6 @@ $$
 ### 6.3 Developer Notes
 
 * **Define your window**
-
   ```python
  corr_time_window = 60  # e.g. 1 minute (standard window)
   ```
@@ -190,7 +189,6 @@ for transition in window:
 
 **Step 2: Align Series for Correlation**
 The series must be **time-aligned** for meaningful correlation:
-
 ```python
 # Method 1: Sequential pairing
 pairs = []
