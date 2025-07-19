@@ -68,7 +68,7 @@ We classify certain back‑and‑forth transitions between regimes as "trends."
   - Use `trend_down_pairs = [(0,2), (2,0)]`
 - Checking `(i,j) in trend_up_pairs` identifies uptrends; similarly for downtrends
 
-## 5. Definition of $\{\Delta\tau_{i\to j}(t)\}$
+## 5. Definition of $\{\Delta\tau_{i\to j}(t)\}$ (UPDATED)
 
 $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations for transitions from regime $i$ to regime $j$. Concretely:
 
@@ -77,24 +77,29 @@ $\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations 
 
    $\Large \{(t_1, r_1), (t_2, r_2), \dots, (t_M, r_M)\}, \quad r_k\in\{0,1,2\}.$
 
-2. **Instantaneous transition time**
-   Whenever you see a transition $r_k = i$ followed by $r_{k+1} = j$, record
+2. **Timestamp transition time**
+   For trades occurring at distinct timestamps, record the elapsed time:
 
-   $\Large \Delta\tau_{i\to j}\bigl(t_{k+1}\bigr) = t_{k+1} - t_{k},$
+   $$\Large \Delta\tau(t_k) = t_k - t_{k-1} \quad \text{where } t_k \neq t_{k-1}$$
 
-   the elapsed clock‐time between those two events.
+3. **Same-timestamp assignment**
+   **When multiple trades occur at the same timestamp $t_k$, they all receive the same $\Delta\tau$ value:**
 
-3. **Building the series**
+   $$\Large \Delta\tau_{i\to j}(t_k) = \Delta\tau(t_k) = t_k - t_{\text{prev}}$$
+
+   where $t_{\text{prev}}$ is the most recent **distinct** timestamp before $t_k$.
+
+4. **Building the series**
    Collect these durations in chronological order:
 
 $$\Large \{\Delta\tau_{i\to j}(t)\} = \{\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots\},$$
 
-
-   where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition.
+   where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition, and **multiple transitions at the same timestamp get identical $\Delta\tau$ values**.
 
 **Interpretation:**
-* $\Delta\tau_{i\to j}(t)$ is "the time it took, measured at moment $t$, to go from regime $i$ to $j$"
-* $\{\Delta\tau_{i\to j}(t)\}$ is the full list of those durations over your data window
+* $\Delta\tau_{i\to j}(t)$ is "the time since the last distinct timestamp when regime $i$ transitioned to $j$"
+* Multiple trades at timestamp $t$ share the same temporal duration
+* $\{\Delta\tau_{i\to j}(t)\}$ contains repeated values when transitions cluster at identical timestamps
 
 ## 6. Trend‑Pair Correlation Coefficients (Time‑Windowed)
 
