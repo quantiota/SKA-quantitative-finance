@@ -124,9 +124,7 @@ Within each window of length $T_{\rm corr}$, collect
 $\{\Delta\tau_{i\to j}(t)\}$ and $\{\Delta\tau_{j\to i}(t)\}$ for all $t \in [\,t_{\rm now}-T_{\rm corr},\,t_{\rm now}\,]$. Then define
 
 $$
-\rho_{i\!\leftrightarrow\!j}
-=
-\mathrm{PearsonCorr}\bigl(\{\Delta\tau_{i\to j}(t)\},\,\{\Delta\tau_{j\to i}(t)\}\bigr).
+\rho_{i\!\leftrightarrow\!j} = \mathrm{PearsonCorr}\bigl(\{\Delta\tau_{i\to j}(t)\},\,\{\Delta\tau_{j\to i}(t)\}\bigr).
 $$
 
 | Symbol            | Variable Name  | Regime Pairs      | Description                                                          |
