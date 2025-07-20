@@ -330,6 +330,8 @@ $$\large \langle i\vert \widehat{T}\vert j\rangle = \Psi_i^* \Psi_j = A_i^* A_j 
 
 **Complete 9-Transition Probability Matrix:**
 
+Experimental data from `questdb-query-1751544843847.csv`
+
 | **Transition** | **Entropy-Based Probability** | **Empirical Status** |
 |---------------|-------------------------------|---------------------|
 | neutral→neutral | **0.996** | ✅ Dominant (78.8%) |
