@@ -393,3 +393,16 @@ $$\large P_t = \exp\left(-\left|\frac{\Delta H}{H_t}\right|\right) \quad \text{(
 
 This entropy-based foundation reveals that markets are not random or purely statistical systems, but rather **information-processing systems** following quantum mechanical principles at the deepest level.
 
+
+## 9. Next Steps: Deriving Statistical Probability from Structural Probability
+
+- **Aggregating Structural Probabilities**
+
+The structural probability $\(P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{H_t}\right|\right)\)$ is defined for individual transitions at a given time, based on the entropy change between market states. To derive the statistical probability $\(P_{i\to j}\)$, one could theoretically aggregate $\(P_t\)$ over all instances of a specific transition $\(i \to j\)$ within the observation window $\(T\)$. For example:
+
+  $$
+  P_{i\to j} \approx \frac{1}{T} \sum_{t_k \in \{i \to j\}} P_t(t_k) \cdot \Delta\tau(t_k),
+  $$
+
+  where the sum is over all timestamps $\(t_k\)$ where the transition $\(i \to j\)$ occurs, and $\(\Delta\tau(t_k)\)$ is the duration associated with that transition. This would weight each transition’s structural probability by its temporal contribution, aligning with the definition of $\(P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T}\)$.
+
