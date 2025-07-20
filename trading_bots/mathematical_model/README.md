@@ -398,7 +398,7 @@ This entropy-based foundation reveals that markets are not random or purely stat
 
 - **Aggregating Structural Probabilities**
 
-The structural probability $\(P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{H_t}\right|\right)\)$ is defined for individual transitions at a given time, based on the entropy change between market states. To derive the statistical probability $\(P_{i\to j}\)$, one could theoretically aggregate $\(P_t\)$ over all instances of a specific transition $\(i \to j\)$ within the observation window $\(T\)$. For example:
+The structural probability $\large \(P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{H_t}\right|\right)\)$ is defined for individual transitions at a given time, based on the entropy change between market states. To derive the statistical probability $\(P_{i\to j}\)$, one could theoretically aggregate $\(P_t\)$ over all instances of a specific transition $\(i \to j\)$ within the observation window $\(T\)$. For example:
 
   $$
   P_{i\to j} \approx \frac{1}{T} \sum_{t_k \in \{i \to j\}} P_t(t_k) \cdot \Delta\tau(t_k),
