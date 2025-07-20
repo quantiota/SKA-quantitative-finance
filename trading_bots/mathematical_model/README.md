@@ -283,7 +283,7 @@ This correlation framework provides the mathematical foundation for detecting an
 The previous sections describe the **observable surface** of market behavior—what we can measure and quantify through time-domain statistics. However, these surface phenomena emerge from deeper **structural laws** governed by information-theoretic principles.
 
 **Surface Layer (What We See):**
-- Time-domain probabilities $\largeP_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T}$
+- Time-domain probabilities $\large P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T}$
 - Empirical transition frequencies
 - Observable regime patterns
 - Statistical correlations
