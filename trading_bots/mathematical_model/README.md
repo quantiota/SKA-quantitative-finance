@@ -366,10 +366,12 @@ Experimental data from `questdb-query-1751544843847.csv`
 The SKA framework operates on two levels:
 
 **Surface Phenomena (Observable):**
-$$P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T} \quad \text{(What markets appear to do)}$$
+
+$$\large P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T} \quad \text{(What markets appear to do)}$$
 
 **Structural Mechanisms (Causal):**
-$$P_t = \exp\left(-\left|\frac{\Delta H}{H_t}\right|\right) \quad \text{(Why markets behave this way)}$$
+
+$$\large P_t = \exp\left(-\left|\frac{\Delta H}{H_t}\right|\right) \quad \text{(Why markets behave this way)}$$
 
 **Key Relationship:**
 - Surface probabilities describe **empirical time allocation**
