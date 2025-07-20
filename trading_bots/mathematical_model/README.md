@@ -272,3 +272,5 @@ def compute_safe_correlation(series_1, series_2):
 - **Stability monitoring**: Track correlation change rate for regime shift detection
 
 This correlation framework provides the mathematical foundation for detecting and quantifying the **paired regime cycling patterns** that are central to SKA-based trading strategies.
+
+## 8 . Entropy-based Probability 
