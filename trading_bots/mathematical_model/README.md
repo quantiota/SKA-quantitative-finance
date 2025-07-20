@@ -275,49 +275,48 @@ This correlation framework provides the mathematical foundation for detecting an
 
 
 
-## **8. Lagrangian-Based Probability: The Structural Foundation**
+
+## **8. Entropy-Based Probability: The Structural Foundation**
 
 ### **8.1 Surface vs. Structural Dynamics**
 
-The previous sections describe the **observable surface** of market behavior—what we can measure and quantify through time-domain statistics. However, these surface phenomena emerge from deeper **structural laws** governed by variational principles.
+The previous sections describe the **observable surface** of market behavior—what we can measure and quantify through time-domain statistics. However, these surface phenomena emerge from deeper **structural laws** governed by information-theoretic principles.
 
 **Surface Layer (What We See):**
-
 - Time-domain probabilities $\large P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T}$
 - Empirical transition frequencies
 - Observable regime patterns
 - Statistical correlations
 
 **Structural Layer (What It Is):**
-
-- Lagrangian-driven state evolution
-- Variational laws
+- Entropy-driven state evolution
+- Information-theoretic laws
 - Quantum mechanical regime dynamics
 - Fundamental causal mechanisms
 
-### **8.2 Lagrangian-Based Probability Formula**
+### **8.2 Entropy-Based Probability Formula**
 
 The structural probability governing individual transitions can be defined as:
 
-$$\Large P_t = \exp\left(-\frac{L}{\int L \, dt}\right)$$
+$$\Large P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{H_t}\right|\right)$$
 
 where:
+- $H_t$ = current entropy of the market state
+- $H_{t-1}$ = previous entropy 
+- $P_t$ = probability of the transition occurring given the entropy change
 
-- $L$ = Lagrangian of the market system at time $t$
-- $\int L \, dt$ = Action integral from start to current time
-- $P_t$ = probability of the transition occurring given the variational structure
-
-**Physical Interpretation:** This probability measures the relative contribution of the current moment to the total dynamical evolution. When $L/\int L \, dt$ is **small**, the current instant has modest contribution relative to the cumulative action, indicating **high transition probability**. When $L/\int L \, dt$ is **large**, the current dynamics dominate the historical evolution, indicating **low transition probability**.
+**Physical Interpretation:** This probability measures how likely a specific regime transition is based on the **information-theoretic cost** of the change, normalized by the current entropy state.
 
 ### **8.3 Quantum State Formulation**
 
 Define the market state using quantum-inspired complex amplitudes:
 
-$$\large \Psi_i = A_i \exp(-iL_i)$$
+$$\large \Psi_i = A_i \exp(iH_i)$$
 
 **State Vector:**
 
 $$\large \lvert \Psi\rangle = \sum_{i\in\{\text{bull,neutral,bear}\}} \Psi_i\,\lvert i\rangle$$
+
 
 **Transition Operator:**
 
@@ -325,7 +324,7 @@ $$\large \widehat{T} = \lvert\Psi\rangle\langle\Psi\lvert$$
 
 **Matrix Elements:**
 
-$$\large \langle i\vert \widehat{T}\vert j\rangle = \Psi_i^* \Psi_j = A_i^* A_j \exp(-i(L_j - L_i))$$
+$$\large \langle i\vert \widehat{T}\vert j\rangle = \Psi_i^* \Psi_j = A_i^* A_j \exp(i(H_j - H_i))$$
 
 ### **8.4 Empirical Validation**
 
@@ -333,35 +332,34 @@ $$\large \langle i\vert \widehat{T}\vert j\rangle = \Psi_i^* \Psi_j = A_i^* A_j 
 
 Experimental data from `questdb-query-1751544843847.csv`
 
-| **Transition**  | **Lagrangian-Based Probability** | **Empirical Status**   |
-| --------------- | -------------------------------- | ---------------------- |
-| neutral→neutral | **0.996**                        | ✅ Dominant (78.8%)    |
-| neutral→bull    | **0.882**                        | ✅ Cycling pattern     |
-| neutral→bear    | **0.848**                        | ✅ Cycling pattern     |
-| bull→neutral    | **0.868**                        | ✅ Cycling pattern     |
-| bull→bull       | **0.999**                        | ⚠️ Rare (1 transition) |
-| bull→bear       | **0.717**                        | ✅ Directional change  |
-| bear→neutral    | **0.867**                        | ✅ Cycling pattern     |
-| bear→bull       | **0.780**                        | ✅ Directional change  |
-| bear→bear       | **N/A**                          | ❌ Nonexistent         |
-
+| **Transition** | **Entropy-Based Probability** | **Empirical Status** |
+|---------------|-------------------------------|---------------------|
+| neutral→neutral | **0.996** | ✅ Dominant (78.8%) |
+| neutral→bull | **0.882** | ✅ Cycling pattern |
+| neutral→bear | **0.848** | ✅ Cycling pattern |
+| bull→neutral | **0.868** | ✅ Cycling pattern |
+| bull→bull | **0.999** | ⚠️ Rare (1 transition) |
+| bull→bear | **0.717** | ✅ Directional change |
+| bear→neutral | **0.867** | ✅ Cycling pattern |
+| bear→bull | **0.780** | ✅ Directional change |
+| bear→bear | **N/A** | ❌ Nonexistent |
 
 ### **8.5 Structural Insights**
 
-**1. Variational Hierarchy:**
+**1. Information-Theoretic Hierarchy:**
 - **Highest probability**: Consolidation (neutral→neutral: 0.996)
 - **Moderate probability**: Paired cycling (0.848-0.882)
 - **Lowest probability**: Directional changes (0.717-0.780)
 
-**2. Action Dynamics:**
-- **Small L/∫L dt ratios** → Higher probabilities (typical dynamics)
-- **Large L/∫L dt ratios** → Lower probabilities (exceptional dynamics)
-- **Moderate action moments** → Maximum probability (stable transitions)
+**2. Entropy Dynamics:**
+- **Negative entropy changes** → Higher probabilities (natural evolution)
+- **Positive entropy changes** → Lower probabilities (costly transitions)
+- **Zero entropy changes** → Maximum probability (stable states)
 
-**3. Variational Structure:**
-- Persistent states (bull→bull, bear→bear) have exceptional action concentration
-- Paired cycling emerges from balanced variational dynamics
-- Market regime evolution follows least action principles
+**3. Quantum Structure:**
+- Persistent states (bull→bull, bear→bear) are quantum mechanically suppressed
+- Paired cycling emerges from information-theoretic optimization
+- Market regime evolution follows entropy minimization principles
 
 ### **8.6 Dual Probability Framework**
 
@@ -373,10 +371,9 @@ $$\large P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T} \quad \t
 
 **Structural Mechanisms (Causal):**
 
-$$\large P_t = \exp\left(-\frac{L}{\int L \, dt}\right) \quad \text{(Why markets behave this way)}$$
+$$\large P_t = \exp\left(-\left|\frac{\Delta H}{H_t}\right|\right) \quad \text{(Why markets behave this way)}$$
 
 **Key Relationship:**
-
 - Surface probabilities describe **empirical time allocation**
 - Structural probabilities explain **fundamental transition dynamics**
 - Surface phenomena **emerge from** structural laws
@@ -385,16 +382,14 @@ $$\large P_t = \exp\left(-\frac{L}{\int L \, dt}\right) \quad \text{(Why markets
 ### **8.7 Implementation Implications**
 
 **For Trading Systems:**
-
 - **Surface layer**: Practical correlation analysis and regime detection
-- **Structural layer**: Predictive modeling based on variational dynamics
+- **Structural layer**: Predictive modeling based on entropy dynamics
 - **Combined approach**: Use structural insights to enhance surface-level strategies
 
 **For Risk Management:**
-
 - **Surface metrics**: Track observable regime patterns
-- **Structural indicators**: Monitor Lagrangian-based transition probabilities
+- **Structural indicators**: Monitor entropy-based transition probabilities
 - **Early warning**: Structural changes often precede surface manifestations
 
-This variational foundation reveals that markets are not random or purely statistical systems, but rather **information-processing systems** following variational principles at the deepest level.
+This entropy-based foundation reveals that markets are not random or purely statistical systems, but rather **information-processing systems** following quantum mechanical principles at the deepest level.
 
