@@ -315,15 +315,16 @@ $$\large \Psi_i = A_i \exp(iH_i)$$
 
 **State Vector:**
 
-$$\lvert \Psi\rangle = \sum_{i\in\{\text{bull,neutral,bear}\}} \Psi_i\,\lvert i\rangle$$
+$$\large \lvert \Psi\rangle = \sum_{i\in\{\text{bull,neutral,bear}\}} \Psi_i\,\lvert i\rangle$$
 
 
 **Transition Operator:**
-$$\widehat{T} = \lvert\Psi\rangle\langle\Psi\lvert$$
+
+$$\large \widehat{T} = \lvert\Psi\rangle\langle\Psi\lvert$$
 
 **Matrix Elements:**
 
-$$\langle i\vert \widehat{T}\vert j\rangle = \Psi_i^* \Psi_j = A_i^* A_j \exp(i(H_j - H_i))$$
+$$\large \langle i\vert \widehat{T}\vert j\rangle = \Psi_i^* \Psi_j = A_i^* A_j \exp(i(H_j - H_i))$$
 
 ### **8.4 Empirical Validation**
 
