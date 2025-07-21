@@ -406,3 +406,8 @@ The structural probability $\large (P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{
 
   where the sum is over all timestamps $\large (t_k)$ where the transition $\large (i \to j)$ occurs, and $\large (\Delta\tau(t_k))$ is the duration associated with that transition. This would weight each transition’s structural probability by its temporal contribution, aligning with the definition of $\large (P_{i\to j} = \frac{\langle i \mid \Delta\tau \mid j\rangle}{T})$.
 
+
+
+To strengthen this connection, we recall from the SKA framework [arXiv:2504.03214v1](https://arxiv.org/pdf/2504.03214) that entropy variation can be expressed using a Lagrangian formulation, where $\Delta H = \mathcal{L} \Delta t$ and $\mathcal{L}$ is the entropy flow rate. Substituting this into the structural probability yields $P_t = \exp\left(-\left|\frac{\mathcal{L} \Delta t}{H_t}\right|\right)$, providing a dynamical interpretation of transition likelihoods. This reformulation not only embeds the entropy change into a variational framework consistent with the principle of least action, but also offers a physical lens for interpreting $P_t$ as a time-resolved signal. Aggregating these Lagrangian-informed probabilities as previously described bridges structural and statistical layers, and highlights that surface-level regime statistics emerge from an underlying field of informational dynamics.
+
+
