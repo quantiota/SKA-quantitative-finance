@@ -412,7 +412,7 @@ The structural probability $\large (P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{
 
 
 
-To strengthen this connection, we recall from the SKA framework [[arXiv:2504.03214v1]](https://arxiv.org/pdf/2504.03214) that entropy variation can be expressed using a Lagrangian formulation, where $\large \Delta H = \mathcal{L} \Delta \tau$ and $\large \mathcal{L}$ is the entropy flow rate. Substituting this into the structural probability yields 
+To strengthen this connection, we recall from the SKA framework [[arXiv:2504.03214v1]](https://arxiv.org/abs/2504.03214) that entropy variation can be expressed using a Lagrangian formulation, where $\large \Delta H = \mathcal{L} \Delta \tau$ and $\large \mathcal{L}$ is the entropy flow rate. Substituting this into the structural probability yields 
 
 $$
 \large P_t(t_k) = \exp\left(-\left|\frac{\mathcal{L} \Delta \tau (t_k)}{H_t(t_k)}\right|\right).
