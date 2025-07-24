@@ -118,7 +118,7 @@ A critical discovery of this project is that **financial market microstructure i
 #### **Harmonic Oscillator with Noise:**
 
 * When a simple oscillator is exposed to small noise, SKA entropy rapidly becomes irregular, spiky, and unstable—demonstrating a transition to chaos.
-* See detailed phase transition figures in the [calibration repo](https://github.com/quantiota/SKA-Harmonic-Oscillator/tree/main/ska_noisy_harmonic_oscillator).
+* See detailed phase transition figures in the [ska noisy harmonic oscillator folder](https://github.com/quantiota/SKA-Harmonic-Oscillator/tree/main/ska_noisy_harmonic_oscillator).
 
 #### **Financial Market Data:**
 
