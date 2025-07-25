@@ -60,7 +60,6 @@ ska_strategy.py (includes integrated backtesting)
 - [x] `entropy_probability.py` - Structural probability calculation ✅ COMPLETE
 - [x] `signal_generator.py` - Dual-layer correlation+entropy trading signals ✅ COMPLETE
 - [x] `ska_strategy.py` - Complete SKA trading strategy ✅ COMPLETE
-- [ ] `backtest_engine.py` - Historical simulation framework (integrated into ska_strategy.py)
 
 ## Usage
 
