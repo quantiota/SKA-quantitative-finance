@@ -2,9 +2,21 @@
 
 This folder contains ready-to-run trading algorithms designed to operate on the provided **sample market data** in `/sample_data`.
 
-- `ska_regime_cycling_strategy.py` – SKA-driven regime-based trading bot.
-- `markov_chain_strategy.py` – Classic Markov model trading bot for baseline comparison.
-- `backtest_utils.py` – Common utilities for backtesting and performance analysis.
+
+### Core Processing Modules
+- **`data_loader.py`** - Primary CSV data processing and validation
+- **`regime_classifier.py`** - Bull/bear/neutral regime classification from price returns
+- **`transition_tracker.py`** - Δτ time series tracking for all regime transitions
+
+### Mathematical Framework
+- **`correlation_engine.py`** - Pearson correlation computation for trend pairs
+- **`entropy_probability.py`** - Structural probability calculation using entropy dynamics
+
+### Trading Strategy
+- **`signal_generator.py`** - Correlation-based trading signal generation
+- **`ska_strategy.py`** - Complete SKA trading strategy implementation
+- **`backtest_engine.py`** - Historical simulation and performance validation
+
 
 ## Usage
 
