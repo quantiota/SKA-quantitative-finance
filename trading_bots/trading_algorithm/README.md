@@ -14,9 +14,8 @@ This directory contains the core modules for the SKA (Structured Knowledge Accum
 - **`entropy_probability.py`** - Structural probability calculation using entropy dynamics
 
 ### Trading Strategy
-- **`signal_generator.py`** - Correlation-based trading signal generation
-- **`ska_strategy.py`** - Complete SKA trading strategy implementation
-- **`backtest_engine.py`** - Historical simulation and performance validation
+- **`signal_generator.py`** - Dual-layer correlation and entropy-based trading signals
+- **`ska_strategy.py`** - Complete SKA trading strategy with integrated backtesting
 
 ## Implementation Dependencies
 
@@ -31,9 +30,7 @@ correlation_engine.py ←── entropy_probability.py
     ↓
 signal_generator.py
     ↓
-ska_strategy.py
-    ↓
-backtest_engine.py
+ska_strategy.py (includes integrated backtesting)
 ```
 
 ## Key Mathematical Components
