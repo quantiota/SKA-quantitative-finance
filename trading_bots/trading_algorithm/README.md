@@ -67,28 +67,6 @@ backtest_engine.py
 
 ## Usage Example
 
-```python
-from trading_algorithm import (
-    DataLoader, RegimeClassifier, TransitionTracker,
-    CorrelationEngine, SignalGenerator, SKAStrategy, BacktestEngine
-)
 
-# Load and process data
-loader = DataLoader('primary_data.csv')
-data = loader.load_and_validate()
-
-# Initialize strategy components
-classifier = RegimeClassifier()
-tracker = TransitionTracker()
-correlator = CorrelationEngine(time_window=180)
-signals = SignalGenerator(correlator)
-
-# Create and run strategy
-strategy = SKAStrategy(classifier, tracker, correlator, signals)
-engine = BacktestEngine(strategy)
-results = engine.run_backtest(data)
-```
-
----
 
 *Implementation follows the mathematical framework defined in `/mathematical_model/README.md`*
