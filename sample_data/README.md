@@ -41,7 +41,7 @@ This reveals that market trends are fundamentally constructed from `paired` regi
 > The alignment between these entropy-driven regime transitions and actual price movements offers *concrete visual proof* that markets operate under hidden informational laws, not just random walks.
 > This provides quants and researchers with a glimpse into the next generation of market analysis.
 
-![SKA Transition Probability Figure](probability_with_price.png)
+![SKA Transition Probability Figure](/sample_data/probability_with_price.png)
 
 **Interpretation:**
 
