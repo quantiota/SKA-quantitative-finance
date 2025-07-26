@@ -598,7 +598,7 @@ def run_ska_strategy(data_path: str, **strategy_params) -> Tuple[SKAStrategy, Di
 
 if __name__ == "__main__":
     # Test complete SKA strategy
-    file_path = "/home/quant/ska-quantitative-finance/questdb-query-1751544843847.csv"
+    file_path = "questdb-query-1751544843847.csv"
     
     try:
         # Run SKA strategy with default parameters
