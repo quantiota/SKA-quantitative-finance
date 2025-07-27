@@ -112,7 +112,6 @@ This will:
 A critical discovery of this project is that **financial market microstructure is not fundamentally chaotic, but instead exhibits recurring order and emergent predictability**. This is proven by direct comparison with the [SKA Harmonic Oscillator Calibration](https://github.com/quantiota/SKA-Harmonic-Oscillator/tree/main/ska_noisy_harmonic_oscillator) benchmark.
 
 
-
 ### **Visual Comparison: SKA Entropy in Markets vs. Physics**
 
 #### **Harmonic Oscillator with Noise:**
@@ -136,7 +135,15 @@ Instead, markets display emergent order, quantized transitions, and persistent p
 
 **This insight—directly supported by both the oscillator calibration and the figure above—validates the scientific basis for SKA-based market prediction.**
 
+## **On Real-Time SKA Learning and Emergent Market Structure**
 
+ **The information structure of a financial market is not simply “given” in the data or revealed by batch analysis.**
+It emerges dynamically through the real-time, step-by-step SKA learning process.
+As SKA accumulates knowledge from the live data stream, patterns of predictability, regime boundaries, and informational “landmarks” are discovered—often invisible to classical, retrospective methods.
+
+ **This universal insight** applies not only to market data, but to any sequential system:
+
+ *Information structure is constructed and revealed only through real-time learning.*
 
 
 ## For Industry Partners and Quantitative Finance Teams:
