@@ -131,14 +131,14 @@ This section shows how to:
 
 **Remark:** This indicator can be applied in two distinct use cases:
 
-1.  *Tick Data Level:* Each $v_i$ corresponds to the exact trading
+1.  *Tick Data Level:* Each $\large v_i$ corresponds to the exact trading
     volume of an individual trade. If multiple trades share the same
-    timestamp (i.e., a singularity in $\Delta \tau_i = 0$), the last
+    timestamp (i.e., a singularity in $\large \Delta \tau_i = 0$), the last
     non-zero time interval should be reused to ensure stability in
     frequency computation.
 
 2.  *Sampled Level:* The time series is resampled (e.g., per second or
-    per minute), and $v_i$ represents the aggregated volume over each
+    per minute), and $\large v_i$ represents the aggregated volume over each
     sampling interval.
 
 In this article, we will focus exclusively on the tick-level data use
