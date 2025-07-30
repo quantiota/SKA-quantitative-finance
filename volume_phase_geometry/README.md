@@ -453,7 +453,7 @@ Fig.4  ![phase portrait](https://github.com/quantiota/SKA-quantitative-finance/b
 
 #### Local View
 
-Fig.1  ![price](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\price_local.png)
+Fig.1  ![price](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/price_local.png)
 
 Fig.2  ![cumulative cosine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_cosine_local.png)
 
