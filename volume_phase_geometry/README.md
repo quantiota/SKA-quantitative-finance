@@ -64,7 +64,7 @@ where the damping frequency and ratio are defined by:
 
 $$\large \Omega_i = -2\pi \cdot \frac{1}{w_i} \cdot \frac{\Delta w_i}{\Delta \tau_i}, \quad \large w_i = 2\pi \cdot \frac{1}{v_i} \cdot \frac{\Delta v_i}{\Delta \tau_i}, \quad \zeta_i = \frac{1}{4\pi}.$$
 
-We now define the ODE-transformed path $\widetilde{Y}_i$ as: 
+We now define the ODE-transformed path $\large \widetilde{Y}_i$ as: 
 
 $$\large \widetilde{Y_i} = \sum_{j=0}^{i} y_j$$
 
