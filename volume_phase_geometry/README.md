@@ -457,7 +457,7 @@ Fig.1  ![price](https://github.com/quantiota/SKA-quantitative-finance/blob/main/
 
 Fig.2  ![cumulative cosine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_cosine_local.png)
 
-Fig.3  ![cumulative sine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_sine_local.png)
+Fig.3  ![cumulative sine](images/cumulative_sine_local.png)
 
 
 
