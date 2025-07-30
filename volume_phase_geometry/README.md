@@ -95,9 +95,9 @@ $$\large x_i = \cos(\Theta_i), \quad y_i = \sin(\Theta_i).$$
 Time series analysis can therefore be conducted in either of two
 conjugate spaces:
 
--   The temporal domain indexed by $t_i$,
+-   The temporal domain indexed by $\large t_i$,
 
--   The angular domain indexed by $\Theta_i$,
+-   The angular domain indexed by $\large \Theta_i$,
 
 revealing geometric and causal structures not evident under conventional
 methods. The ODE transform path $\widetilde{Y}_i$ provides a novel
