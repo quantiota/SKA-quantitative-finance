@@ -430,7 +430,7 @@ ORDER BY
   trade_id;
 ```
 
-### Vizualization
+### Visualization
 
 
 To evaluate the effectiveness of the proposed volume-based indicator, we visualize its behavior using real-time Binance trade data for the **XRPUSDT** pair. **Figure 1** displays the price evolution, serving as a reference for market movements. **Figure 2** shows the cumulative cosine projection $\large \sum \cos(\Theta)$, and **Figure 3** presents the cumulative sine projection $\large \sum \sin(\Theta)$, both computed directly from high-frequency trade volumes. These angular components are then plotted in a phase portrait in **Figure 4**, where cumulative sine is plotted against cumulative cosine. This portrait reveals hidden geometric structures and possible oscillatory regimes in the flow of market volume, enabling the exploration of whether price dynamics can be approximated by these cumulative angular projections.
