@@ -55,7 +55,7 @@ If $\large z_i$ satisfies a linear relation of the form:
 
 $$\large z_i = \alpha x_i + \beta y_i$$
 
-for constants $\alpha, \beta \in \mathbb{R}$, then $\large z_i$ is a discrete
+for constants $\alpha, \beta \in {\rm I\!R}$, then $\large z_i$ is a discrete
 solution of the damped harmonic oscillator equation:
 
 $$\large \frac{\Delta^2 z_i}{\Delta \tau_i^2} + 2\zeta_i \Omega_i \frac{\Delta z_i}{\Delta \tau_i} + w_i^2 z_i = 0$$
