@@ -1,0 +1,595 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 8,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "default": false,
+        "type": "grafana-postgresql-datasource",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "price"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH base_data AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        LAG(quantity) OVER (ORDER BY timestamp, trade_id) AS prev_quantity,\n        LAG(timestamp) OVER (ORDER BY timestamp, trade_id) AS prev_timestamp\n    FROM binance_trades \n    WHERE symbol = 'XRPUSDT'\n    ORDER BY timestamp, trade_id\n    \n),\n\nwith_delta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        timestamp - prev_timestamp AS delta_tau_raw\n    FROM base_data\n),\n\nwith_valid_deltas AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        CASE WHEN delta_tau_raw > 0 THEN delta_tau_raw ELSE NULL END AS valid_delta\n    FROM with_delta\n),\n\nwith_safe_delta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        LAST_VALUE(valid_delta) IGNORE NULLS OVER (\n            ORDER BY timestamp, trade_id\n            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n        ) AS associated_delta\n    FROM with_valid_deltas\n),\n\nwith_frequency AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        associated_delta,\n        CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END AS delta_tau_safe,\n        CASE \n            WHEN prev_quantity > 0 AND (CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END) > 0 THEN\n                2 * PI() * (quantity - prev_quantity) / prev_quantity / (CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END)\n            ELSE NULL\n        END AS frequency\n    FROM with_safe_delta\n),\n\nwith_theta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        associated_delta,\n        delta_tau_safe,\n        frequency,\n        SUM(frequency * delta_tau_safe) OVER (\n            ORDER BY timestamp, trade_id\n            ROWS UNBOUNDED PRECEDING\n        ) AS theta\n    FROM with_frequency\n    WHERE frequency IS NOT NULL\n)\n\nSELECT \n    timestamp,\n    trade_id,\n    price,\n    quantity,\n    prev_quantity,\n    delta_tau_raw,\n    associated_delta,\n    delta_tau_safe,\n    frequency,\n    theta,\n    COS(theta) AS cos_theta,\n    SIN(theta) AS sin_theta,\n    SUM(COS(theta)) OVER (\n        ORDER BY timestamp, trade_id\n        ROWS UNBOUNDED PRECEDING\n    ) AS cumulative_cos_theta,\n    SUM(SIN(theta)) OVER (\n        ORDER BY timestamp, trade_id\n        ROWS UNBOUNDED PRECEDING\n    ) AS cumulative_sin_theta\nFROM with_theta\nORDER BY timestamp, trade_id;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PRICE Binance XRPUSDT",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "grafana-postgresql-datasource",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "cumulative_cos_theta"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH base_data AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        LAG(quantity) OVER (ORDER BY timestamp, trade_id) AS prev_quantity,\n        LAG(timestamp) OVER (ORDER BY timestamp, trade_id) AS prev_timestamp\n    FROM binance_trades \n    WHERE symbol = 'XRPUSDT'\n    ORDER BY timestamp, trade_id\n    \n),\n\nwith_delta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        timestamp - prev_timestamp AS delta_tau_raw\n    FROM base_data\n),\n\nwith_valid_deltas AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        CASE WHEN delta_tau_raw > 0 THEN delta_tau_raw ELSE NULL END AS valid_delta\n    FROM with_delta\n),\n\nwith_safe_delta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        LAST_VALUE(valid_delta) IGNORE NULLS OVER (\n            ORDER BY timestamp, trade_id\n            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n        ) AS associated_delta\n    FROM with_valid_deltas\n),\n\nwith_frequency AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        associated_delta,\n        CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END AS delta_tau_safe,\n        CASE \n            WHEN prev_quantity > 0 AND (CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END) > 0 THEN\n                2 * PI() * (quantity - prev_quantity) / prev_quantity / (CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END)\n            ELSE NULL\n        END AS frequency\n    FROM with_safe_delta\n),\n\nwith_theta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        associated_delta,\n        delta_tau_safe,\n        frequency,\n        SUM(frequency * delta_tau_safe) OVER (\n            ORDER BY timestamp, trade_id\n            ROWS UNBOUNDED PRECEDING\n        ) AS theta\n    FROM with_frequency\n    WHERE frequency IS NOT NULL\n)\n\nSELECT \n    timestamp,\n    trade_id,\n    price,\n    quantity,\n    prev_quantity,\n    delta_tau_raw,\n    associated_delta,\n    delta_tau_safe,\n    frequency,\n    theta,\n    COS(theta) AS cos_theta,\n    SIN(theta) AS sin_theta,\n    SUM(COS(theta)) OVER (\n        ORDER BY timestamp, trade_id\n        ROWS UNBOUNDED PRECEDING\n    ) AS cumulative_cos_theta,\n    SUM(SIN(theta)) OVER (\n        ORDER BY timestamp, trade_id\n        ROWS UNBOUNDED PRECEDING\n    ) AS cumulative_sin_theta\nFROM with_theta\nORDER BY timestamp, trade_id;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "CUMMULATIVE COSINE",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "grafana-postgresql-datasource",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "cumulative_sin_theta"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH base_data AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        LAG(quantity) OVER (ORDER BY timestamp, trade_id) AS prev_quantity,\n        LAG(timestamp) OVER (ORDER BY timestamp, trade_id) AS prev_timestamp\n    FROM binance_trades \n    WHERE symbol = 'XRPUSDT'\n    ORDER BY timestamp, trade_id\n    \n),\n\nwith_delta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        timestamp - prev_timestamp AS delta_tau_raw\n    FROM base_data\n),\n\nwith_valid_deltas AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        CASE WHEN delta_tau_raw > 0 THEN delta_tau_raw ELSE NULL END AS valid_delta\n    FROM with_delta\n),\n\nwith_safe_delta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        LAST_VALUE(valid_delta) IGNORE NULLS OVER (\n            ORDER BY timestamp, trade_id\n            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n        ) AS associated_delta\n    FROM with_valid_deltas\n),\n\nwith_frequency AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        associated_delta,\n        CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END AS delta_tau_safe,\n        CASE \n            WHEN prev_quantity > 0 AND (CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END) > 0 THEN\n                2 * PI() * (quantity - prev_quantity) / prev_quantity / (CASE WHEN delta_tau_raw = 0 THEN associated_delta ELSE delta_tau_raw END)\n            ELSE NULL\n        END AS frequency\n    FROM with_safe_delta\n),\n\nwith_theta AS (\n    SELECT \n        timestamp,\n        trade_id,\n        price,\n        quantity,\n        prev_quantity,\n        delta_tau_raw,\n        associated_delta,\n        delta_tau_safe,\n        frequency,\n        SUM(frequency * delta_tau_safe) OVER (\n            ORDER BY timestamp, trade_id\n            ROWS UNBOUNDED PRECEDING\n        ) AS theta\n    FROM with_frequency\n    WHERE frequency IS NOT NULL\n)\n\nSELECT \n    timestamp,\n    trade_id,\n    price,\n    quantity,\n    prev_quantity,\n    delta_tau_raw,\n    associated_delta,\n    delta_tau_safe,\n    frequency,\n    theta,\n    COS(theta) AS cos_theta,\n    SIN(theta) AS sin_theta,\n    SUM(COS(theta)) OVER (\n        ORDER BY timestamp, trade_id\n        ROWS UNBOUNDED PRECEDING\n    ) AS cumulative_cos_theta,\n    SUM(SIN(theta)) OVER (\n        ORDER BY timestamp, trade_id\n        ROWS UNBOUNDED PRECEDING\n    ) AS cumulative_sin_theta\nFROM with_theta\nORDER BY timestamp, trade_id;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "CUMMULATIVE SINE",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "grafana-postgresql-datasource",
+        "uid": "2Bi8EToVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 50,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "pointShape": "circle",
+            "pointSize": {
+              "fixed": 1
+            },
+            "pointStrokeWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "show": "points"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "cumulative_sin_theta"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 23,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "mapping": "auto",
+        "series": [
+          {
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "cumulative_cos_theta"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "cumulative_sin_theta"
+              }
+            }
+          }
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "2Bi8EToVz"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "\tWITH PreviousValueCalc AS (\n\t\tSELECT \n\t\ttimestamp,\n\t\tsymbol,\n\t\ttrade_id,\n\t\tprice,\n\t\tquantity, \n\t\tFIRST_VALUE(quantity) OVER (\n\t\tPARTITION BY symbol\n\t\tORDER BY timestamp\n\t\tROWS BETWEEN 1 PRECEDING AND CURRENT ROW\n\t\t) AS previous_value\n\t\tFROM \n\t\tbinance_trades\n\t\tWHERE\n\t\tsymbol = 'XRPUSDT'\n\t\t),\n\t\t\n\t\tFrequencyCalc AS (\n\t\tSELECT \n\t\ttimestamp, \n\t\tsymbol,\n\t\ttrade_id,\n\t\tprice,\n\t\tquantity, \n\t\tprevious_value,\n\t\t(2 * PI() * (quantity - previous_value) / previous_value) AS frequency\n\t\tFROM \n\t\tPreviousValueCalc\n\t\tWHERE\n\t\tprevious_value IS NOT NULL AND previous_value > 0\n\t\t),\n\t\t\n\t\tFrequencyAndPrev AS (\n\t\tSELECT \n\t\tsymbol,\n\t\ttimestamp,\n\t\ttrade_id,\n\t\tprice,\n\t\tquantity,\n\t\tprevious_value,\n\t\tfrequency,\n\t\tFIRST_VALUE(frequency) OVER (\n\t\tPARTITION BY symbol \n\t\tORDER BY timestamp \n\t\tROWS BETWEEN 1 PRECEDING AND 1 PRECEDING\n\t\t) AS previous_frequency\n\t\tFROM FrequencyCalc\n\t\t),\n\t\t\n\t\tDeltaFrequencyCalc AS (\n\t\tSELECT \n\t\tsymbol,\n\t\ttimestamp,\n\t\ttrade_id,\n\t\tprice,\n\t\tquantity,\n\t\tprevious_value,\n\t\tfrequency,\n\t\t(2 * PI() * (frequency - COALESCE(previous_frequency, 0)) / \n\t\tCOALESCE(previous_frequency, 1)) AS delta_frequency\n\t\tFROM FrequencyAndPrev\n\t\t),\n\t\t\n\t\tThetaCalc AS (\n\t\tSELECT \n\t\tsymbol,\n\t\ttimestamp,\n\t\ttrade_id,\n\t\tprice, \n\t\tquantity, \n\t\tfrequency,\n\t\tdelta_frequency,\n\t\tSUM(frequency) OVER (\n\t\tPARTITION BY symbol\n\t\tORDER BY timestamp\n\t\tROWS UNBOUNDED PRECEDING\n\t\t) AS theta\n\t\tFROM \n\t\tDeltaFrequencyCalc\n\t\t)\n\t\t\n\t\tSELECT \n\t\tsymbol,\n\t\ttimestamp,\n\t\ttrade_id,\n\t\tprice, \n\t\tquantity, \n\t\tfrequency,\n\t\tdelta_frequency,\n\t\ttheta,\n\t\tCOS(theta) AS cos_theta,\n\t\tSUM(COS(theta)) OVER (\n\t\tPARTITION BY symbol\n\t\tORDER BY timestamp\n\t\tROWS UNBOUNDED PRECEDING\n\t\t) AS cumulative_cos_theta,\n\t\tSIN(theta) AS sin_theta,\n\t\tSUM(SIN(theta)) OVER (\n\t\tPARTITION BY symbol\n\t\tORDER BY timestamp\n\t\tROWS UNBOUNDED PRECEDING\n\t\t) AS cumulative_sin_theta\n\t\tFROM \n\t\tThetaCalc\n\t\tORDER BY \n\t\ttimestamp;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PHASE PORTRAIT",
+      "type": "xychart"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "2025-07-27T10:31:35.948Z",
+    "to": "2025-07-27T10:32:53.317Z"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Volume Phase Geometry",
+  "uid": "aetf4jkbp9ptse",
+  "version": 8,
+  "weekStart": ""
+}
