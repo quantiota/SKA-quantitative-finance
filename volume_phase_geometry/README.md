@@ -23,7 +23,7 @@ By implementing the entire framework in SQL over real-time trade data, this work
 
 Let us consider a high-frequency time series $\large v_i > 0$, defined as a
 sequence of discrete-time observations taken at successive (possibly
-irregular) time intervals $/large \Delta \tau_i$:
+irregular) time intervals $\large \Delta \tau_i$:
 
 $$\large v = (v_0, v_1, \ldots, v_i, \ldots, v_N), \quad v_i = v(t_i), \quad \Delta v_i = v(t_{i+1}) - v(t_i), \quad \Delta \tau_i = t_{i+1} - t_i.$$
 
