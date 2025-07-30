@@ -66,7 +66,7 @@ $$\large \Omega_i = -2\pi \cdot \frac{1}{w_i} \cdot \frac{\Delta w_i}{\Delta \ta
 
 We now define the ODE-transformed path $\widetilde{Y}_i$ as: 
 
-$$\large \widetilde{Y}_i = \sum_{j=0}^{i} y_j$$
+$$\large \widetilde{Y_i} = \sum_{j=0}^{i} y_j$$
 
 
 
