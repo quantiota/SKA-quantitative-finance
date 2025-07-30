@@ -32,8 +32,8 @@ discrete derivative:
 
 $$\large\dot{v}_i = \frac{\Delta v_i}{\Delta \tau_i}.$$
 
-We introduce the instantaneous angular frequency $w_i$, a quantity of
-dimension $T^{-1}$. One natural candidate is the scaled relative
+We introduce the instantaneous angular frequency $\largew_i$, a quantity of
+dimension $\large T^{-1}$. One natural candidate is the scaled relative
 variation:
 
 $$
