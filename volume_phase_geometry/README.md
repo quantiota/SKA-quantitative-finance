@@ -443,11 +443,11 @@ To evaluate the effectiveness of the proposed volume-based indicator, we visuali
 
 Fig.1  ![price](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/price_local.png)
 
-Fig.2  ![cumulative cosine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\cumulative_cosine_global.png)
+Fig.2  ![cumulative cosine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_cosine_global.png)
 
-Fig.3  ![cumulative sine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\cumulative_sine_global.png)
+Fig.3  ![cumulative sine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_sine_global.png)
 
-Fig.4  ![phase portrait](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\phase_portrait.png)
+Fig.4  ![phase portrait](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/phase_portrait.png)
 
 
 
@@ -455,9 +455,9 @@ Fig.4  ![phase portrait](https://github.com/quantiota/SKA-quantitative-finance/b
 
 Fig.1  ![price](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\price_local.png)
 
-Fig.2  ![cumulative cosine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\cumulative_cosine_local.png)
+Fig.2  ![cumulative cosine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_cosine_local.png)
 
-Fig.3  ![cumulative sine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images\cumulative_sine_local.png)
+Fig.3  ![cumulative sine](https://github.com/quantiota/SKA-quantitative-finance/blob/main/volume_phase_geometry/images/cumulative_sine_local.png)
 
 
 
