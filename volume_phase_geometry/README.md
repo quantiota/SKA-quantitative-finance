@@ -441,7 +441,7 @@ To evaluate the effectiveness of the proposed volume-based indicator, we visuali
 
 #### Global View
 
-Fig.1  ![price](\images\price_global.png)
+Fig.1  ![price](volume_phase_geometry\images\price_global.png)
 
 Fig.2  ![cumulative cosine](images\cumulative_cosine_global.png)
 
