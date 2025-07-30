@@ -21,7 +21,7 @@ By implementing the entire framework in SQL over real-time trade data, this work
 
 ## Variables Definition
 
-Let us consider a high-frequency time series $v_i > 0$, defined as a
+Let us consider a high-frequency time series $\large v_i > 0$, defined as a
 sequence of discrete-time observations taken at successive (possibly
 irregular) time intervals $\Delta \tau_i$:
 
@@ -32,7 +32,7 @@ discrete derivative:
 
 $$\large\dot{v}_i = \frac{\Delta v_i}{\Delta \tau_i}.$$
 
-We introduce the instantaneous angular frequency $\largew_i$, a quantity of
+We introduce the instantaneous angular frequency $\large w_i$, a quantity of
 dimension $\large T^{-1}$. One natural candidate is the scaled relative
 variation:
 
