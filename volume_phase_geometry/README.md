@@ -108,8 +108,8 @@ dynamical systems.
 
 Building on the ODE Time Series Transform, we now demonstrate a
 practical application of this framework in the context of market data
-analysis. In particular, we introduce a novel \*\*volume-based
-indicator\*\* derived from high-frequency trade volume using the cosine
+analysis. In particular, we introduce a novel **volume-based
+indicator** derived from high-frequency trade volume using the cosine
 of a time-evolving angular argument.
 
 This work is based on a real-time Binance data stream for the XRPUSDT trading pair, using tick-level granularity.
