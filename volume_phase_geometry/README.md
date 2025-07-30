@@ -100,7 +100,7 @@ conjugate spaces:
 -   The angular domain indexed by $\large \Theta_i$,
 
 revealing geometric and causal structures not evident under conventional
-methods. The ODE transform path $\widetilde{Y}_i$ provides a novel
+methods. The ODE transform path $\large \widetilde{Y}_i$ provides a novel
 embedding that bridges discrete stochastic signals and continuous
 dynamical systems.
 
