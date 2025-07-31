@@ -1,5 +1,7 @@
 # ODE Time Series Transform: A Volume-Based Indicator Using SQL and the Cosine Function
 
+Embedding Volume Flow with ODE Transforms: A Real-Time SQL Indicator with Geometric Phase Insights
+
 ## Introduction
 	
 In high-frequency financial markets, understanding the dynamics of price formation and trade volume is a persistent challenge. Classical statistical indicators often fall short in capturing the temporal causality and geometric structures underlying tick-level price action. To address this, we explore a novel approach that bridges signal processing, dynamical systems, and market microstructure by embedding trade volume into the structure of a **harmonic oscillator**.
