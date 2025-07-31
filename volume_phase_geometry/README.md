@@ -1,6 +1,4 @@
-# ODE Time Series Transform: A Volume-Based Indicator Using SQL and the Cosine Function
-
-Embedding Volume Flow with ODE Transforms: A Real-Time SQL Indicator with Geometric Phase Insights
+# Embedding Volume Flow with ODE Transforms: A Real-Time SQL Indicator with Geometric Phase Insights
 
 ## Introduction
 	
