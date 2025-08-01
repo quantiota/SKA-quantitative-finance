@@ -495,7 +495,7 @@ This leads to a major discovery:
 
 This coupling implies that price does not evolve independently but **synchronizes with the phase flow induced by volume rotation**. In this sense, price becomes interpretable as a projection **onto the directional manifold defined by cumulative phase rotation**, opening the door to a fundamentally new class of volume-based models.
 
-
+While some may interpret the observed phase alignment between price and volume as an artifact of the transform, we emphasize that no smoothing, interpolation, or statistical filtering is applied. The structure arises directly from the raw tick data, and the singularity resolution method is designed to preserve continuity in angular momentum. This makes the coupling effect not artificial—but emergent under geometric constraints.
 
 
 ### Related Applications
