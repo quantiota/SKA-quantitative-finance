@@ -32,7 +32,7 @@ $$
 The **density operator** is the outer product of the state vector with itself:
 
 $$
-\Large{\widehat{\rho}(t) = \lvert \Psi(t) \rangle \langle \Psi(t) \rvert}
+\large{\widehat{\rho}(t) = \lvert \Psi(t) \rangle \langle \Psi(t) \rvert}
 $$
 
 This object captures both **probabilities** and **structural relationships** (coherences) between regimes.
