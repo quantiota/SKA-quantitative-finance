@@ -13,7 +13,7 @@ The goal is to provide a standalone mathematical reference that other SKA module
 At any time $\large t$, the market is in a superposition of basis regimes:
 
 $$
-\Large{\lvert \Psi(t) \rangle = \Psi_0(t) \lvert 0 \rangle + \Psi_1(t) \lvert 1 \rangle + \Psi_2(t) \lvert 2 \rangle}
+\large{\lvert \Psi(t) \rangle = \Psi_0(t) \lvert 0 \rangle + \Psi_1(t) \lvert 1 \rangle + \Psi_2(t) \lvert 2 \rangle}
 $$
 
 * $\large \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle$: Basis vectors for Neutral, Bull, Bear
