@@ -111,7 +111,7 @@ Here we used the orthonormality of the basis: $\langle i \mid j \rangle = \delta
 Since $\widehat{T} \mid \Psi \rangle = \lvert \Psi \rangle$, the operator acts as a projector and leaves the state invariant. Therefore:
 
 $$
-\begin{aligned}
+\begin{aligned}\large
 \langle 0 \mid \widehat{T} \mid \Psi \rangle &= \Psi_0 \\
 \langle 1 \mid \widehat{T} \mid \Psi \rangle &= \Psi_1 \\
 \langle 2 \mid \widehat{T} \mid \Psi \rangle &= \Psi_2
