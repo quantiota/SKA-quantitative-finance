@@ -10,14 +10,14 @@ The goal is to provide a standalone mathematical reference that other SKA module
 
 ## 1. Market State Vector
 
-At any time $t$, the market is in a superposition of basis regimes:
+At any time $\large t$, the market is in a superposition of basis regimes:
 
 $$
 \Large{\lvert \Psi(t) \rangle = \Psi_0(t) \lvert 0 \rangle + \Psi_1(t) \lvert 1 \rangle + \Psi_2(t) \lvert 2 \rangle}
 $$
 
-* $\lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle$: Basis vectors for Neutral, Bull, Bear
-* $\Psi_i(t) = A_i(t) e^{iH_i(t)} \in \mathbb{C}$: Complex amplitude encoding probability and entropy
+* $\large \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle$: Basis vectors for Neutral, Bull, Bear
+* $\large \Psi_i(t) = A_i(t) e^{iH_i(t)} \in \mathbb{C}$: Complex amplitude encoding probability and entropy
 
 ### Normalization:
 
