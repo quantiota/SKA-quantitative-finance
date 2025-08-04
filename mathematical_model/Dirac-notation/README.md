@@ -90,7 +90,7 @@ $$
 \large \Psi_i(t) = A_i(t) e^{i H_i(t)}
 $$
 
-This phase represents the **accumulated knowledge** or **informational weight** of being in regime $i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
+This phase represents the **information content** (entropy) of regime $i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
 
 ## 5. Transition Operator Action on the State
 
