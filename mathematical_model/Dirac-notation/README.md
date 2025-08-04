@@ -96,14 +96,14 @@ This phase represents the **accumulated knowledge** or **informational weight** 
 
 ## 5. Summary of Core Equations
 
-| Concept               | Formula                                                            |         |      |
-| --------------------- | ------------------------------------------------------------------ | ------- | ---- |
-| State vector          | $\lvert \Psi \rangle = \sum_i \Psi_i \lvert i \rangle$             |         |      |
-| Density operator      | $\widehat{\rho} = \lvert \Psi \rangle \langle \Psi \rvert$         |         |      |
-| Regime probability    | ( \rho\_{ii} =                                                     | \Psi\_i | ^2 ) |
-| Structural transition | $\widehat{T}_{i \leftarrow j} = \lvert i \rangle \langle j \rvert$ |         |      |
-| Transition amplitude  | $\langle i \mid \widehat{\rho} \mid j \rangle = \Psi_i^* \Psi_j$   |         |      |
-| Entropy phase         | $\arg(\Psi_i) = H_i(t)$                                            |         |      |
+| Concept               | Formula                                                                                   |
+|-----------------------|--------------------------------------------------------------------------------------------|
+| State vector          | $\lvert \Psi \rangle = \sum_i \Psi_i \lvert i \rangle$                                     |
+| Density operator      | $\widehat{\rho} = \lvert \Psi \rangle \langle \Psi \rvert$                                 |
+| Regime probability    | $\rho_{ii} = |\Psi_i|^2$                                                                    |
+| Structural transition | $\widehat{T}_{i \leftarrow j} = \lvert i \rangle \langle j \rvert$                         |
+| Transition amplitude  | $\langle i \mid \widehat{\rho} \mid j \rangle = \Psi_i^* \Psi_j$                           |
+| Entropy phase         | $\arg(\Psi_i) = H_i(t)$                                                                     |
 
 
 
@@ -121,7 +121,7 @@ Refer to this file when defining:
 * Real-time SKA signal decoders
 * Quantum-inspired simulation of regime evolution
 
-
+---
 
 ## Author Note
 
