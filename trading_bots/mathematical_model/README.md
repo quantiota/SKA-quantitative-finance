@@ -303,7 +303,7 @@ $$\Large P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{H_t}\right|\right)$$
 where:
 - $\large H_t$ = current entropy of the market state
 - $\large H_{t-1}$ = previous entropy 
-- $large P_t$ = probability of the transition occurring given the entropy change
+- $\large P_t$ = probability of the transition occurring given the entropy change
 
 **Physical Interpretation:** This probability measures how likely a specific regime transition is based on the **information-theoretic cost** of the change, normalized by the current entropy state.
 
