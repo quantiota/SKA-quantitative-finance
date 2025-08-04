@@ -48,11 +48,12 @@ This yields a 3x3 Hermitian matrix:
 $$
 \widehat{\rho}(t) =
 \begin{pmatrix}
-|\Psi_0|^2 & \Psi_0^* \Psi_1 & \Psi_0^* \Psi_2 \\
-\Psi_1^* \Psi_0 & |\Psi_1|^2 & \Psi_1^* \Psi_2 \\
-\Psi_2^* \Psi_0 & \Psi_2^* \Psi_1 & |\Psi_2|^2
+|\Psi_0|^2 & \Psi_0^*\Psi_1 & \Psi_0^*\Psi_2 \\
+\Psi_1^*\Psi_0 & |\Psi_1|^2 & \Psi_1^*\Psi_2 \\
+\Psi_2^*\Psi_0 & \Psi_2^*\Psi_1 & |\Psi_2|^2
 \end{pmatrix}
 $$
+
 
 
 ### Interpretation:
