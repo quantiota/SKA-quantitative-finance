@@ -84,7 +84,7 @@ $\large {\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed dura
 
 3. **Same-timestamp assignment**
 
-   **When multiple trades occur at the same timestamp $\large t_k$, they all receive the same $\large \Delta\tau$ value:**
+   **When multiple trades occur at the same timestamp $\large t_k$, , we propagate the last computed $\large \Delta\tau$ value to all transitions at that timestamp:**
 
    $$\Large \Delta\tau_{i\to j}(t_k) = \Delta\tau(t_k) = t_k - t_{\text{prev}}$$
 
