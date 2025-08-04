@@ -165,11 +165,11 @@ $$\LARGE \rho_{i\!\leftrightarrow\!j} = \frac{\sum_{k=1}^{n}(\Delta\tau_{i\to j,
 
 
 where:
-- $n = \min(|\{\Delta\tau_{i\to j}\}|, |\{\Delta\tau_{j\to i}\}|)$
-- $\{\Delta\tau_{i\to j}\}$ = series of durations for $i \to j$ transitions
-- $\{\Delta\tau_{j\to i}\}$ = series of durations for $j \to i$ transitions  
-- $\overline{\Delta\tau_{i\to j}}$ = mean duration for $i \to j$ transitions
-- $\overline{\Delta\tau_{j\to i}}$ = mean duration for $j \to i$ transitions
+- $\large n = \min(|\{\Delta\tau_{i\to j}\}|, |\{\Delta\tau_{j\to i}\}|)$
+- $\large \{\Delta\tau_{i\to j}\}$ = series of durations for $i \to j$ transitions
+- $\large \{\Delta\tau_{j\to i}\}$ = series of durations for $j \to i$ transitions  
+- $\large \overline{\Delta\tau_{i\to j}}$ = mean duration for $i \to j$ transitions
+- $\large \overline{\Delta\tau_{j\to i}}$ = mean duration for $j \to i$ transitions
 
 **Note:** Both formulas are mathematically identical. The first expresses correlation in terms of covariance and standard deviation, while the second shows the explicit computational steps.
 
