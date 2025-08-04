@@ -25,7 +25,7 @@ $$
 \large \langle \Psi(t) | \Psi(t) \rangle = |\Psi_0|^2 + |\Psi_1|^2 + |\Psi_2|^2 = 1
 $$
 
----
+
 
 ## 2. Density Operator
 
@@ -59,7 +59,6 @@ $$\widehat{\rho}(t) = \begin{bmatrix}
 * **Diagonal terms**: $\large \rho_{ii} = |\Psi_i|^2$ = probability of being in regime $i$
 * **Off-diagonal terms**: $\large \rho_{ij} = \Psi_i^* \Psi_j$ = coherence between regimes $i$ and $j$, interpreted as transition structure
 
----
 
 ## 3. Structural Transition Operator
 
@@ -81,7 +80,7 @@ $$
 
 This equals the $(i,j)$ entry of the density matrix.
 
----
+
 
 ## 4. Entropy Interpretation
 
@@ -93,7 +92,7 @@ $$
 
 This phase represents the **accumulated knowledge** or **informational weight** of being in regime $i$. Therefore, transitions (via $\Psi_i^* \Psi_j$) carry entropy shifts $H_j - H_i$.
 
----
+
 
 ## 5. Summary of Core Equations
 
@@ -106,7 +105,7 @@ This phase represents the **accumulated knowledge** or **informational weight** 
 | Transition amplitude  | $\langle i \mid \widehat{\rho} \mid j \rangle = \Psi_i^* \Psi_j$   |         |      |
 | Entropy phase         | $\arg(\Psi_i) = H_i(t)$                                            |         |      |
 
----
+
 
 ## 6. Usage
 
@@ -122,7 +121,7 @@ Refer to this file when defining:
 * Real-time SKA signal decoders
 * Quantum-inspired simulation of regime evolution
 
----
+
 
 ## Author Note
 
