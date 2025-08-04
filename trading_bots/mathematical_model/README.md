@@ -58,8 +58,8 @@ We classify certain back‑and‑forth transitions between regimes as "trends."
 
 | Trend       | Paired Regime Transitions                                      | Variable Name        | Description                                        |
 |-------------|----------------------------------------------------------------|----------------------|----------------------------------------------------|
-| **Uptrend** | ⟨neutral\|$\delta\tau$\|bull⟩ and ⟨bull\|$\delta \tau$\|neutral⟩                          | `trend_up_pairs`     | Transitions between Neutral $\rightleftarrows$ Bull                  |
-| **Downtrend** | ⟨neutral\|$\delta \tau$\|bear⟩ and ⟨bear\|$\delta \tau$\|neutral⟩                        | `trend_down_pairs`   | Transitions between Neutral $\rightleftarrows$ Bear                  |
+| **Uptrend** | ⟨neutral\|Δτ\|bull⟩ and ⟨bull\|Δτ\|neutral⟩                          | `trend_up_pairs`     | Transitions between Neutral ⇆ Bull                  |
+| **Downtrend** | ⟨neutral\|Δτ\|bear⟩ and ⟨bear\|Δτ\|neutral⟩                        | `trend_down_pairs`   | Transitions between Neutral ⇆ Bear                  |
 
 **Notes for developers:**
 - Represent regimes by indices or enums (e.g. `0 = neutral`, `1 = bull`, `2 = bear`)
@@ -124,8 +124,8 @@ $$
 
 | Symbol            | Variable Name  | Regime Pairs      | Description                                                          |
 | ----------------- | -------------- | ----------------- | -------------------------------------------------------------------- |
-| $\rho_{\rm up}$   | **corr\_up**   | (0 → 1) & (1 → 0) | Correlation of Neutral (0)$\rightleftarrows$ Bull (1) durations in last $T_{\rm corr}$ |
-| $\rho_{\rm down}$ | **corr\_down** | (0 → 2) & (2 → 0) | Correlation of Neutral (0)$\rightleftarrows$ Bear (2) durations in last $T_{\rm corr}$ |
+| $\rho_{\rm up}$   | **corr\_up**   | (0 → 1) & (1 → 0) | Correlation of Neutral (0)⇆Bull (1) durations in last $T_{\rm corr}$ |
+| $\rho_{\rm down}$ | **corr\_down** | (0 → 2) & (2 → 0) | Correlation of Neutral (0)⇆Bear (2) durations in last $T_{\rm corr}$ |
 
 ### 6.3 Developer Notes
 
@@ -419,4 +419,5 @@ $$
 $$ 
 
 providing a dynamical interpretation of transition likelihoods. This reformulation not only embeds the entropy change into a variational framework consistent with the principle of least action, but also offers a physical lens for interpreting $P_t$ as a time-resolved signal. Aggregating these Lagrangian-informed probabilities as previously described bridges structural and statistical layers, and highlights that surface-level regime statistics emerge from an underlying field of informational dynamics.
+
 
