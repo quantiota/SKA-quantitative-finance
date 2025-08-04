@@ -98,7 +98,7 @@ $$\Large \{\Delta\tau_{i\to j}(t)\} = \{\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\ta
    where $\large k_1, k_2, \dots$ index just the steps with an $i\to j$ transition, and **multiple transitions at the same timestamp get identical $\Delta\tau$ values**.
 
 **Interpretation:**
-* $\Delta\tau_{i\to j}(t)$ is "the time since the last distinct timestamp when regime $i$ transitioned to $j$"
+* $\large \Delta\tau_{i\to j}(t)$ is "the time since the last distinct timestamp when regime $i$ transitioned to $j$"
 * Multiple trades at timestamp $t$ share the same temporal duration
 * $\large {\Delta\tau_{i\to j}(t)\}$ contains repeated values when transitions cluster at identical timestamps
 
