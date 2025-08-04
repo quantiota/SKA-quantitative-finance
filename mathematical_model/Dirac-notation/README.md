@@ -100,7 +100,7 @@ This phase represents the **accumulated knowledge** or **informational weight** 
 | --------------------- | ------------------------------------------------------------------ |
 | State vector          | $\lvert \Psi \rangle = \sum_i \Psi_i \lvert i \rangle$             |
 | Density operator      | $\widehat{\rho} = \lvert \Psi \rangle \langle \Psi \rvert$         |
-| Regime probability    | $\rho\_{ii} = \Psi_i                                               |
+| Regime probability    | $\rho\_{ii} = |\Psi_i|^2                                               |
 | Structural transition | $\widehat{T}_{i \leftarrow j} = \lvert i \rangle \langle j \rvert$ |
 | Transition amplitude  | $\langle i \mid \widehat{\rho} \mid j \rangle = \Psi_i^* \Psi_j$   |
 | Entropy phase         | $\arg(\Psi_i) = H_i(t)$                                            |
