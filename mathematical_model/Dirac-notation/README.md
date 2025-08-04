@@ -50,8 +50,7 @@ $$\widehat{\rho}(t) =
 |\Psi_0|^2 & \Psi_0^*\Psi_1 & \Psi_0^*\Psi_2 \\
 \Psi_1^*\Psi_0 & |\Psi_1|^2 & \Psi_1^*\Psi_2 \\
 \Psi_2^*\Psi_0 & \Psi_2^*\Psi_1 & |\Psi_2|^2
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 
 
 
