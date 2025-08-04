@@ -137,7 +137,7 @@ $$
 * **Filter events**
   Only include transitions with timestamp $t$ satisfying
   $$
-    t_{\rm now} - t \;\le\; T_{\rm corr}.
+    \large t_{\rm now} - t \;\le\; T_{\rm corr}.
   $$
 
 * **Compute correlation**
