@@ -58,7 +58,7 @@ We classify certain back‑and‑forth transitions between regimes as "trends."
 
 | Trend       | Paired Regime Transitions                                      | Variable Name        | Description                                        |
 |-------------|----------------------------------------------------------------|----------------------|----------------------------------------------------|
-| **Uptrend** | ⟨neutral\|$\delta \tau$\|bull⟩ and ⟨bull\|$\delta \tau$\|neutral⟩                          | `trend_up_pairs`     | Transitions between Neutral $\rightleftarrows$ Bull                  |
+| **Uptrend** | ⟨neutral\|$\delta\tau$\|bull⟩ and ⟨bull\|$\delta \tau$\|neutral⟩                          | `trend_up_pairs`     | Transitions between Neutral $\rightleftarrows$ Bull                  |
 | **Downtrend** | ⟨neutral\|$\delta \tau$\|bear⟩ and ⟨bear\|$\delta \tau$\|neutral⟩                        | `trend_down_pairs`   | Transitions between Neutral $\rightleftarrows$ Bear                  |
 
 **Notes for developers:**
