@@ -56,8 +56,8 @@ $$\widehat{\rho}(t) = \begin{bmatrix}
 
 ### Interpretation:
 
-* **Diagonal terms**: $\rho_{ii} = |\Psi_i|^2$ = probability of being in regime $i$
-* **Off-diagonal terms**: $\rho_{ij} = \Psi_i^* \Psi_j$ = coherence between regimes $i$ and $j$, interpreted as transition structure
+* **Diagonal terms**: $\large \rho_{ii} = |\Psi_i|^2$ = probability of being in regime $i$
+* **Off-diagonal terms**: $\large \rho_{ij} = \Psi_i^* \Psi_j$ = coherence between regimes $i$ and $j$, interpreted as transition structure
 
 ---
 
