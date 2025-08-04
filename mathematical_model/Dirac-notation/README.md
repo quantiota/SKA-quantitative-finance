@@ -103,8 +103,10 @@ $$
 We project this operator acting on the state back onto the basis state $\lvert i \rangle$:
 
 $$
-\langle i \mid \widehat{T} \mid \Psi \rangle = \langle i \mid \Psi \rangle = \Psi_i
+\langle i \mid \widehat{T} \mid \Psi \rangle = \langle i \mid \Psi \rangle = \sum_j \Psi_j \langle i \mid j \rangle = \sum_j \Psi_j \delta_{ij} = \Psi_i
 $$
+
+Here we used the orthonormality of the basis: $\langle i \mid j \rangle = \delta_{ij}$, the Kronecker delta.
 
 Since $\widehat{T} \mid \Psi \rangle = \lvert \Psi \rangle$, the operator acts as a projector and leaves the state invariant. Therefore:
 
