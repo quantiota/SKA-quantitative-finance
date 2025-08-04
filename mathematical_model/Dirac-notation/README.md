@@ -22,7 +22,7 @@ $$
 ### Normalization:
 
 $$
-\langle \Psi(t) | \Psi(t) \rangle = |\Psi_0|^2 + |\Psi_1|^2 + |\Psi_2|^2 = 1
+\large \langle \Psi(t) | \Psi(t) \rangle = |\Psi_0|^2 + |\Psi_1|^2 + |\Psi_2|^2 = 1
 $$
 
 ---
@@ -40,7 +40,7 @@ This object captures both **probabilities** and **structural relationships** (co
 ### Matrix Elements:
 
 $$
-\langle i \mid \widehat{\rho}(t) \mid j \rangle = \Psi_i^*(t) \Psi_j(t)
+\large \langle i \mid \widehat{\rho}(t) \mid j \rangle = \Psi_i^*(t) \Psi_j(t)
 $$
 
 This yields a 3x3 Hermitian matrix:
@@ -76,7 +76,7 @@ This operator transforms basis state $\lvert j \rangle$ into $\lvert i \rangle$.
 To extract the amplitude for a structural transition from $j \to i$:
 
 $$
-\langle \Psi \mid \widehat{T}_{i \leftarrow j} \mid \Psi \rangle = \Psi_i^*(t) \Psi_j(t)
+\large \langle \Psi \mid \widehat{T}_{i \leftarrow j} \mid \Psi \rangle = \Psi_i^*(t) \Psi_j(t)
 $$
 
 This equals the $(i,j)$ entry of the density matrix.
