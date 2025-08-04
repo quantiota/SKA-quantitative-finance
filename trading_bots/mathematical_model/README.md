@@ -84,33 +84,33 @@ $\large {\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed dura
 
 3. **Same-timestamp assignment**
 
-   **When multiple trades occur at the same timestamp $t_k$, they all receive the same $\Delta\tau$ value:**
+   **When multiple trades occur at the same timestamp $\large t_k$, they all receive the same $\large \Delta\tau$ value:**
 
    $$\Large \Delta\tau_{i\to j}(t_k) = \Delta\tau(t_k) = t_k - t_{\text{prev}}$$
 
-   where $t_{\text{prev}}$ is the most recent **distinct** timestamp before $t_k$.
+   where $\large t_{\text{prev}}$ is the most recent **distinct** timestamp before $\large t_k$.
 
 4. **Building the series**
    Collect these durations in chronological order:
 
 $$\Large \{\Delta\tau_{i\to j}(t)\} = \{\Delta\tau_{i\to j}(t_{k_1}),\,\Delta\tau_{i\to j}(t_{k_2}),\,\dots\},$$
 
-   where $k_1, k_2, \dots$ index just the steps with an $i\to j$ transition, and **multiple transitions at the same timestamp get identical $\Delta\tau$ values**.
+   where $\large k_1, k_2, \dots$ index just the steps with an $i\to j$ transition, and **multiple transitions at the same timestamp get identical $\Delta\tau$ values**.
 
 **Interpretation:**
 * $\Delta\tau_{i\to j}(t)$ is "the time since the last distinct timestamp when regime $i$ transitioned to $j$"
 * Multiple trades at timestamp $t$ share the same temporal duration
-* $\{\Delta\tau_{i\to j}(t)\}$ contains repeated values when transitions cluster at identical timestamps
+* $\large {\Delta\tau_{i\to j}(t)\}$ contains repeated values when transitions cluster at identical timestamps
 
 ## 6. Trend‑Pair Correlation Coefficients (Time‑Windowed)
 
-Introduce a fixed **time window** $T_{\rm corr}$ over which we compute each trend's Pearson correlation. Only transitions occurring within the most recent $T_{\rm corr}$ seconds are included.
+Introduce a fixed **time window** $\large T_{\rm corr}$ over which we compute each trend's Pearson correlation. Only transitions occurring within the most recent $\large T_{\rm corr}$ seconds are included.
 
 ### 6.1 Window Parameter
 
 | Math Symbol    | Variable Name          | Description                                            | Unit        |
 | -------------- | ---------------------- | ------------------------------------------------------ | ----------- |
-| $T_{\rm corr}$ | **corr\_time\_window** | Length of the sliding time window used for correlation | seconds (s) |
+| $\large T_{\rm corr}$ | **corr\_time\_window** | Length of the sliding time window used for correlation | seconds (s) |
 
 ### 6.2 Defined Coefficients
 
