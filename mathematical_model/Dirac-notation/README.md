@@ -87,23 +87,23 @@ This equals the $(i,j)$ entry of the density matrix.
 Each complex amplitude $\Psi_i(t)$ embeds an **entropy phase**:
 
 $$
-\Psi_i(t) = A_i(t) e^{i H_i(t)}
+\large \Psi_i(t) = A_i(t) e^{i H_i(t)}
 $$
 
-This phase represents the **accumulated knowledge** or **informational weight** of being in regime $i$. Therefore, transitions (via $\Psi_i^* \Psi_j$) carry entropy shifts $H_j - H_i$.
+This phase represents the **accumulated knowledge** or **informational weight** of being in regime $i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
 
 ## 5. Transition Operator Action on the State
 
 We consider the global transition operator (density operator):
 
 $$
-\widehat{T} = \lvert \Psi \rangle \langle \Psi \rvert
+\large \widehat{T} = \lvert \Psi \rangle \langle \Psi \rvert
 $$
 
 We project this operator acting on the state back onto the basis state $\lvert i \rangle$:
 
 $$
-\langle i \mid \widehat{T} \mid \Psi \rangle = \langle i \mid \Psi \rangle = \sum_j \Psi_j \langle i \mid j \rangle = \sum_j \Psi_j \delta_{ij} = \Psi_i
+\large \langle i \mid \widehat{T} \mid \Psi \rangle = \langle i \mid \Psi \rangle = \sum_j \Psi_j \langle i \mid j \rangle = \sum_j \Psi_j \delta_{ij} = \Psi_i
 $$
 
 Here we used the orthonormality of the basis: $\langle i \mid j \rangle = \delta_{ij}$, the Kronecker delta.
