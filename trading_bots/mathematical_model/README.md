@@ -301,9 +301,9 @@ The structural probability governing individual transitions can be defined as:
 $$\Large P_t = \exp\left(-\left|\frac{H_t - H_{t-1}}{H_t}\right|\right)$$
 
 where:
-- $H_t$ = current entropy of the market state
-- $H_{t-1}$ = previous entropy 
-- $P_t$ = probability of the transition occurring given the entropy change
+- $\large H_t$ = current entropy of the market state
+- $\large H_{t-1}$ = previous entropy 
+- $large P_t$ = probability of the transition occurring given the entropy change
 
 **Physical Interpretation:** This probability measures how likely a specific regime transition is based on the **information-theoretic cost** of the change, normalized by the current entropy state.
 
