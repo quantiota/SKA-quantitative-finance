@@ -92,9 +92,33 @@ $$
 
 This phase represents the **accumulated knowledge** or **informational weight** of being in regime $i$. Therefore, transitions (via $\Psi_i^* \Psi_j$) carry entropy shifts $H_j - H_i$.
 
+## 5. Transition Operator Action on the State
 
+We consider the global transition operator (density operator):
 
-## 5. Summary of Core Equations
+$$
+\widehat{T} = \lvert \Psi \rangle \langle \Psi \rvert
+$$
+
+We project this operator acting on the state back onto the basis state $\lvert i \rangle$:
+
+$$
+\langle i \mid \widehat{T} \mid \Psi \rangle = \langle i \mid \Psi \rangle = \Psi_i
+$$
+
+Since $\widehat{T} \mid \Psi \rangle = \lvert \Psi \rangle$, the operator acts as a projector and leaves the state invariant. Therefore:
+
+$$
+\begin{aligned}
+\langle 0 \mid \widehat{T} \mid \Psi \rangle &= \Psi_0 \\
+\langle 1 \mid \widehat{T} \mid \Psi \rangle &= \Psi_1 \\
+\langle 2 \mid \widehat{T} \mid \Psi \rangle &= \Psi_2
+\end{aligned}
+$$
+
+The transition operator encodes the full informational identity of the market state and reflects that transitions are emergent properties of the SKA state — not discrete external events.
+
+## 6. Summary of Core Equations
 
 | Concept               | Formula                                                            |
 | --------------------- | ------------------------------------------------------------------ |
@@ -107,7 +131,7 @@ This phase represents the **accumulated knowledge** or **informational weight** 
 
 
 
-## 6. Usage
+## 7. Usage
 
 This document serves as the **formal reference** for SKA modules that:
 
