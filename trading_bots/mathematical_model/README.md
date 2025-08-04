@@ -70,7 +70,7 @@ We classify certain back‑and‑forth transitions between regimes as "trends."
 
 ## 5. Definition of $\{\Delta\tau_{i\to j}(t)\}$
 
-$\{\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations for transitions from regime $i$ to regime $j$. Concretely:
+$\large {\Delta\tau_{i\to j}(t)\}$ is the **time‑series** of all observed durations for transitions from regime $i$ to regime $j$. Concretely:
 
 1. **Regime sequence**
    You have a sequence of timestamped regime observations
