@@ -1,10 +1,27 @@
 # Structured Knowledge Accumulation: A Dirac Notation Formalism for Market Regime Modeling
 
-## Overview
+Here is the **abstract** and **introduction** tailored to your white paper:
 
-This document defines the mathematical foundation of the Structured Knowledge Accumulation (SKA) framework applied to Market Data using **Dirac notation**. It formalizes how the market state is represented as a quantum-inspired state vector, how regime probabilities and structural transitions are encoded in the **density operator**, and how this structure relates to entropy-based learning.
 
-The goal is to provide a standalone mathematical reference that other SKA modules (e.g., real-time analytics, entropy flow, or QuestDB visualizations) can refer to.
+
+## Abstract
+
+This white paper introduces a quantum-inspired mathematical formalism for modeling financial market regimes using **Dirac notation** within the Structured Knowledge Accumulation (SKA) framework. The market state is represented as a superposition vector in a complex Hilbert space, and its evolution is governed by a density operator encoding both regime probabilities and structural transitions. Each complex amplitude carries an entropy phase, linking probabilistic transitions to information dynamics. The use of operator algebra reveals that regime transitions are not discrete events but emergent features of the SKA state geometry. This formulation provides a theoretical foundation for real-time analytics, entropy-based decision systems, and market structure decoding, with practical implementations across SQL querying, live dashboards, and agent-based forecasting.
+
+
+## Introduction
+
+Traditional models of financial markets rely on discretized time series, deterministic indicators, or Markovian assumptions to represent regime changes. These approaches often overlook the **underlying information structure** and fail to capture the continuity and coherence inherent in real-time transitions.
+
+The **Structured Knowledge Accumulation (SKA)** framework redefines this paradigm by treating the market as a **dynamical information system**, where regime states exist in a superposed form and evolve through entropy-driven learning. Inspired by quantum mechanics, this formalism introduces Dirac notation to express regime states, transition amplitudes, and entropy phases in a unified mathematical structure.
+
+By modeling the market state as a vector in a complex Hilbert space, and transitions as projections within this space, we obtain a **density operator** that simultaneously encodes probabilities and structural couplings. This allows for a natural integration of **real-time learning**, **entropy flow**, and **non-Markovian memory effects**—opening the door to a fundamentally new class of market models.
+
+This document lays the foundation for this approach, defining each component of the model and providing the necessary tools for implementation in analytics pipelines, signal processing, and algorithmic decision systems.
+
+
+
+Let me know if you'd like a **"Motivation"** or **"Background"** section as well.
 
 
 ## 1. State Space Definition
