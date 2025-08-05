@@ -124,7 +124,7 @@ $$
 
 | Symbol            | Variable Name  | Regime Pairs      | Description                                                          |
 | ----------------- | -------------- | ----------------- | -------------------------------------------------------------------- |
-| $\rho_{\rm up}$   | **corr\_up**   | (0 → 1) & (1 → 0) | Correlation of Neutral (0)	$\rightleftarrowsBull$ (1) durations in last $T_{\rm corr}$ |
+| $\rho_{\rm up}$   | **corr\_up**   | (0 → 1) & (1 → 0) | Correlation of Neutral (0) $\rightleftarrowsBull$ (1) durations in last $T_{\rm corr}$ |
 | $\rho_{\rm down}$ | **corr\_down** | (0 → 2) & (2 → 0) | Correlation of Neutral (0)	$\rightleftarrows$ Bear (2) durations in last $T_{\rm corr}$ |
 
 ### 6.3 Developer Notes
