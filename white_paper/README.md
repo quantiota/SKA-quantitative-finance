@@ -17,9 +17,6 @@ This document lays the foundation for this approach, defining each component of 
 
 
 
-Let me know if you'd like a **"Motivation"** or **"Background"** section as well.
-
-
 ## 1. State Space Definition
 Let $\large \mathcal{H}$ be a **3-dimensional complex Hilbert space** with orthonormal basis: 
 
