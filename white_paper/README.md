@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines the mathematical foundation of the Structured Knowledge Accumulation (SKA) framework using **Dirac notation**. It formalizes how the market state is represented as a quantum-inspired state vector, how regime probabilities and structural transitions are encoded in the **density operator**, and how this structure relates to entropy-based learning.
+This document defines the mathematical foundation of the Structured Knowledge Accumulation (SKA) framework applied to Market Data using **Dirac notation**. It formalizes how the market state is represented as a quantum-inspired state vector, how regime probabilities and structural transitions are encoded in the **density operator**, and how this structure relates to entropy-based learning.
 
 The goal is to provide a standalone mathematical reference that other SKA modules (e.g., real-time analytics, entropy flow, or QuestDB visualizations) can refer to.
 
