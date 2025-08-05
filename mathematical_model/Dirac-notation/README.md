@@ -7,8 +7,14 @@ This document defines the mathematical foundation of the Structured Knowledge Ac
 The goal is to provide a standalone mathematical reference that other SKA modules (e.g., real-time analytics, entropy flow, or QuestDB visualizations) can refer to.
 
 
+## 1. State Space Definition
+Let \(\mathcal{H}\) be a **3-dimensional complex Hilbert space** with orthonormal basis:  
+\[ \mathcal{B} = \{ \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle \} \]  
+**Interpretation**: Basis vectors represent mutually exclusive, exhaustive regimes.  
 
-## 1. Market State Vector
+
+
+## 2. Market State Vector
 
 At any time $\large t$, the market is in a superposition of basis regimes:
 
@@ -21,13 +27,15 @@ $$
 
 ### Normalization:
 
+For any state \(\lvert \Psi \rangle \in \mathcal{H}\), \(\langle \Psi \lvert \Psi \rangle = 1\).
+
 $$
 \large \langle \Psi(t) | \Psi(t) \rangle = |\Psi_0|^2 + |\Psi_1|^2 + |\Psi_2|^2 = 1
 $$
 
 
 
-## 2. Density Operator
+## 3. Density Operator
 
 The **density operator** is the outer product of the state vector with itself:
 
@@ -61,7 +69,7 @@ $$\widehat{\rho}(t) =
 * **Off-diagonal terms**: $\large \rho_{ij} = \Psi_i^* \Psi_j$ = coherence between regimes $i$ and $j$, interpreted as transition structure
 
 
-## 3. Structural Transition Operator
+## 4. Structural Transition Operator
 
 A transition from regime $j \to i$ is represented by:
 
@@ -83,7 +91,7 @@ This equals the $(i,j)$ entry of the density matrix.
 
 
 
-## 4. Entropy Interpretation
+## 5. Entropy Interpretation
 
 Each complex amplitude $\Psi_i(t)$ embeds an **entropy phase**:
 
@@ -93,7 +101,7 @@ $$
 
 This phase represents the **information content** (entropy) of regime $i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
 
-## 5. Transition Operator Action on the State
+## 6. Transition Operator Action on the State
 
 We consider the global transition operator (density operator):
 
@@ -121,7 +129,7 @@ $$
 
 The transition operator encodes the full informational identity of the market state and reflects that transitions are emergent properties of the SKA state — not discrete external events.
 
-## 6. Summary of Core Equations
+## 7. Summary of Core Equations
 
 | Concept               | Formula                                                            |
 | --------------------- | ------------------------------------------------------------------ |
@@ -134,7 +142,7 @@ The transition operator encodes the full informational identity of the market st
 
 
 
-## 7. Usage
+## 8. Usage
 
 This document serves as the **formal reference** for SKA modules that:
 
