@@ -20,6 +20,8 @@ $$\large \mathcal{B} = \{ \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle \
 
 At any time $\large t$, the market is in a superposition of basis regimes:
 
+$$\large \lvert \Psi(t) \rangle = \sum_{i=0}^2 \Psi_i(t) \lvert i \rangle, \quad \Psi_i(t) \in \mathbb{C}$$ 
+
 $$
 \large{\lvert \Psi(t) \rangle = \Psi_0(t) \lvert 0 \rangle + \Psi_1(t) \lvert 1 \rangle + \Psi_2(t) \lvert 2 \rangle}
 $$
