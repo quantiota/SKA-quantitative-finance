@@ -58,8 +58,8 @@ We classify certain back‑and‑forth transitions between regimes as "trends."
 
 | Trend       | Paired Regime Transitions                                      | Variable Name        | Description                                        |
 |-------------|----------------------------------------------------------------|----------------------|----------------------------------------------------|
-| **Uptrend** | $⟨neutral\|\Delta \tau\|bull⟩$ and $⟨bull\|\Delta \tau\\|neutral⟩$                          | `trend_up_pairs`     | Transitions between Neutral ⇆ Bull                  |
-| **Downtrend** | $⟨neutral\|\Delta \tau\\|bear⟩$ and $⟨bear\|\Delta \tau\\|neutral⟩$                        | `trend_down_pairs`   | Transitions between Neutral ⇆ Bear                  |
+| **Uptrend** | $⟨neutral\|\Delta \tau\|bull⟩$ and $⟨bull\|\Delta \tau\\|neutral⟩$                          | `trend_up_pairs`     | Transitions between Neutral 	$\rightleftarrows$ Bull                  |
+| **Downtrend** | $⟨neutral\|\Delta \tau\\|bear⟩$ and $⟨bear\|\Delta \tau\\|neutral⟩$                        | `trend_down_pairs`   | Transitions between Neutral 	\rightleftarrows Bear                  |
 
 **Notes for developers:**
 - Represent regimes by indices or enums (e.g. `0 = neutral`, `1 = bull`, `2 = bear`)
@@ -124,8 +124,8 @@ $$
 
 | Symbol            | Variable Name  | Regime Pairs      | Description                                                          |
 | ----------------- | -------------- | ----------------- | -------------------------------------------------------------------- |
-| $\rho_{\rm up}$   | **corr\_up**   | (0 → 1) & (1 → 0) | Correlation of Neutral (0)⇆Bull (1) durations in last $T_{\rm corr}$ |
-| $\rho_{\rm down}$ | **corr\_down** | (0 → 2) & (2 → 0) | Correlation of Neutral (0)⇆Bear (2) durations in last $T_{\rm corr}$ |
+| $\rho_{\rm up}$   | **corr\_up**   | (0 → 1) & (1 → 0) | Correlation of Neutral (0)	\rightleftarrowsBull (1) durations in last $T_{\rm corr}$ |
+| $\rho_{\rm down}$ | **corr\_down** | (0 → 2) & (2 → 0) | Correlation of Neutral (0)	\rightleftarrows Bear (2) durations in last $T_{\rm corr}$ |
 
 ### 6.3 Developer Notes
 
