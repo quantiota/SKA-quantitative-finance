@@ -31,8 +31,7 @@ $$
 
 ### Normalization:
 
-For any state \(\lvert \Psi \rangle \in \mathcal{H}\), \(\langle \Psi \lvert \Psi \rangle = 1\).
-
+For any state $\lvert \Psi \rangle \in \mathcal{H}, \\langle \Psi \lvert \Psi \rangle = 1$.
 $$
 \large \langle \Psi(t) | \Psi(t) \rangle = |\Psi_0|^2 + |\Psi_1|^2 + |\Psi_2|^2 = 1
 $$
