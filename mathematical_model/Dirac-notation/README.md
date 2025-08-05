@@ -8,8 +8,8 @@ The goal is to provide a standalone mathematical reference that other SKA module
 
 
 ## 1. State Space Definition
-Let $\mathcal{H}$ be a **3-dimensional complex Hilbert space** with orthonormal basis:  
-$$\mathcal{B} = \{ \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle \}$$  
+Let $\large \mathcal{H}$ be a **3-dimensional complex Hilbert space** with orthonormal basis:  
+$$\large \mathcal{B} = \{ \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle \}$$  
 **Interpretation**: Basis vectors represent mutually exclusive, exhaustive regimes.  
 
 
