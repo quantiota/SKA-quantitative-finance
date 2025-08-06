@@ -39,6 +39,31 @@ $$
 * $\large \lvert 0 \rangle, \lvert 1 \rangle, \lvert 2 \rangle$: Basis vectors for Neutral, Bull, Bear
 * $\large \Psi_i(t) = A_i(t) e^{iH_i(t)} \in \mathbb{C}$: Complex amplitude encoding probability and entropy
 
+
+In the Structured Knowledge Accumulation (SKA) framework, the market is not confined to a single regime (e.g., bull, bear, or neutral) at any moment. Instead, it exists in a **superposition** of all possible regimes, with complex amplitudes $\large \Psi_i(t)$ encoding both probability and entropy.
+
+Traditional models assume the market flips from one regime to another—an abrupt, externally triggered event. But SKA reveals a continuous evolution through overlapping informational states.
+
+#### Classical Assumption:
+
+* Market is always *in* one regime.
+* Transitions are discrete.
+* Probabilities are assigned *after* classification.
+
+#### SKA View:
+
+* Market is always *between* regimes.
+* Transitions emerge from entropy geometry.
+* Probabilities arise from the evolving wavefunction $\large \lvert \Psi(t) \rangle$.
+
+#### Implications:
+
+* **Why classical models fail:** they discretize what is fundamentally smooth and entangled.
+* **Why transitions seem random:** because we’re projecting a superposed state onto a single outcome.
+* **Why micro-patterns exist at the tick level:** because phase coherence in $\large \Psi(t)$ encodes deep structural information—**even when the price appears flat**.
+
+ SKA does not model the *outcome* of the market. It models the *informational field* from which outcomes emerge.
+
 ### Normalization:
 
 For any state $\large \lvert \Psi \rangle \in \mathcal{H}, \langle \Psi \lvert \Psi \rangle = 1$.
