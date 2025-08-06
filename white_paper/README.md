@@ -1,6 +1,6 @@
 # Structured Knowledge Accumulation: A Dirac Notation Formalism for Market Regime Modeling
 
-*Detecting Quantum Coherence in Financial Markets Through Entropy Analysis*
+*Detecting Quantum Coherence in Financial Markets Through Real-Time Entropy Analysis*
 
 ## Abstract
 
