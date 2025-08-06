@@ -141,7 +141,17 @@ $$
 \end{aligned}
 $$
 
+This shows that transitions are not events but projections. The market doesn't "switch" regimes - our measurement collapses the superposition!
+
+This means:
+
+- Regime changes are observation-dependent
+- The act of trading affects the state
+- Observer effect is real in markets
+
+
 The transition operator encodes the full informational identity of the market state and reflects that transitions are emergent properties of the SKA state — not discrete external events.
+
 
 ## 7. Summary of Core Equations
 
