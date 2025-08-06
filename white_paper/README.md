@@ -1,5 +1,7 @@
 # Structured Knowledge Accumulation: A Dirac Notation Formalism for Market Regime Modeling
 
+*Detecting Quantum Coherence in Financial Markets Through Entropy Analysis*
+
 ## Abstract
 
 This white paper introduces a quantum-inspired mathematical formalism for modeling financial market regimes using **Dirac notation** within the Structured Knowledge Accumulation (SKA) framework. The market state is represented as a superposition vector in a complex Hilbert space, and its evolution is governed by a density operator encoding both regime probabilities and structural transitions. Each complex amplitude carries an entropy phase, linking probabilistic transitions to information dynamics. The use of operator algebra reveals that regime transitions are not discrete events but emergent features of the SKA state geometry. This formulation provides a theoretical foundation for real-time analytics, entropy-based decision systems, and market structure decoding, with practical implementations across SQL querying, live dashboards, and agent-based forecasting.
