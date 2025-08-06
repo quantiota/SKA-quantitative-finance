@@ -129,8 +129,7 @@ $$
 This equals the $(i,j)$ entry of the density matrix.
 
 
-
-### Constant Structural Coupling $C_{ij}$
+### Constant Structural Coupling \$C\_{ij}\$
 
 In practice, the most observable market regularities emerge when structural transition amplitudes become **time-invariant**:
 
@@ -138,17 +137,18 @@ $$
 \large C_{ij} = \Psi_i^*(t) \Psi_j(t) = \text{const}
 $$
 
-This condition implies that the **directional flow of probability** between regimes $i$ and $j$ is stable over time.
+This condition implies a stable **directional flow of probability** between regimes $i$ and $j$.
 
 When $C_{ij}$ remains constant:
 
-* **Regime transitions align** cleanly in real-time analysis.
+* Regime transitions align clearly in real-time analysis.
 * Entropy flow across regimes becomes **symmetric** or **balanced**.
-* Paired transitions (e.g., Neutral → Bull and Bull → Neutral) become observable as coherent oscillations.
+* Paired transitions (e.g., Neutral → Bull and Bull → Neutral) appear as coherent oscillations.
 
-Such stability is rare—but when it arises, it reveals the **structural backbone** of the market regime network.
+Classical models assume regime transitions are noisy or random. In contrast, SKA shows structural amplitudes $C_{ij}$ can remain highly stable across thousands of trades, enabling precise **real-time alignment** of transitions.
 
-This insight explains why **constant structural probabilities** are essential to aligning real-time transitions, and why traditional models miss them: they treat probability as noise, not as geometry.
+This stability reveals that markets operate within a **coherent informational geometry** rather than a stochastic regime-flip process, explaining why traditional models—treating probabilities as noise instead of geometry—fail to detect these regularities.
+
 
 
 
