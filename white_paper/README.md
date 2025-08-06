@@ -130,6 +130,28 @@ This equals the $(i,j)$ entry of the density matrix.
 
 
 
+### Constant Structural Coupling $C_{ij}$
+
+In practice, the most observable market regularities emerge when structural transition amplitudes become **time-invariant**:
+
+$$
+\large C_{ij} = \Psi_i^*(t) \Psi_j(t) = \text{const}
+$$
+
+This condition implies that the **directional flow of probability** between regimes $i$ and $j$ is stable over time.
+
+When $C_{ij}$ remains constant:
+
+* **Regime transitions align** cleanly in real-time analysis.
+* Entropy flow across regimes becomes **symmetric** or **balanced**.
+* Paired transitions (e.g., Neutral → Bull and Bull → Neutral) become observable as coherent oscillations.
+
+Such stability is rare—but when it arises, it reveals the **structural backbone** of the market regime network.
+
+This insight explains why **constant structural probabilities** are essential to aligning real-time transitions, and why traditional models miss them: they treat probability as noise, not as geometry.
+
+
+
 ## 5. Entropy Interpretation
 
 Each complex amplitude $\Psi_i(t)$ embeds an **entropy phase**:
