@@ -1,3 +1,4 @@
+
 # Structured Knowledge Accumulation: A Dirac Notation Formalism for Market Regime Modeling
 
 *Detecting Quantum Coherence in Financial Markets Through Real-Time Entropy Analysis*
@@ -246,8 +247,17 @@ Refer to this file when defining:
 * Real-time SKA signal decoders
 * Quantum-inspired simulation of regime evolution
 
----
+
 
 ## Author Note
 
 This formalism supports a deeper view of the market as an **information-processing system**, not a sequence of discrete events. Transitions are not externally triggered but emerge from the **geometry of knowledge accumulation** encoded in the SKA state.
+
+
+## References
+
+[^mahi2025a]: @mahi:layerwise:2025  
+Bouarfa Mahi. *Structured Knowledge Accumulation: An Autonomous Framework for Layer-Wise Entropy Reduction in Neural Learning*. [arXiv:2503.13942](https://arxiv.org/abs/2503.13942)
+
+[^mahi2025b]: @mahi:entropic:2025  
+Bouarfa Mahi. *Structured Knowledge Accumulation: The Principle of Entropic Least Action in Forward-Only Neural Learning*. [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)
