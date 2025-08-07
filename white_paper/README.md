@@ -176,7 +176,7 @@ $$
 
 where $\large \mathcal{L}_i(s)$ is the Lagrangian. 
 
-This phase represents the **information content** (entropy) of regime $\large i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
+This phase represents the **information content** (entropy) of regime $\large \lvert i \rangle$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
 
 
 
@@ -188,7 +188,7 @@ $$
 \large \widehat{T} = \lvert \Psi \rangle \langle \Psi \rvert
 $$
 
-We project this operator acting on the state back onto the basis state $\lvert i \rangle$:
+We project this operator acting on the state back onto the basis state $\large \lvert i \rangle$:
 
 $$
 \large \langle i \mid \widehat{T} \mid \Psi \rangle = \langle i \mid \Psi \rangle = \sum_j \Psi_j \langle i \mid j \rangle = \sum_j \Psi_j \delta_{ij} = \Psi_i
