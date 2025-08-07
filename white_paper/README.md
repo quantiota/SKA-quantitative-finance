@@ -169,7 +169,7 @@ The entropy $\large H_i(t)$ comes from the SKA learning process as it accumulate
 We express the entropy as a functional of the Lagrangian:
 
 $$
-\large H_i(t) = \displaystyle \frac{1}{\ln 2} \int_0^t \mathcal{L}_i(s) \, ds
+\large H_i(t) =  \frac{1}{\ln 2} \int_0^t \mathcal{L}_i(s) \, ds
 $$
 
 where $\large \mathcal{L}_i(s)$ is the Lagrangian. 
