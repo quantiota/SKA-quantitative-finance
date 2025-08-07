@@ -174,7 +174,7 @@ $$
 
 where $\large \mathcal{L}_i(s)$ is the Lagrangian. 
 
-This phase represents the **information content** (entropy) of regime $i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
+This phase represents the **information content** (entropy) of regime $\large i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
 
 
 
