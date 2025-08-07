@@ -162,7 +162,21 @@ $$
 \large \Psi_i(t) = A_i(t) e^{i H_i(t)}
 $$
 
+Here, $A_i(t)$ represents the amplitude, and $H_i(t)$ is the entropy associated with regime $i$ at time $t$.
+
+The entropy $H_i(t)$ comes from the SKA learning process as it accumulates over the trajectory of market evolution.
+
+We express the entropy as a functional of the Lagrangian:
+
+$$
+\large H_i(t) = \frac{1}{\ln 2} \int_0^t \mathcal{L}_i(s) \, ds
+$$
+
+where $\large \mathcal{L}_i(s)$ is the Lagrangian. 
+
 This phase represents the **information content** (entropy) of regime $i$. Therefore, transitions (via $\large \Psi_i^* \Psi_j$) carry entropy shifts $\large H_j - H_i$.
+
+
 
 ## 6. Transition Operator Action on the State
 
