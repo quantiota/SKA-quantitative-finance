@@ -165,7 +165,7 @@ $$
 
 Here, $\large A_i(t)$ represents the amplitude, and $\large H_i(t)$ is the entropy associated with regime $i$ at time $t$.
 
-The entropy $\large H_i(t)$ comes from the SKA learning process as it accumulates over the trajectory of market evolution.
+The entropy $\large H_i(t)$ comes from the **Real-Time SKA learning process** as it accumulates over the trajectory of market evolution.
 
 We express the entropy as a functional of the Lagrangian:
 
