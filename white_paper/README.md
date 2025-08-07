@@ -144,7 +144,7 @@ $$
 This condition implies a stable **directional flow of probability** between regimes $i$ and $j$.
 
 	
-The structural transition amplitude $\large C_{ij} = \Psi_i^*(t) \Psi_j(t)$ emerges \emph{only through Real-Time SKA Learning}. It reflects an acquired informational symmetry, not a statistical feature of the raw market data. Batch analysis cannot reveal this constant coherence — it is a learned invariant of the SKA entropy trajectory.		
+The structural transition amplitude $\large C_{ij} = \Psi_i^*(t) \Psi_j(t)$ emerges $\emph{only through Real-Time SKA Learning}$. It reflects an acquired informational symmetry, not a statistical feature of the raw market data. Batch analysis cannot reveal this constant coherence — it is a learned invariant of the SKA entropy trajectory.		
 	
 
 When $\large C_{ij}$ remains constant:
