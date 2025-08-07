@@ -141,13 +141,13 @@ $$
 
 This condition implies a stable **directional flow of probability** between regimes $i$ and $j$.
 
-When $C_{ij}$ remains constant:
+When $\large C_{ij}$ remains constant:
 
 * Regime transitions align clearly in real-time analysis.
 * Entropy flow across regimes becomes **symmetric** or **balanced**.
 * Paired transitions (e.g., Neutral → Bull and Bull → Neutral) appear as coherent oscillations.
 
-Classical models assume regime transitions are noisy or random. In contrast, SKA shows structural amplitudes $C_{ij}$ can remain highly stable across thousands of trades, enabling precise **real-time alignment** of transitions.
+Classical models assume regime transitions are noisy or random. In contrast, SKA shows structural amplitudes $\large C_{ij}$ can remain highly stable across thousands of trades, enabling precise **real-time alignment** of transitions.
 
 This stability reveals that markets operate within a **coherent informational geometry** rather than a stochastic regime-flip process, explaining why traditional models—treating probabilities as noise instead of geometry—fail to detect these regularities.
 
