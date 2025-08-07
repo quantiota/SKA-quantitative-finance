@@ -156,15 +156,15 @@ This stability reveals that markets operate within a **coherent informational ge
 
 ## 5. Entropy Interpretation
 
-Each complex amplitude $\Psi_i(t)$ embeds an **entropy phase**:
+Each complex amplitude $\large \Psi_i(t)$ embeds an **entropy phase**:
 
 $$
 \large \Psi_i(t) = A_i(t) e^{i H_i(t)}
 $$
 
-Here, $A_i(t)$ represents the amplitude, and $H_i(t)$ is the entropy associated with regime $i$ at time $t$.
+Here, $\large A_i(t)$ represents the amplitude, and $\large H_i(t)$ is the entropy associated with regime $i$ at time $t$.
 
-The entropy $H_i(t)$ comes from the SKA learning process as it accumulates over the trajectory of market evolution.
+The entropy $\large H_i(t)$ comes from the SKA learning process as it accumulates over the trajectory of market evolution.
 
 We express the entropy as a functional of the Lagrangian:
 
