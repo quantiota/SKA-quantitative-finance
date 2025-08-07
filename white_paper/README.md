@@ -201,7 +201,8 @@ This means:
 
 The transition operator encodes the full informational identity of the market state and reflects that transitions are emergent properties of the SKA state — not discrete external events.
 
-*Upon measurement, the superposed market state $\large |\Psi\rangle$ collapses to a definite regime $\large |i\rangle$ with probability $\large |\Psi_i|^2$, revealing the observed market condition.*
+*Upon measurement, the superposed market state $|\Psi\rangle$ collapses to a definite regime $|i\rangle$ with probability $|\Psi\_i|^2$, revealing the observed market condition.*
+
 
 ## 7. Summary of Core Equations
 
