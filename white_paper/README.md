@@ -133,7 +133,7 @@ $$
 This equals the $(i,j)$ entry of the density matrix.
 
 
-### Constant Structural Coupling \$C\_{ij}\$
+### Constant Structural Coupling $C\_{ij}$
 
 In practice, the most observable market regularities emerge when structural transition amplitudes become **time-invariant**:
 
