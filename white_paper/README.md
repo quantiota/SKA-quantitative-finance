@@ -256,8 +256,6 @@ This formalism supports a deeper view of the market as an **information-processi
 
 ## References
 
-[^mahi2025a]: @mahi:layerwise:2025  
-Bouarfa Mahi. *Structured Knowledge Accumulation: An Autonomous Framework for Layer-Wise Entropy Reduction in Neural Learning*. [arXiv:2503.13942](https://arxiv.org/abs/2503.13942)
+[1] Bouarfa Mahi. *Structured Knowledge Accumulation: An Autonomous Framework for Layer-Wise Entropy Reduction in Neural Learning*. [arXiv:2503.13942](https://arxiv.org/abs/2503.13942)
 
-[^mahi2025b]: @mahi:entropic:2025  
-Bouarfa Mahi. *Structured Knowledge Accumulation: The Principle of Entropic Least Action in Forward-Only Neural Learning*. [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)
+[2] Bouarfa Mahi. *Structured Knowledge Accumulation: The Principle of Entropic Least Action in Forward-Only Neural Learning*. [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)
