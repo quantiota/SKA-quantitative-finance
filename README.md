@@ -115,7 +115,7 @@ As SKA accumulates knowledge from the live data stream, patterns of predictabili
 
  **This universal insight** applies not only to market data, but to any sequential system:
 
- *[Information structure](https://github.com/quantiota/SKA-quantitative-finance/blob/main/ska-learning-duality/ska_learning_duality.pdf)is constructed and revealed only through real-time learning.*
+ *[Information structure](https://github.com/quantiota/SKA-quantitative-finance/blob/main/ska-learning-duality/ska_learning_duality.pdf) is constructed and revealed only through real-time learning.*
 
 
 ## For Industry Partners and Quantitative Finance Teams:
