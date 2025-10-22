@@ -154,8 +154,7 @@ If you use SKA Quantitative Finance, please cite:
 
 ## License and Contribution
 
-Open for research and academic use (MIT License).
-Contributions are welcome! Please open an issue or pull request to suggest enhancements or extensions.
+This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
 
 ---
 
