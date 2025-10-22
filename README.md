@@ -152,9 +152,13 @@ If you use SKA Quantitative Finance, please cite:
 
 ---
 
-## License and Contribution
+## License Notice
 
-This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+This repository and its contents (including SQL queries, figures, and explanations)
+are licensed under a **Creative Commons Attribution–NonCommercial–NoDerivatives 4.0 International License**.
+
+No redistribution, reproduction, or modification is permitted without prior written
+permission from **Bouarfa Mahi | Quantiota**.
 
 ---
 
