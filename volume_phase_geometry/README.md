@@ -1,7 +1,9 @@
 # Embedding Volume Flow with ODE Transforms: A Real-Time SQL Indicator with Geometric Phase Insights
 
 -- © 2025 Bouarfa Mahi | Quantiota
+
 -- Licensed under CC BY-NC-ND 4.0
+
 -- Redistribution or modification prohibited without written permission.
 
 
