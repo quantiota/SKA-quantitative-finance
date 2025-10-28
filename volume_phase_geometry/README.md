@@ -291,6 +291,8 @@ tick-level data using QuestDB:
 
 ```sql
 
+
+
 WITH base_data AS (
   SELECT 
     timestamp, 
