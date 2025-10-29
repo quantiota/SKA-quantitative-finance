@@ -52,7 +52,7 @@ Price is not just information — it is the **language of the market’s learnin
 
 **Summary:**
 
-> The SKA framework reveals that the market is not modeled — it is a learner.
-> Price evolution mirrors SKA’s entropy dynamics because both arise from the same universal principle: forward-only knowledge accumulation through entropy reduction.
+> The SKA framework reveals that the market is not a modeled system but a learner.
+> Its price evolution mirrors SKA’s entropy dynamics, both governed by the same     universal process of forward-only knowledge accumulation through entropy reduction.
 
 
