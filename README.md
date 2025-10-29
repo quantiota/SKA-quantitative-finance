@@ -37,6 +37,13 @@ For full theoretical details, see the [first SKA paper](https://arxiv.org/abs/25
 
 For a detailed exploration of how SKA’s entropy-based transition probabilities reveal the hidden information-theoretic basis for constant regime switching—mirroring and explaining the empirical success of Markov chain models in finance—see the [SKA vs Markov](https://github.com/quantiota/SKA-quantitative-finance/blob/main/ska_vs_markov.md) document included in this repository.
 
+
+## The Market Learns as SKA Learns
+
+This may be the most important realization of the entire framework. The SKA learning law — forward-only entropy minimization — does not apply only to artificial systems. It also describes the dynamics of the financial market itsel—see the [Market learns as SKA](https://github.com/quantiota/SKA-quantitative-finance/blob/main/market_learns_as_ska.md)  document included in this repository.
+
+
+
 ---
 ## Installation
 
