@@ -7,7 +7,7 @@ For decades, **Markov chain regime-switching models** have been widely used in q
 - The probability of moving from one regime to another (e.g., bull→bear) is treated as a **constant**—either estimated from data or specified by the user.
 - This “transition matrix” has become a standard tool for modeling financial market behavior.
 
-However, while Markov models fit data well, the **underlying reason for the constancy of these transition probabilities** has never been fully explained. They are statistical facts—not derived from first principles.
+However, while Markov models fit data well, the **underlying reason for the constancy of these transition probabilities** has never been fully explained. They are empirically fitted parameters, not derived from a generative mechanism.
 
 ## The Breakthrough: SKA’s Entropy-Based Regime Dynamics
 
@@ -19,7 +19,7 @@ The **Structured Knowledge Accumulation (SKA)** framework takes a fundamentally 
  
   $P = \displaystyle \exp\left(-\left| \frac{H_{\text{after}} - H_{\text{before}}}{H_{\text{after}}} \right|\right)$
 
-- When these probabilities are plotted for each transition type, they form **quantized, constant “bands”**—each regime pair has its own characteristic information-processing cost.
+- When these probabilities are plotted for each transition type, they form **quantized, constant “bands”**—Each regime pair (e.g., neutral→bull, bull→neutral) forms a distinct band in the entropy-probability space, indicating a characteristic information-processing cost.
 
 ## The Crystal-Clear Correlation
 
@@ -48,6 +48,6 @@ This framework enables:
 
 ## Summary Statement
 
-> **The constant transition probabilities found in Markov regime-switching models are not arbitrary—they are “universal constants” revealed by the geometry of entropy in the SKA framework. SKA thus provides a deep, mechanistic reason for the success of Markov models in finance and beyond.**
+> **The constant transition probabilities observed in Markov regime-switching models are not arbitrary. They are universal constants emerging from the geometry of entropy in the SKA framework. SKA provides the first mechanistic, information-theoretic explanation for the empirical stability of Markov transition matrices.**
 
 
