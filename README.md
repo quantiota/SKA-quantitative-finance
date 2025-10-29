@@ -154,7 +154,7 @@ If you use SKA Quantitative Finance, please cite:
 ## SKA Framework: Open Science, Proprietary Real-Time Engine
 
 The full mathematical foundation and batch implementation are public for verification on
-[GitHub](https://github.com/quantiota/Arxi).
+[GitHub](https://github.com/quantiota/Arxiv).
 The real-time system extends that foundation to continuous entropy learning — that part is proprietary.
 
 ---
