@@ -1,6 +1,19 @@
 # SKA Trading Bot Results
 
-![Regime Transition Probability](regime_transition_probability.png)
+## Framework
+
+**Entropic Trading** — uses entropy dynamics as the signal axis instead of price.
+The source of the alpha is the market's own learning process, not price levels or volume.
+
+**Paired Cycle Trading (PCT)** — the specific strategy implemented here.
+Entry and exit are defined by complete paired regime cycles in the TradeID Series.
+The bot is structurally blind to the neutral→neutral baseline by design — it trades only
+the 10% of transitions that carry directional information.
+
+This is not HFT. It is event-driven structural trading — the signal fires on a topological
+event (completion of a paired regime cycle), not on a threshold or a price level.
+
+---
 
 ## v1 — Single confirmation exit (14 loops, 282 trades)
 
@@ -17,7 +30,6 @@ This suggests:
 3. A minimum time between trades or P threshold filter would cut the noise and keep the winners
 
 The alpha is there — the later loops prove it. The bot just needs to be more selective.
-
 
 ## v2 — Double confirmation exit (14 loops, 73 trades)
 
