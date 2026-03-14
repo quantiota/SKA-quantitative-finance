@@ -29,3 +29,15 @@ The alpha is there — the later loops prove it. The bot just needs to be more s
 v2 trades 4x less than v1 (73 vs 282) — the 2-confirmation filter reduces noise. Win rate improved. But total PnL went negative because the bot exits too late — by the time 2 opposite signals arrive, price has moved against the position.
 
 Conclusion: v1 exit speed is correct. The cycle closes fast. Double confirmation delays the exit and increases losses. The next approach should keep v1's fast exit but filter entries.
+
+## v3 — Full opposite paired cycle exit (in progress)
+
+Signal logic:
+- LONG:  neutral→bull → bull→neutral → neutral→bear → bear→neutral (CLOSE)
+- SHORT: neutral→bear → bear→neutral → neutral→bull → bull→neutral (CLOSE)
+
+Exit requires the **complete opposite paired cycle** — not just one or two opposite signals but the full structural sequence. State machine with 3 states: WAIT_PAIR_CONFIRM → WAIT_OPP_OPEN → WAIT_OPP_CONFIRM.
+
+Rationale: v1 and v2 both close on incomplete structural events. v3 is the theoretically correct implementation — the exit is triggered only when the opposite paired regime cycle is fully confirmed, which is the structural definition of the alpha.
+
+Expected: fewer trades than v1/v2, longer hold times, but exits aligned with true structural reversals. Results pending.
