@@ -28,7 +28,9 @@ The alpha is there — the later loops prove it. The bot just needs to be more s
 
 v2 trades 4x less than v1 (73 vs 282) — the 2-confirmation filter reduces noise. Win rate improved. But total PnL went negative because the bot exits too late — by the time 2 opposite signals arrive, price has moved against the position.
 
-Conclusion: v1 exit speed is correct. The cycle closes fast. Double confirmation delays the exit and increases losses. The next approach should keep v1's fast exit but filter entries.
+Conclusion: v2 logic is structurally wrong. It counts any two opposite-side signals to close — but the two signals do not need to form a proper paired cycle. This means v2 can close on a mix of unrelated transitions, not on a real structural reversal. The double confirmation delays the exit without adding structural meaning, which is why PnL is worse than v1.
+
+The correct approach is not faster or slower exits — it is requiring the **complete opposite paired cycle** as the exit condition. This is v3.
 
 ## v3 — Full opposite paired cycle exit (in progress)
 
