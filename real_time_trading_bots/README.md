@@ -15,6 +15,8 @@ event (completion of a paired regime cycle), not on a threshold or a price level
 
 ---
 
+![Schema Bot Versions](schema_bot_versions.png)
+
 ## Bot Versions
 
 ### v1 — Single opposite signal closes
