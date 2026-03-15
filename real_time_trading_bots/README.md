@@ -1,5 +1,9 @@
 # SKA Trading Bot Results
 
+<videocontrols>
+<sourcesrc="real_time_dashboard_final.mp4"type="video/mp4">
+</video>
+
 ## Framework
 
 **Entropic Trading** — uses entropy dynamics as the signal axis instead of price.
