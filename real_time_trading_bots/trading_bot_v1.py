@@ -220,16 +220,20 @@ class SKATradingBot:
         State machine:
 
         LONG:
-          WAIT_PAIR   → bull→neutral      → IN_NEUTRAL
-          IN_NEUTRAL  → neutral→neutral   → READY
-          READY       → neutral→bull      → WAIT_PAIR (cycle repeats)
-                      → neutral→bear      → CLOSE LONG
+          WAIT_PAIR   → bull→neutral               → IN_NEUTRAL
+          IN_NEUTRAL  → neutral→neutral × N         → stay IN_NEUTRAL (count nn_count)
+          IN_NEUTRAL  → first non-neutral           → READY
+          READY       → neutral→bull               → WAIT_PAIR (cycle repeats, reset nn_count)
+                      → neutral→bear               → CLOSE LONG
+                      → bear→neutral               → CLOSE LONG
 
         SHORT:
-          WAIT_PAIR   → bear→neutral      → IN_NEUTRAL
-          IN_NEUTRAL  → neutral→neutral   → READY
-          READY       → neutral→bear      → WAIT_PAIR (cycle repeats)
-                      → neutral→bull      → CLOSE SHORT
+          WAIT_PAIR   → bear→neutral               → IN_NEUTRAL
+          IN_NEUTRAL  → neutral→neutral × N         → stay IN_NEUTRAL (count nn_count)
+          IN_NEUTRAL  → first non-neutral           → READY
+          READY       → neutral→bear               → WAIT_PAIR (cycle repeats, reset nn_count)
+                      → neutral→bull               → CLOSE SHORT
+                      → bull→neutral               → CLOSE SHORT
         """
         trade_id = transition['trade_id']
         price    = transition['price']
