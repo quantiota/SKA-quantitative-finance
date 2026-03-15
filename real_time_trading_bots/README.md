@@ -3,7 +3,7 @@
 
 ## SKA Real-Time Dashboard — XRPUSDT Live Market Structure Analysis (Youtube)
 
-[![Watch the demo](thumbnail.png)](https://youtu.be/wNgLlg4CktM?si=3ZkvpVw3DQtiHGt5/video)
+[![Watch the demo](thumbnail.png)](https://youtu.be/01qdoMPAlB4?si=5xDByNTuGZF4gare/video)
 
 ## Framework
 
