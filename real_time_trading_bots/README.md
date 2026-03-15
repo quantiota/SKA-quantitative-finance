@@ -13,9 +13,59 @@ the 10% of transitions that carry directional information.
 This is not HFT. It is event-driven structural trading — the signal fires on a topological
 event (completion of a paired regime cycle), not on a threshold or a price level.
 
+## Signal Logic — Mermaid Diagram
 
+```mermaid
+flowchart TB
+    title["SKA Paired Cycle Trading — v1 Signal Logic"]
 
-![Schema Bot Versions](schema_bot_versions.png)
+    note["v1 — Consecutive same-direction paired cycles<br/>Hold through repeated same-direction cycles — close only when opposite cycle opens"]
+
+    title --> note
+
+    subgraph LONG["LONG"]
+        direction LR
+        L1["neutral→bull<br/><i>OPEN / WAIT_PAIR</i>"]
+        L2["bull→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
+        L3["neutral→neutral × N<br/><i>neutral gap / READY</i>"]
+        L4["neutral→bear<br/>or bear→neutral<br/><i>CLOSE LONG</i>"]
+
+        L1 --> L2 --> L3 --> L4
+        L3 -. "↺ repeats" .-> L1
+    end
+
+    subgraph SHORT["SHORT"]
+        direction LR
+        S1["neutral→bear<br/><i>OPEN / WAIT_PAIR</i>"]
+        S2["bear→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
+        S3["neutral→neutral × N<br/><i>neutral gap / READY</i>"]
+        S4["neutral→bull<br/>or bull→neutral<br/><i>CLOSE SHORT</i>"]
+
+        S1 --> S2 --> S3 --> S4
+        S3 -.-> S1
+    end
+
+    note --> LONG
+    note --> SHORT
+
+    classDef longOpen fill:#A8DFBC,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
+    classDef longPair fill:#C8F0A8,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
+    classDef shortOpen fill:#FFAAAA,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
+    classDef shortPair fill:#FFD0A0,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
+    classDef neutral fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
+    classDef meta fill:#FFFFFF,stroke:#FFFFFF,color:#222;
+
+    class title,note meta;
+    class L1 longOpen;
+    class L2 longPair;
+    class L3 neutral;
+    class L4 shortOpen;
+    class S1 shortOpen;
+    class S2 shortPair;
+    class S3 neutral;
+    class S4 longOpen;
+```
+
 
 ## Bot Version
 
