@@ -13,7 +13,7 @@ the 10% of transitions that carry directional information.
 This is not HFT. It is event-driven structural trading — the signal fires on a topological
 event (completion of a paired regime cycle), not on a threshold or a price level.
 
-## Signal Logic — Mermaid Diagram
+## Signal Logic — Diagram
 
 ```mermaid
 flowchart TB
