@@ -45,12 +45,5 @@ The alpha: the market generates consecutive same-direction paired cycles. Hold t
 all of them — close only when the first opposite-direction cycle opens.
 The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neutral_neutral_count`.
 
-Key improvements over v1–v4:
-- All transitions processed in order (no skipping between polls)
-- Full neutral gap counted per cycle (`neutral_neutral_count`)
-- QuestDB state logging (`ska_bot_v1` table) with event/state/side as both int and string
-- Grafana observable in real time via `grafana_bot_queries.sql`
-
-Backtest (July 2025, 20 files): 1043 trades | win=37.4% | PnL=+0.0659
 
 Live results: in progress.
