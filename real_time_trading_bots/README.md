@@ -4,6 +4,8 @@
 <sourcesrc="real_time_dashboard_final.mp4"type="video/mp4">
 </video>
 
+[![Watch the demo](thumbnail.png)](https://youtu.be/wNgLlg4CktM?si=3ZkvpVw3DQtiHGt5/video)
+
 ## Framework
 
 **Entropic Trading** — uses entropy dynamics as the signal axis instead of price.
