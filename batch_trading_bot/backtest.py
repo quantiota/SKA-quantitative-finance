@@ -25,6 +25,7 @@ SUMMARY_FILE = '/home/coder/project/Real_Time_SKA_trading/batch_trading_bot/summ
 WAIT_PAIR  = 'WAIT_PAIR'
 IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
+EXIT_WAIT  = 'EXIT_WAIT'
 
 
 # ─── Transition computation ───────────────────────────────────────────────────
@@ -97,7 +98,7 @@ class Position:
 # ─── Bot v1 ───────────────────────────────────────────────────────────────────
 
 class BotV1:
-    """Consecutive same-direction paired cycles.
+    """Consecutive same-direction paired cycles. Symmetric exit.
 
     LONG:
       neutral→bull              (OPEN — WAIT_PAIR)
@@ -105,7 +106,8 @@ class BotV1:
       neutral→neutral × N       (count all — stay IN_NEUTRAL)
       <first non-neutral>       (gap closes — READY)
       neutral→bull              (cycle repeats — WAIT_PAIR)
-      neutral→bear / bear→neutral  (CLOSE — only from READY)
+      neutral→bear              (opposite cycle opens — EXIT_WAIT)
+      bear→neutral              (opposite pair confirmed — CLOSE LONG)
 
     SHORT: mirror logic.
     """
@@ -188,10 +190,14 @@ class BotV1:
                     self.position.exit_state = WAIT_PAIR
                     self.position.neutral_neutral_count = 0
                 elif name == 'neutral→bear':
+                    self.position.exit_state = EXIT_WAIT
+            elif self.position.exit_state == EXIT_WAIT:
+                if name == 'bear→neutral':
                     self._close(price, tid, name)
-                    self._open('SHORT', price, tid, ts, name)
-                elif name == 'bear→neutral':
-                    self._close(price, tid, name)
+                    self._open('SHORT', price, tid, ts, 'neutral→bear')
+                elif name == 'neutral→bull':
+                    self.position.exit_state = WAIT_PAIR
+                    self.position.neutral_neutral_count = 0
 
         elif self.position.side == 'SHORT':
             if self.position.exit_state == WAIT_PAIR:
@@ -207,10 +213,14 @@ class BotV1:
                     self.position.exit_state = WAIT_PAIR
                     self.position.neutral_neutral_count = 0
                 elif name == 'neutral→bull':
+                    self.position.exit_state = EXIT_WAIT
+            elif self.position.exit_state == EXIT_WAIT:
+                if name == 'bull→neutral':
                     self._close(price, tid, name)
-                    self._open('LONG', price, tid, ts, name)
-                elif name == 'bull→neutral':
-                    self._close(price, tid, name)
+                    self._open('LONG', price, tid, ts, 'neutral→bull')
+                elif name == 'neutral→bear':
+                    self.position.exit_state = WAIT_PAIR
+                    self.position.neutral_neutral_count = 0
 
 
 # ─── Main backtest runner ─────────────────────────────────────────────────────

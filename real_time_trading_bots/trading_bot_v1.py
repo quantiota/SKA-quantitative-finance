@@ -13,18 +13,20 @@ Signal logic — consecutive paired cycles:
   LONG:
     neutral→bull               (OPEN LONG — WAIT_PAIR)
     bull→neutral               (pair confirmed — IN_NEUTRAL)
-    neutral→neutral            (neutral gap — READY)
+    neutral→neutral × N        (neutral gap — stay IN_NEUTRAL)
+    <first non-neutral>        (gap closes — READY)
     neutral→bull               (cycle repeats — WAIT_PAIR)
-    ...
-    neutral→bear               (CLOSE LONG — only from READY state)
+    neutral→bear               (opposite cycle opens — EXIT_WAIT)
+    bear→neutral               (opposite pair confirmed — CLOSE LONG)
 
   SHORT:
     neutral→bear               (OPEN SHORT — WAIT_PAIR)
     bear→neutral               (pair confirmed — IN_NEUTRAL)
-    neutral→neutral            (neutral gap — READY)
+    neutral→neutral × N        (neutral gap — stay IN_NEUTRAL)
+    <first non-neutral>        (gap closes — READY)
     neutral→bear               (cycle repeats — WAIT_PAIR)
-    ...
-    neutral→bull               (CLOSE SHORT — only from READY state)
+    neutral→bull               (opposite cycle opens — EXIT_WAIT)
+    bull→neutral               (opposite pair confirmed — CLOSE SHORT)
 
 State machine per position:
   WAIT_PAIR   → waiting for own pair confirmation
@@ -51,6 +53,7 @@ logging.basicConfig(
 WAIT_PAIR  = 'WAIT_PAIR'
 IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
+EXIT_WAIT  = 'EXIT_WAIT'
 
 # Numeric codes for QuestDB/Grafana (no VARCHAR)
 EVENT = {
@@ -66,6 +69,7 @@ STATE = {
     WAIT_PAIR:  1,
     IN_NEUTRAL: 2,
     READY:      3,
+    EXIT_WAIT:  4,
 }
 SIDE = {
     'LONG':  1,
@@ -224,16 +228,18 @@ class SKATradingBot:
           IN_NEUTRAL  → neutral→neutral × N         → stay IN_NEUTRAL (count nn_count)
           IN_NEUTRAL  → first non-neutral           → READY
           READY       → neutral→bull               → WAIT_PAIR (cycle repeats, reset nn_count)
-                      → neutral→bear               → CLOSE LONG
-                      → bear→neutral               → CLOSE LONG
+                      → neutral→bear               → EXIT_WAIT
+          EXIT_WAIT   → bear→neutral               → CLOSE LONG
+                      → neutral→bull               → WAIT_PAIR (bear cycle aborted, still long)
 
         SHORT:
           WAIT_PAIR   → bear→neutral               → IN_NEUTRAL
           IN_NEUTRAL  → neutral→neutral × N         → stay IN_NEUTRAL (count nn_count)
           IN_NEUTRAL  → first non-neutral           → READY
           READY       → neutral→bear               → WAIT_PAIR (cycle repeats, reset nn_count)
-                      → neutral→bull               → CLOSE SHORT
-                      → bull→neutral               → CLOSE SHORT
+                      → neutral→bull               → EXIT_WAIT
+          EXIT_WAIT   → bull→neutral               → CLOSE SHORT
+                      → neutral→bear               → WAIT_PAIR (bull cycle aborted, still short)
         """
         trade_id = transition['trade_id']
         price    = transition['price']
@@ -314,20 +320,29 @@ class SKATradingBot:
                     )
                     await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG')
                 elif name == 'neutral→bear':
+                    self.position.exit_state = EXIT_WAIT
+                    logging.info(
+                        f"--- Opposite cycle opening (neutral→bear) @ {price:.6f} "
+                        f"| EXIT_WAIT | trade_id={trade_id}"
+                    )
+                    await self._log_event(trade_id, price, 'NEUTRAL_GAP', EXIT_WAIT, 'LONG')
+
+            elif self.position.exit_state == EXIT_WAIT:
+                if name == 'bear→neutral':
                     pnl = price - self.position.entry_price
                     pnl_pct = (pnl / self.position.entry_price) * 100
                     self._record_trade(pnl, pnl_pct, price)
                     logging.info(
-                        f"<<< CLOSE LONG (neutral→bear) @ {price:.6f} | "
+                        f"<<< CLOSE LONG (bear→neutral) @ {price:.6f} | "
                         f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
                     )
-                    await self._log_event(trade_id, price, 'CLOSE_LONG', READY, 'LONG', pnl)
+                    await self._log_event(trade_id, price, 'CLOSE_LONG', EXIT_WAIT, 'LONG', pnl)
                     if not self.dry_run:
                         self._execute_sell(price)
                     self.position = Position(
                         side='SHORT', entry_price=price,
                         entry_trade_id=trade_id, entry_time=str(ts),
-                        entry_transition=name, exit_state=WAIT_PAIR
+                        entry_transition='neutral→bear', exit_state=WAIT_PAIR
                     )
                     logging.info(
                         f">>> OPEN SHORT (new cycle) @ {price:.6f} "
@@ -336,18 +351,14 @@ class SKATradingBot:
                     await self._log_event(trade_id, price, 'OPEN_SHORT', WAIT_PAIR, 'SHORT')
                     if not self.dry_run:
                         self._execute_sell(price)
-                elif name == 'bear→neutral':
-                    pnl = price - self.position.entry_price
-                    pnl_pct = (pnl / self.position.entry_price) * 100
-                    self._record_trade(pnl, pnl_pct, price)
+                elif name == 'neutral→bull':
+                    self.position.exit_state = WAIT_PAIR
+                    self.position.neutral_neutral_count = 0
                     logging.info(
-                        f"<<< CLOSE LONG (bear→neutral) @ {price:.6f} | "
-                        f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
+                        f"--- Bear cycle aborted (neutral→bull) @ {price:.6f} "
+                        f"| WAIT_PAIR | still LONG | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'CLOSE_LONG', READY, 'LONG', pnl)
-                    if not self.dry_run:
-                        self._execute_sell(price)
-                    self.position = None
+                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG')
 
         # === SHORT POSITION ===
         elif self.position.side == 'SHORT':
@@ -387,20 +398,29 @@ class SKATradingBot:
                     )
                     await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT')
                 elif name == 'neutral→bull':
+                    self.position.exit_state = EXIT_WAIT
+                    logging.info(
+                        f"--- Opposite cycle opening (neutral→bull) @ {price:.6f} "
+                        f"| EXIT_WAIT | trade_id={trade_id}"
+                    )
+                    await self._log_event(trade_id, price, 'NEUTRAL_GAP', EXIT_WAIT, 'SHORT')
+
+            elif self.position.exit_state == EXIT_WAIT:
+                if name == 'bull→neutral':
                     pnl = self.position.entry_price - price
                     pnl_pct = (pnl / self.position.entry_price) * 100
                     self._record_trade(pnl, pnl_pct, price)
                     logging.info(
-                        f"<<< CLOSE SHORT (neutral→bull) @ {price:.6f} | "
+                        f"<<< CLOSE SHORT (bull→neutral) @ {price:.6f} | "
                         f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
                     )
-                    await self._log_event(trade_id, price, 'CLOSE_SHORT', READY, 'SHORT', pnl)
+                    await self._log_event(trade_id, price, 'CLOSE_SHORT', EXIT_WAIT, 'SHORT', pnl)
                     if not self.dry_run:
                         self._execute_buy(price)
                     self.position = Position(
                         side='LONG', entry_price=price,
                         entry_trade_id=trade_id, entry_time=str(ts),
-                        entry_transition=name, exit_state=WAIT_PAIR
+                        entry_transition='neutral→bull', exit_state=WAIT_PAIR
                     )
                     logging.info(
                         f">>> OPEN LONG (new cycle) @ {price:.6f} "
@@ -409,18 +429,14 @@ class SKATradingBot:
                     await self._log_event(trade_id, price, 'OPEN_LONG', WAIT_PAIR, 'LONG')
                     if not self.dry_run:
                         self._execute_buy(price)
-                elif name == 'bull→neutral':
-                    pnl = self.position.entry_price - price
-                    pnl_pct = (pnl / self.position.entry_price) * 100
-                    self._record_trade(pnl, pnl_pct, price)
+                elif name == 'neutral→bear':
+                    self.position.exit_state = WAIT_PAIR
+                    self.position.neutral_neutral_count = 0
                     logging.info(
-                        f"<<< CLOSE SHORT (bull→neutral) @ {price:.6f} | "
-                        f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
+                        f"--- Bull cycle aborted (neutral→bear) @ {price:.6f} "
+                        f"| WAIT_PAIR | still SHORT | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'CLOSE_SHORT', READY, 'SHORT', pnl)
-                    if not self.dry_run:
-                        self._execute_buy(price)
-                    self.position = None
+                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT')
 
     def _record_trade(self, pnl, pnl_pct, exit_price):
         self.total_trades += 1
