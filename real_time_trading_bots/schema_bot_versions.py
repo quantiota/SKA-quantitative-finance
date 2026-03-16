@@ -35,25 +35,25 @@ def draw_arrow(ax, x1, x2, y, color='#888888'):
                 arrowprops=dict(arrowstyle='->', color=color, lw=1.8))
 
 
-fig, axes = plt.subplots(1, 1, figsize=(16, 6))
+fig, axes = plt.subplots(1, 1, figsize=(18, 6))
 fig.patch.set_facecolor(COLORS['bg'])
 fig.suptitle('SKA Paired Cycle Trading — v1 Signal Logic',
              fontsize=15, fontweight='bold', color=COLORS['text'], y=1.02)
 
 ax = axes
 ax.set_facecolor(COLORS['bg'])
-ax.set_xlim(-1, 14)
+ax.set_xlim(-1, 17)
 ax.set_ylim(-1.2, 2.6)
 ax.axis('off')
 
-ax.text(6.5, 1.85, 'v1 — Consecutive same-direction paired cycles', ha='center', va='center',
+ax.text(7.5, 1.85, 'v1 — Consecutive same-direction paired cycles', ha='center', va='center',
         fontsize=13, fontweight='bold', color=COLORS['text'])
-ax.text(6.5, 1.45, 'Hold through repeated same-direction cycles — close only when opposite cycle opens',
+ax.text(7.5, 1.45, 'Hold through repeated same-direction cycles — close only when opposite paired cycle confirms',
         ha='center', va='center', fontsize=8.5, color='#888888', fontstyle='italic')
 
-for seq_idx, (side, nb_color, close_label, close_color, repeat_color) in enumerate([
-    ('LONG',  COLORS['neutral→bull'], 'neutral→bear\nor bear→neutral', COLORS['neutral→bear'], COLORS['bull→neutral']),
-    ('SHORT', COLORS['neutral→bear'], 'neutral→bull\nor bull→neutral', COLORS['neutral→bull'], COLORS['bear→neutral']),
+for seq_idx, (side, nb_color, exit_open, exit_open_color, exit_close, exit_close_color, repeat_color) in enumerate([
+    ('LONG',  COLORS['neutral→bull'], 'neutral→bear', COLORS['neutral→bear'], 'bear→neutral', COLORS['bear→neutral'], COLORS['bull→neutral']),
+    ('SHORT', COLORS['neutral→bear'], 'neutral→bull', COLORS['neutral→bull'], 'bull→neutral', COLORS['bull→neutral'], COLORS['bear→neutral']),
 ]):
     y = 0.5 - seq_idx * 1.1
     side_color = '#2E8B57' if side == 'LONG' else '#CC2222'
@@ -63,9 +63,9 @@ for seq_idx, (side, nb_color, close_label, close_color, repeat_color) in enumera
     open_trans = 'neutral→bull' if side == 'LONG' else 'neutral→bear'
     pair_trans = 'bull→neutral' if side == 'LONG' else 'bear→neutral'
 
-    draw_transition(ax, 1.2, y, open_trans,  nb_color,     'OPEN\nWAIT_PAIR')
+    draw_transition(ax, 1.2, y, open_trans,       nb_color,          'OPEN\nWAIT_PAIR')
     draw_arrow(ax, 1.2, 3.8, y)
-    draw_transition(ax, 3.8, y, pair_trans,  repeat_color, 'pair confirmed\nIN_NEUTRAL')
+    draw_transition(ax, 3.8, y, pair_trans,        repeat_color,      'pair confirmed\nIN_NEUTRAL')
     draw_arrow(ax, 3.8, 6.4, y)
     draw_transition(ax, 6.4, y, 'neutral→neutral\n× N', COLORS['neutral→neutral'], 'neutral gap\nREADY')
     # Loop arrow back
@@ -75,8 +75,10 @@ for seq_idx, (side, nb_color, close_label, close_color, repeat_color) in enumera
     if seq_idx == 0:
         ax.text(3.8, y + 0.72, '↺  repeats', ha='center', va='center',
                 fontsize=8, color='#888888', fontstyle='italic')
-    draw_arrow(ax, 6.4, 10.5, y)
-    draw_transition(ax, 10.5, y, close_label, close_color, 'CLOSE ' + side)
+    draw_arrow(ax, 6.4, 9.2, y)
+    draw_transition(ax, 9.2, y, exit_open,         exit_open_color,   'opp. cycle opens\nEXIT_WAIT')
+    draw_arrow(ax, 9.2, 12.0, y)
+    draw_transition(ax, 12.0, y, exit_close,        exit_close_color,  'opp. pair confirmed\nCLOSE ' + side)
 
 plt.tight_layout()
 outfile = '/home/coder/project/Real_Time_SKA_trading/batch_trading_bot/schema_bot_versions.png'

@@ -24,7 +24,7 @@ event (completion of a paired regime cycle), not on a threshold or a price level
 flowchart TB
     title["SKA Paired Cycle Trading — v1 Signal Logic"]
 
-    note["v1 — Consecutive same-direction paired cycles<br/>Hold through repeated same-direction cycles — close only when opposite cycle opens"]
+    note["v1 — Consecutive same-direction paired cycles<br/>Hold through repeated same-direction cycles — close only when opposite paired cycle confirms"]
 
     title --> note
 
@@ -33,9 +33,10 @@ flowchart TB
         L1["neutral→bull<br/><i>OPEN / WAIT_PAIR</i>"]
         L2["bull→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
         L3["neutral→neutral × N<br/><i>neutral gap / READY</i>"]
-        L4["neutral→bear<br/>or bear→neutral<br/><i>CLOSE LONG</i>"]
+        L4["neutral→bear<br/><i>opp. cycle opens / EXIT_WAIT</i>"]
+        L5["bear→neutral<br/><i>opp. pair confirmed / CLOSE LONG</i>"]
 
-        L1 --> L2 --> L3 --> L4
+        L1 --> L2 --> L3 --> L4 --> L5
         L3 -. "↺ repeats" .-> L1
     end
 
@@ -44,9 +45,10 @@ flowchart TB
         S1["neutral→bear<br/><i>OPEN / WAIT_PAIR</i>"]
         S2["bear→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
         S3["neutral→neutral × N<br/><i>neutral gap / READY</i>"]
-        S4["neutral→bull<br/>or bull→neutral<br/><i>CLOSE SHORT</i>"]
+        S4["neutral→bull<br/><i>opp. cycle opens / EXIT_WAIT</i>"]
+        S5["bull→neutral<br/><i>opp. pair confirmed / CLOSE SHORT</i>"]
 
-        S1 --> S2 --> S3 --> S4
+        S1 --> S2 --> S3 --> S4 --> S5
         S3 -.-> S1
     end
 
@@ -65,10 +67,12 @@ flowchart TB
     class L2 longPair;
     class L3 neutral;
     class L4 shortOpen;
+    class L5 shortPair;
     class S1 shortOpen;
     class S2 shortPair;
     class S3 neutral;
     class S4 longOpen;
+    class S5 longPair;
 ```
 
 
