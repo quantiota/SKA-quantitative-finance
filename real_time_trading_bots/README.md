@@ -78,7 +78,7 @@ flowchart TB
 
 ## Bot Version
 
-### v1 — Consecutive same-direction paired cycles (current)
+### v1 — Consecutive same-direction paired cycles, symmetric exit (current)
 
 ```
 LONG:   neutral→bull              (OPEN — WAIT_PAIR)
@@ -87,7 +87,8 @@ LONG:   neutral→bull              (OPEN — WAIT_PAIR)
         <first non-neutral>       (gap closes — READY)
         neutral→bull              (cycle repeats — back to WAIT_PAIR)
         ...
-        neutral→bear OR bear→neutral  (CLOSE — only from READY state)
+        neutral→bear              (opposite cycle opens — EXIT_WAIT)
+        bear→neutral              (opposite pair confirmed — CLOSE LONG)
 
 SHORT:  neutral→bear              (OPEN — WAIT_PAIR)
         bear→neutral              (DOWN pair confirmed — IN_NEUTRAL)
@@ -95,14 +96,23 @@ SHORT:  neutral→bear              (OPEN — WAIT_PAIR)
         <first non-neutral>       (gap closes — READY)
         neutral→bear              (cycle repeats — back to WAIT_PAIR)
         ...
-        neutral→bull OR bull→neutral  (CLOSE — only from READY state)
+        neutral→bull              (opposite cycle opens — EXIT_WAIT)
+        bull→neutral              (opposite pair confirmed — CLOSE SHORT)
 ```
 
-State machine: WAIT_PAIR → IN_NEUTRAL → READY → (WAIT_PAIR loop or CLOSE).
+State machine: WAIT_PAIR → IN_NEUTRAL → READY → EXIT_WAIT → CLOSE.
 
 The alpha: the market generates consecutive same-direction paired cycles. Hold through
-all of them — close only when the first opposite-direction cycle opens.
+all of them — close only when the opposite paired cycle fully confirms.
+Entry and exit require identical structural confirmation — a complete paired cycle.
 The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neutral_neutral_count`.
 
+- All transitions processed in order (no skipping between polls)
+- Full neutral gap counted per cycle (`neutral_neutral_count`)
+- QuestDB state logging (`ska_bot_v1` table) with event/state/side as both int and string
+- Grafana observable in real time via `grafana_bot_queries.sql`
 
-Live results: in progress.
+Backtest (July 2025, 20 files):       516 trades | win=66.9% | PnL=+0.1635 | avg=+0.000317
+Backtest (March 2026, 87 live files): 2504 trades | win=56.1% | PnL=+0.3639 | avg=+0.000145
+
+Live (2026-03-16, 2 loops): 25 trades | win=80.0% | PnL=+0.007600 | avg=+0.000304
