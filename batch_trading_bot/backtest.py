@@ -18,9 +18,10 @@ import os
 from dataclasses import dataclass, field
 from typing import Optional
 
-INPUT_DIR    = '/home/coder/project/Real_Time_SKA_trading/batch_trading_bot/XRPUSDT'
-OUTPUT_DIR   = '/home/coder/project/Real_Time_SKA_trading/batch_trading_bot/results'
-SUMMARY_FILE = '/home/coder/project/Real_Time_SKA_trading/batch_trading_bot/summary.csv'
+_HERE        = os.path.dirname(os.path.abspath(__file__))
+INPUT_DIR    = os.path.join(_HERE, 'XRPUSDT')
+OUTPUT_DIR   = os.path.join(_HERE, 'results')
+SUMMARY_FILE = os.path.join(_HERE, 'summary.csv')
 
 WAIT_PAIR  = 'WAIT_PAIR'
 IN_NEUTRAL = 'IN_NEUTRAL'
