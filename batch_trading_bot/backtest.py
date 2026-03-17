@@ -15,8 +15,13 @@ Usage:
 import csv
 import math
 import os
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Optional
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 _HERE        = os.path.dirname(os.path.abspath(__file__))
 INPUT_DIR    = os.path.join(_HERE, 'XRPUSDT')
@@ -27,6 +32,12 @@ WAIT_PAIR  = 'WAIT_PAIR'
 IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
+
+# ─── Filter ───────────────────────────────────────────────────────────────────
+# Minimum neutral→neutral count before READY state is allowed.
+# If the first non-neutral arrives before this threshold, the gap is too short:
+# stay IN_NEUTRAL and reset the count (wait for the next proper gap).
+MIN_NN_COUNT = 3
 
 
 # ─── Transition computation ───────────────────────────────────────────────────
@@ -185,7 +196,10 @@ class BotV1:
                 if name == 'neutral→neutral':
                     self.position.neutral_neutral_count += 1
                 else:
-                    self.position.exit_state = READY
+                    if self.position.neutral_neutral_count >= MIN_NN_COUNT:
+                        self.position.exit_state = READY
+                    else:
+                        self.position.neutral_neutral_count = 0
             elif self.position.exit_state == READY:
                 if name == 'neutral→bull':
                     self.position.exit_state = WAIT_PAIR
@@ -208,7 +222,10 @@ class BotV1:
                 if name == 'neutral→neutral':
                     self.position.neutral_neutral_count += 1
                 else:
-                    self.position.exit_state = READY
+                    if self.position.neutral_neutral_count >= MIN_NN_COUNT:
+                        self.position.exit_state = READY
+                    else:
+                        self.position.neutral_neutral_count = 0
             elif self.position.exit_state == READY:
                 if name == 'neutral→bear':
                     self.position.exit_state = WAIT_PAIR
@@ -293,6 +310,110 @@ def main():
         writer.writeheader()
         writer.writerows(summary_rows)
     print(f"Summary saved: {SUMMARY_FILE}")
+
+    plot_nn_distribution()
+
+
+def plot_nn_distribution():
+    """Plot nn_count distribution (winners vs losers) across all result files."""
+    results_dir = os.path.join(OUTPUT_DIR, 'v1')
+    files = [f for f in os.listdir(results_dir) if f.endswith('.csv')]
+
+    win_counts  = defaultdict(int)
+    lose_counts = defaultdict(int)
+
+    for fname in files:
+        with open(os.path.join(results_dir, fname)) as f:
+            for row in csv.DictReader(f):
+                nn = int(row['nn_count'])
+                if float(row['pnl']) > 0:
+                    win_counts[nn]  += 1
+                else:
+                    lose_counts[nn] += 1
+
+    max_nn = max(list(win_counts.keys()) + list(lose_counts.keys()))
+    xs = list(range(max_nn + 1))
+    wins  = [win_counts.get(x, 0)  for x in xs]
+    loses = [lose_counts.get(x, 0) for x in xs]
+    totals = [w + l for w, l in zip(wins, loses)]
+    win_rates = [w / t * 100 if t > 0 else 0 for w, t in zip(wins, totals)]
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 8), sharex=True)
+    fig.patch.set_facecolor('#FFFFFF')
+
+    # Top: stacked bar — winners and losers
+    ax1.bar(xs, wins,  color='#A8DFBC', label='Winners', alpha=0.9)
+    ax1.bar(xs, loses, bottom=wins, color='#FFAAAA', label='Losers', alpha=0.9)
+    ax1.axvline(MIN_NN_COUNT - 0.5, color='#CC2222', linewidth=1.5, linestyle='--',
+                label=f'MIN_NN_COUNT={MIN_NN_COUNT}')
+    ax1.set_ylabel('Trade count')
+    ax1.set_title('Neutral Gap Distribution — Winners vs Losers', fontweight='bold')
+    ax1.legend()
+    ax1.set_facecolor('#F8F8F8')
+
+    # Bottom: win rate per nn_count
+    ax2.bar(xs, win_rates, color='#5599CC', alpha=0.85)
+    ax2.axhline(50, color='#888888', linewidth=1, linestyle=':')
+    ax2.axvline(MIN_NN_COUNT - 0.5, color='#CC2222', linewidth=1.5, linestyle='--',
+                label=f'MIN_NN_COUNT={MIN_NN_COUNT}')
+    ax2.set_ylabel('Win rate (%)')
+    ax2.set_xlabel('nn_count (neutral→neutral transitions in neutral gap)')
+    ax2.set_title('Win Rate by Neutral Gap Length', fontweight='bold')
+    ax2.set_ylim(0, 100)
+    ax2.legend()
+    ax2.set_facecolor('#F8F8F8')
+
+    plt.tight_layout()
+    outfile = os.path.join(OUTPUT_DIR, 'nn_distribution.png')
+    plt.savefig(outfile, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Plot saved: {outfile}")
+
+    plot_nn_scatter()
+
+
+def plot_nn_scatter():
+    """Scatter plot: trade index (x) vs nn_count (y), colored by winner/loser."""
+    results_dir = os.path.join(OUTPUT_DIR, 'v1')
+    files = sorted(f for f in os.listdir(results_dir) if f.endswith('.csv'))
+
+    nn_win, nn_lose, nn_flat = [], [], []
+    idx = 0
+
+    for fname in files:
+        with open(os.path.join(results_dir, fname)) as f:
+            for row in csv.DictReader(f):
+                nn  = int(row['nn_count'])
+                pnl = float(row['pnl'])
+                if pnl > 0:
+                    nn_win.append((idx, nn))
+                elif pnl < 0:
+                    nn_lose.append((idx, nn))
+                else:
+                    nn_flat.append((idx, nn))
+                idx += 1
+
+    fig, ax = plt.subplots(figsize=(16, 6))
+    fig.patch.set_facecolor('#FFFFFF')
+    ax.set_facecolor('#F8F8F8')
+
+    if nn_lose:  ax.scatter(*zip(*nn_lose), color='#FF6666', s=12, alpha=0.5, label='Loser',  zorder=2)
+    if nn_flat:  ax.scatter(*zip(*nn_flat), color='#AAAAAA', s=8,  alpha=0.4, label='Flat',   zorder=2)
+    if nn_win:   ax.scatter(*zip(*nn_win),  color='#44AA66', s=12, alpha=0.6, label='Winner', zorder=3)
+
+    ax.axhline(MIN_NN_COUNT, color='#CC2222', linewidth=1.5, linestyle='--',
+               label=f'MIN_NN_COUNT={MIN_NN_COUNT}')
+
+    ax.set_xlabel('Trade index')
+    ax.set_ylabel('nn_count (neutral gap length)')
+    ax.set_title('Neutral Gap per Trade — Winners vs Losers', fontweight='bold')
+    ax.legend(markerscale=2)
+
+    plt.tight_layout()
+    outfile = os.path.join(OUTPUT_DIR, 'nn_scatter.png')
+    plt.savefig(outfile, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Plot saved: {outfile}")
 
 
 if __name__ == '__main__':

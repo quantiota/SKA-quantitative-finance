@@ -49,6 +49,11 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
+# Minimum neutral→neutral count before READY state is allowed.
+# If the first non-neutral arrives before this threshold, the gap is too short:
+# stay IN_NEUTRAL and reset the count (wait for the next proper gap).
+MIN_NN_COUNT = 3
+
 # Numeric codes for QuestDB/Grafana (no VARCHAR)
 EVENT = {
     'OPEN_LONG':      1,
@@ -296,13 +301,20 @@ class SKATradingBot:
                         f"| IN_NEUTRAL | trade_id={trade_id}"
                     )
                 else:
-                    self.position.exit_state = READY
-                    logging.info(
-                        f"--- Neutral gap closed ({name}) @ {price:.6f} "
-                        f"| READY | nn_count={self.position.neutral_neutral_count} | trade_id={trade_id}"
-                    )
-                    await self._log_event(trade_id, price, 'NEUTRAL_GAP', READY, 'LONG',
-                                          neutral_neutral_count=self.position.neutral_neutral_count)
+                    if self.position.neutral_neutral_count >= MIN_NN_COUNT:
+                        self.position.exit_state = READY
+                        logging.info(
+                            f"--- Neutral gap closed ({name}) @ {price:.6f} "
+                            f"| READY | nn_count={self.position.neutral_neutral_count} | trade_id={trade_id}"
+                        )
+                        await self._log_event(trade_id, price, 'NEUTRAL_GAP', READY, 'LONG',
+                                              neutral_neutral_count=self.position.neutral_neutral_count)
+                    else:
+                        logging.info(
+                            f"--- Neutral gap too short nn_count={self.position.neutral_neutral_count} "
+                            f"(min={MIN_NN_COUNT}) — reset | trade_id={trade_id}"
+                        )
+                        self.position.neutral_neutral_count = 0
 
             elif self.position.exit_state == READY:
                 if name == 'neutral→bull':
@@ -374,13 +386,20 @@ class SKATradingBot:
                         f"| IN_NEUTRAL | trade_id={trade_id}"
                     )
                 else:
-                    self.position.exit_state = READY
-                    logging.info(
-                        f"--- Neutral gap closed ({name}) @ {price:.6f} "
-                        f"| READY | nn_count={self.position.neutral_neutral_count} | trade_id={trade_id}"
-                    )
-                    await self._log_event(trade_id, price, 'NEUTRAL_GAP', READY, 'SHORT',
-                                          neutral_neutral_count=self.position.neutral_neutral_count)
+                    if self.position.neutral_neutral_count >= MIN_NN_COUNT:
+                        self.position.exit_state = READY
+                        logging.info(
+                            f"--- Neutral gap closed ({name}) @ {price:.6f} "
+                            f"| READY | nn_count={self.position.neutral_neutral_count} | trade_id={trade_id}"
+                        )
+                        await self._log_event(trade_id, price, 'NEUTRAL_GAP', READY, 'SHORT',
+                                              neutral_neutral_count=self.position.neutral_neutral_count)
+                    else:
+                        logging.info(
+                            f"--- Neutral gap too short nn_count={self.position.neutral_neutral_count} "
+                            f"(min={MIN_NN_COUNT}) — reset | trade_id={trade_id}"
+                        )
+                        self.position.neutral_neutral_count = 0
 
             elif self.position.exit_state == READY:
                 if name == 'neutral→bear':
