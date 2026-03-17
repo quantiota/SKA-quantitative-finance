@@ -112,8 +112,6 @@ The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neu
 - QuestDB state logging (`ska_bot_v1` table) with event/state/side as both int and string
 - Grafana observable in real time via `grafana_bot_queries.sql`
 
-Backtest (July 2025, 20 files):       516 trades | win=66.9% | PnL=+0.1635 | avg=+0.000317
-Backtest (March 2026, 87 live files): 2504 trades | win=56.1% | PnL=+0.3639 | avg=+0.000145
 
 ### Live Results — 2026-03-16 (63 loops, XRPUSDT)
 
