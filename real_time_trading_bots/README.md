@@ -32,7 +32,7 @@ flowchart TB
         direction LR
         L1["neutral→bull<br/><i>OPEN / WAIT_PAIR</i>"]
         L2["bull→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
-        L3["neutral→neutral × N<br/><i>neutral gap / READY</i>"]
+        L3["neutral→neutral × N (N≥3)<br/><i>neutral gap / READY</i>"]
         L4["neutral→bear<br/><i>opp. cycle opens / EXIT_WAIT</i>"]
         L5["bear→neutral<br/><i>opp. pair confirmed / CLOSE LONG</i>"]
 
@@ -44,7 +44,7 @@ flowchart TB
         direction LR
         S1["neutral→bear<br/><i>OPEN / WAIT_PAIR</i>"]
         S2["bear→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
-        S3["neutral→neutral × N<br/><i>neutral gap / READY</i>"]
+        S3["neutral→neutral × N (N≥3)<br/><i>neutral gap / READY</i>"]
         S4["neutral→bull<br/><i>opp. cycle opens / EXIT_WAIT</i>"]
         S5["bull→neutral<br/><i>opp. pair confirmed / CLOSE SHORT</i>"]
 
