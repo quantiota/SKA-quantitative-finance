@@ -67,7 +67,7 @@ for seq_idx, (side, nb_color, exit_open, exit_open_color, exit_close, exit_close
     draw_arrow(ax, 1.2, 3.8, y)
     draw_transition(ax, 3.8, y, pair_trans,        repeat_color,      'pair confirmed\nIN_NEUTRAL')
     draw_arrow(ax, 3.8, 6.4, y)
-    draw_transition(ax, 6.4, y, 'neutral→neutral\n× N', COLORS['neutral→neutral'], 'neutral gap\nREADY')
+    draw_transition(ax, 6.4, y, 'neutral→neutral\n× N  (N≥3)', COLORS['neutral→neutral'], 'neutral gap\nREADY')
     # Loop arrow back
     ax.annotate('', xy=(1.2, y + 0.45), xytext=(6.4, y + 0.45),
                 arrowprops=dict(arrowstyle='->', color='#888888', lw=1.5,
