@@ -110,7 +110,7 @@ The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neu
 - All transitions processed in order (no skipping between polls)
 - Full neutral gap counted per cycle (`neutral_neutral_count`)
 - QuestDB state logging (`ska_bot_v1` table) with event/state/side as both int and string
-- Grafana observable in real time via `grafana_bot_queries.sql`
+
 
 
 ### Live Results — 2026-03-16 (63 loops, XRPUSDT)

@@ -1,14 +1,7 @@
 """
-SKA Paired Regime Trading Bot
+SKA Paired Regime Trading Bot v1 — Consecutive same-direction paired cycles, symmetric exit.
 
-Changelog:
-  v1: Single opposite-side transition closes the position
-  v2: Requires 2 consecutive opposite-side signals to close (any two) — structurally wrong
-  v3: Requires the complete opposite paired cycle to close — too strict, exits too rare
-  v4: Requires own pair confirmation before listening for exit (hybrid)
-  v1: Consecutive same-direction paired cycles — full sequence validation required
-
-Signal logic — consecutive paired cycles:
+Signal logic:
 
   LONG:
     neutral→bull               (OPEN LONG — WAIT_PAIR)
@@ -30,11 +23,12 @@ Signal logic — consecutive paired cycles:
 
 State machine per position:
   WAIT_PAIR   → waiting for own pair confirmation
-  IN_NEUTRAL  → pair confirmed, waiting for neutral→neutral gap
-  READY       → neutral gap seen, exit active on first opposite opening transition
+  IN_NEUTRAL  → pair confirmed, counting neutral→neutral gap
+  READY       → gap closed, listening for next cycle or opposite open
+  EXIT_WAIT   → opposite cycle opened, waiting for opposite pair confirmation
 
 The alpha: price follows consecutive same-direction paired cycles.
-Close only fires after a complete cycle + neutral gap — not mid-cycle.
+Entry and exit both require a complete paired cycle — structurally symmetric.
 """
 
 import asyncio
