@@ -115,4 +115,13 @@ The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neu
 Backtest (July 2025, 20 files):       516 trades | win=66.9% | PnL=+0.1635 | avg=+0.000317
 Backtest (March 2026, 87 live files): 2504 trades | win=56.1% | PnL=+0.3639 | avg=+0.000145
 
-Live (2026-03-16, 2 loops): 25 trades | win=80.0% | PnL=+0.007600 | avg=+0.000304
+### Live Results — 2026-03-16 (63 loops, XRPUSDT)
+
+| Trades | Win%  | Total PnL | Avg PnL/trade | Profitable loops |
+|--------|-------|-----------|---------------|-----------------|
+| 1586   | 63.2% | +0.3821   | +0.000241     | 61/63           |
+
+**LONG/SHORT symmetry:**
+- LONG:  795 trades | PnL=+0.1985 | win=62.8%
+- SHORT: 791 trades | PnL=+0.1836 | win=63.6%
+
