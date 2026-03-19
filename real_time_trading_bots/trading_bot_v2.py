@@ -1,5 +1,20 @@
 """
-SKA Paired Regime Trading Bot v1 — Consecutive same-direction paired cycles, symmetric exit.
+Paired cycle trading bot v2 — entropy-derived probability regime transitions (ΔP).
+
+Regime definition:
+  P(n)   = exp(-|ΔH/H|)   where  ΔH/H = (H(n) - H(n-1)) / H(n)
+  ΔP(n)  = P(n) - P(n-1)  consecutive change in probability
+
+  ΔP(n) < -BEAR_THRESHOLD              →  regime = 2  ("bear"    — large P drop)
+  -BEAR_THRESHOLD ≤ ΔP(n) < -BULL_THRESHOLD  →  regime = 1  ("bull" — moderate P drop)
+  ΔP(n) ≥ -BULL_THRESHOLD              →  regime = 0  (neutral)
+
+  BULL_THRESHOLD = 0.148  # observed ΔP gap constant within bull paired regime transitions
+  BEAR_THRESHOLD = 0.221  # observed ΔP gap constant within bear paired regime transitions
+
+  ΔP across a paired transition (opening → closing):
+    bull pair : ΔP < 0  (P drifts lower — sustained entropy change)
+    bear pair : ΔP > 0  (P snaps back  — brief entropy shock)
 
 Signal logic:
 
@@ -26,9 +41,6 @@ State machine per position:
   IN_NEUTRAL  → pair confirmed, counting neutral→neutral gap
   READY       → gap closed, listening for next cycle or opposite open
   EXIT_WAIT   → opposite cycle opened, waiting for opposite pair confirmation
-
-The alpha: price follows consecutive same-direction paired cycles.
-Entry and exit both require a complete paired cycle — structurally symmetric.
 """
 
 import asyncio
@@ -49,12 +61,10 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
-# Minimum neutral→neutral count before READY state is allowed.
-# If the first non-neutral arrives before this threshold, the gap is too short:
-# stay IN_NEUTRAL and reset the count (wait for the next proper gap).
-MIN_NN_COUNT = 3
+MIN_NN_COUNT      = 3
+BULL_THRESHOLD = 0.148  # bull pair ΔP constant −10%
+BEAR_THRESHOLD = 0.221  # bear pair ΔP constant −10%
 
-# Numeric codes for QuestDB/Grafana (no VARCHAR)
 EVENT = {
     'OPEN_LONG':      1,
     'OPEN_SHORT':     2,
@@ -89,7 +99,7 @@ class Position:
 
 
 class SKATradingBot:
-    """Paired cycle trading bot v1 — consecutive same-direction cycles, close only from READY state."""
+    """Paired cycle trading bot v2 — entropy-based regime transitions (ΔH/H)."""
 
     def __init__(self, db_host='192.168.1.216', db_port=8812, symbol='XRPUSDT',
                  poll_interval=1.0, dry_run=True):
@@ -104,7 +114,7 @@ class SKATradingBot:
         self.last_trade_id = None
 
         ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.results_file = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v1/bot_results_v1_{ts}.csv'
+        self.results_file = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v2/bot_results_v2_{ts}.csv'
 
         self.total_trades = 0
         self.winning_trades = 0
@@ -119,7 +129,7 @@ class SKATradingBot:
         )
         logging.info(f"Connected to QuestDB at {self.db_host}:{self.db_port}")
         await self.conn.execute("""
-            CREATE TABLE IF NOT EXISTS ska_bot_v1 (
+            CREATE TABLE IF NOT EXISTS ska_bot_v2 (
                 timestamp            TIMESTAMP,
                 trade_id             LONG,
                 price                DOUBLE,
@@ -133,12 +143,12 @@ class SKATradingBot:
                 neutral_neutral_count INT
             ) TIMESTAMP(timestamp) PARTITION BY DAY WAL;
         """)
-        logging.info("ska_bot_v1 table ready")
+        logging.info("ska_bot_v2 table ready")
 
     async def _log_event(self, trade_id, price, event, state, side='', pnl=None, neutral_neutral_count=None):
         try:
             await self.conn.execute(
-                """INSERT INTO ska_bot_v1
+                """INSERT INTO ska_bot_v2
                    (timestamp, trade_id, price, event, event_name, state, state_name, side, side_name, pnl, neutral_neutral_count)
                    VALUES (now(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)""",
                 trade_id, price,
@@ -153,47 +163,43 @@ class SKATradingBot:
     async def get_new_transitions(self):
         last_id = self.last_trade_id if self.last_trade_id is not None else 0
         query = """
-        WITH base_data AS (
+        WITH base AS (
           SELECT
             timestamp, symbol, trade_id, price, entropy,
-            LAG(price)   OVER (ORDER BY timestamp, trade_id) AS prev_price,
-            LAG(entropy) OVER (ORDER BY timestamp, trade_id) AS prev_entropy
+            LAG(entropy, 1) OVER (ORDER BY timestamp, trade_id) AS e1,
+            LAG(entropy, 2) OVER (ORDER BY timestamp, trade_id) AS e2
           FROM binance_trades
-          WHERE symbol = $1 AND entropy IS NOT NULL AND trade_id >= $2 - 1
+          WHERE symbol = $1 AND entropy IS NOT NULL AND trade_id >= $2 - 2
           ORDER BY timestamp, trade_id
+        ),
+        with_P AS (
+          SELECT
+            timestamp, symbol, trade_id, price,
+            CASE WHEN entropy != 0 AND e1 IS NOT NULL
+                 THEN EXP(-ABS((entropy - e1) / entropy)) ELSE NULL END AS P,
+            CASE WHEN e1 != 0 AND e2 IS NOT NULL
+                 THEN EXP(-ABS((e1 - e2) / e1)) ELSE NULL END AS prev_P
+          FROM base WHERE e1 IS NOT NULL
         ),
         with_regime AS (
           SELECT
-            timestamp, symbol, trade_id, price, entropy, prev_entropy,
+            timestamp, symbol, trade_id, price, P,
             CASE
-              WHEN price - prev_price > 0 THEN 1
-              WHEN price - prev_price < 0 THEN 2
+              WHEN prev_P IS NOT NULL AND (P - prev_P) < -$4 THEN 2
+              WHEN prev_P IS NOT NULL AND (P - prev_P) < -$3 THEN 1
               ELSE 0
             END AS regime
-          FROM base_data
-          WHERE prev_price IS NOT NULL
+          FROM with_P WHERE P IS NOT NULL AND prev_P IS NOT NULL
         ),
         with_transition AS (
           SELECT
-            timestamp, symbol, trade_id, price, entropy, prev_entropy, regime,
+            timestamp, symbol, trade_id, price, P, regime,
             LAG(regime) OVER (ORDER BY timestamp, trade_id) AS prev_regime
           FROM with_regime
-        ),
-        with_probability AS (
-          SELECT
-            timestamp, symbol, trade_id, price, entropy, regime, prev_regime,
-            prev_regime * 3 + regime AS transition_code,
-            CASE
-              WHEN entropy != 0 AND prev_entropy IS NOT NULL
-              THEN EXP(-ABS((entropy - prev_entropy) / entropy))
-              ELSE NULL
-            END AS prob
-          FROM with_transition
-          WHERE prev_regime IS NOT NULL
         )
-        SELECT timestamp, trade_id, price, prob, transition_code
-        FROM with_probability
-        WHERE trade_id > $2
+        SELECT timestamp, trade_id, price, P AS prob, prev_regime * 3 + regime AS transition_code
+        FROM with_transition
+        WHERE prev_regime IS NOT NULL AND trade_id > $2
         ORDER BY timestamp, trade_id
         """
         names = {
@@ -202,7 +208,7 @@ class SKATradingBot:
             6: 'bear→neutral',    7: 'bear→bull',    8: 'bear→bear'
         }
         try:
-            rows = await self.conn.fetch(query, self.symbol, last_id)
+            rows = await self.conn.fetch(query, self.symbol, last_id, BULL_THRESHOLD, BEAR_THRESHOLD)
         except Exception:
             return []
         result = []
@@ -219,27 +225,6 @@ class SKATradingBot:
         return result
 
     async def process_signal(self, transition):
-        """
-        State machine:
-
-        LONG:
-          WAIT_PAIR   → bull→neutral               → IN_NEUTRAL
-          IN_NEUTRAL  → neutral→neutral × N         → stay IN_NEUTRAL (count nn_count)
-          IN_NEUTRAL  → first non-neutral           → READY
-          READY       → neutral→bull               → WAIT_PAIR (cycle repeats, reset nn_count)
-                      → neutral→bear               → EXIT_WAIT
-          EXIT_WAIT   → bear→neutral               → CLOSE LONG
-                      → neutral→bull               → WAIT_PAIR (bear cycle aborted, still long)
-
-        SHORT:
-          WAIT_PAIR   → bear→neutral               → IN_NEUTRAL
-          IN_NEUTRAL  → neutral→neutral × N         → stay IN_NEUTRAL (count nn_count)
-          IN_NEUTRAL  → first non-neutral           → READY
-          READY       → neutral→bear               → WAIT_PAIR (cycle repeats, reset nn_count)
-                      → neutral→bull               → EXIT_WAIT
-          EXIT_WAIT   → bull→neutral               → CLOSE SHORT
-                      → neutral→bear               → WAIT_PAIR (bull cycle aborted, still short)
-        """
         trade_id = transition['trade_id']
         price    = transition['price']
         name     = transition['transition_name']
@@ -250,6 +235,8 @@ class SKATradingBot:
             return
         self.last_trade_id = trade_id
 
+        p_str = f"{P:.4f}" if P is not None else "n/a"
+
         # === NO POSITION: look for entry ===
         if self.position is None:
             if name == 'neutral→bull':
@@ -259,7 +246,7 @@ class SKATradingBot:
                     entry_transition=name, exit_state=WAIT_PAIR
                 )
                 logging.info(
-                    f">>> OPEN LONG @ {price:.6f} | P={P:.4f} | trade_id={trade_id} "
+                    f">>> OPEN LONG @ {price:.6f} | P={p_str} | trade_id={trade_id} "
                     f"| waiting: bull→neutral"
                 )
                 await self._log_event(trade_id, price, 'OPEN_LONG', WAIT_PAIR, 'LONG')
@@ -273,7 +260,7 @@ class SKATradingBot:
                     entry_transition=name, exit_state=WAIT_PAIR
                 )
                 logging.info(
-                    f">>> OPEN SHORT @ {price:.6f} | P={P:.4f} | trade_id={trade_id} "
+                    f">>> OPEN SHORT @ {price:.6f} | P={p_str} | trade_id={trade_id} "
                     f"| waiting: bear→neutral"
                 )
                 await self._log_event(trade_id, price, 'OPEN_SHORT', WAIT_PAIR, 'SHORT')
@@ -509,9 +496,10 @@ class SKATradingBot:
 
     async def run(self, max_trades=3500):
         await self.connect()
-        logging.info(f"SKA Trading Bot v1 | symbol={self.symbol} | dry_run={self.dry_run} | auto_stop={max_trades}")
-        logging.info("LONG:  neutral→bull → bull→neutral → neutral→neutral → (repeat) → neutral→bear (CLOSE)")
-        logging.info("SHORT: neutral→bear → bear→neutral → neutral→neutral → (repeat) → neutral→bull (CLOSE)")
+        logging.info(f"SKA Trading Bot v2 | symbol={self.symbol} | dry_run={self.dry_run} | auto_stop={max_trades}")
+        logging.info(f"Regime: ΔP < -{BEAR_THRESHOLD} → bear | -{BEAR_THRESHOLD} ≤ ΔP < -{BULL_THRESHOLD} → bull | else → neutral")
+        logging.info("LONG:  neutral→bull → bull→neutral → neutral→neutral × N → neutral→bear → bear→neutral (CLOSE)")
+        logging.info("SHORT: neutral→bear → bear→neutral → neutral→neutral × N → neutral→bull → bull→neutral (CLOSE)")
 
         min_trades = 0
         logging.info(f"Waiting for {min_trades} trades with entropy before trading...")
@@ -560,12 +548,15 @@ class SKATradingBot:
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='SKA Paired Regime Trading Bot v1')
+    parser = argparse.ArgumentParser(description='SKA Paired Regime Trading Bot v2')
     parser.add_argument('--symbol', default='XRPUSDT', help='Trading symbol')
     parser.add_argument('--poll', type=float, default=1.0, help='Poll interval (seconds)')
     parser.add_argument('--live', action='store_true', help='Enable live trading (default: dry run)')
     parser.add_argument('--host', default='192.168.1.216', help='QuestDB host')
     args = parser.parse_args()
+
+    import os
+    os.makedirs('/home/coder/project/Real_Time_SKA_trading/bot_results_v2', exist_ok=True)
 
     bot = SKATradingBot(
         db_host=args.host,
