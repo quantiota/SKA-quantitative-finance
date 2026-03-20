@@ -48,7 +48,7 @@ The neutral gap (neutral→neutral × N) is counted per cycle as `nn_count`.
 
 ---
 
-## Signal Logic — Mermaid Diagram
+## Signal Logic — Diagram
 
 ```mermaid
 flowchart TD
