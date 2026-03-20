@@ -8,14 +8,9 @@ Usage:
     python bot_monitor.py
 
 Setup:
-    1. Generate a Gmail App Password:
-         https://myaccount.google.com/apppasswords
-         Google Account → Security → 2-Step Verification → App passwords
-
-    2. Export credentials before running:
-         export GMAIL_APP_PASSWORD="xxxx xxxx xxxx xxxx"
-         export GMAIL_FROM="your@gmail.com"
-         export GMAIL_TO="your@gmail.com"
+    Set EMAIL_FROM, EMAIL_TO, GMAIL_APP_PASSWORD below.
+    Generate a Gmail App Password at:
+    https://myaccount.google.com/apppasswords
 """
 
 import glob
@@ -35,8 +30,9 @@ POLL_INTERVAL = 30   # seconds
 SMTP_SERVER   = "smtp.gmail.com"
 SMTP_PORT     = 587
 
-EMAIL_FROM = os.environ.get("GMAIL_FROM", "")
-EMAIL_TO   = os.environ.get("GMAIL_TO",   "")
+EMAIL_FROM         = "your@gmail.com"
+EMAIL_TO           = "your@gmail.com"
+GMAIL_APP_PASSWORD = "xxxx xxxx xxxx xxxx"
 
 PIP = 0.0001
 
@@ -133,7 +129,7 @@ PER FILE
 
 
 def send_email(subject, body):
-    password = os.environ.get("GMAIL_APP_PASSWORD")
+    password = GMAIL_APP_PASSWORD
     if not password or not EMAIL_FROM or not EMAIL_TO:
         print("WARNING: email not configured — printing report to console.")
         print(body)
