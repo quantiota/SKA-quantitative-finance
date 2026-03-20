@@ -450,7 +450,6 @@ class SKATradingBot:
             'entry': self.position.entry_price,
             'exit': exit_price,
             'pnl': pnl,
-            'pnl_pct': pnl_pct,
             'entry_transition': self.position.entry_transition
         }
         self.trade_log.append(trade)
@@ -458,7 +457,7 @@ class SKATradingBot:
         header = not hasattr(self, '_csv_written')
         with open(self.results_file, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=[
-                'side', 'entry', 'exit', 'pnl', 'pnl_pct', 'entry_transition'
+                'side', 'entry', 'exit', 'pnl', 'entry_transition'
             ])
             if header:
                 writer.writeheader()
