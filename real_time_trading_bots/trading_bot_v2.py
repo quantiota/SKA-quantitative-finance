@@ -9,8 +9,11 @@ Regime definition:
   -BEAR_THRESHOLD ≤ ΔP(n) < -BULL_THRESHOLD  →  regime = 1  ("bull" — moderate P drop)
   ΔP(n) ≥ -BULL_THRESHOLD              →  regime = 0  (neutral)
 
-  BULL_THRESHOLD = 0.148  # observed ΔP gap constant within bull paired regime transitions
-  BEAR_THRESHOLD = 0.221  # observed ΔP gap constant within bear paired regime transitions
+  DP_PAIR_BULL = 0.028  # |ΔP_pair| for bull paired transition — market constant
+  DP_PAIR_BEAR = 0.045  #  ΔP_pair  for bear paired transition — market constant
+  BASE_GAP     = 0.19   # P(neutral→neutral) − P(X→neutral) = 0.99 − 0.80
+  BULL_THRESHOLD = BASE_GAP - DP_PAIR_BULL  # = 0.162
+  BEAR_THRESHOLD = BASE_GAP + DP_PAIR_BEAR  # = 0.235
 
   ΔP across a paired transition (opening → closing):
     bull pair : ΔP < 0  (P drifts lower — sustained entropy change)
@@ -61,9 +64,16 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
-MIN_NN_COUNT      = 3
-BULL_THRESHOLD = 0.148  # bull pair ΔP constant −10%
-BEAR_THRESHOLD = 0.221  # bear pair ΔP constant −10%
+MIN_NN_COUNT = 3
+
+# Primary observables — measured from market, stable across 45 loops
+DP_PAIR_BULL = 0.028   # |ΔP_pair| for bull paired transition (neutral→bull→neutral)
+DP_PAIR_BEAR = 0.045   #  ΔP_pair  for bear paired transition (neutral→bear→neutral)
+BASE_GAP     = 0.19    # P(neutral→neutral) − P(X→neutral) = 0.99 − 0.80
+
+# Thresholds derived from observables
+BULL_THRESHOLD = BASE_GAP - DP_PAIR_BULL   # = 0.162
+BEAR_THRESHOLD = BASE_GAP + DP_PAIR_BEAR   # = 0.235
 
 EVENT = {
     'OPEN_LONG':      1,
@@ -96,6 +106,8 @@ class Position:
     entry_transition: str
     exit_state: str = field(default=WAIT_PAIR)
     neutral_neutral_count: int = field(default=0)
+    bull_pair_count: int = field(default=0)
+    bear_pair_count: int = field(default=0)
 
 
 class SKATradingBot:
@@ -114,13 +126,20 @@ class SKATradingBot:
         self.last_trade_id = None
 
         ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.results_file = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v2/bot_results_v2_{ts}.csv'
+        self.results_file  = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v2/bot_results_v2_{ts}.csv'
+        self.dp_pair_file  = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v2/dp_pair_v2_{ts}.csv'
 
         self.total_trades = 0
         self.winning_trades = 0
         self.losing_trades = 0
         self.total_pnl = 0.0
         self.trade_log = []
+
+        # ΔP_pair tracking
+        self._last_open_name = None   # neutral→bull or neutral→bear
+        self._last_open_P    = None
+        self._dp_pair_written = False
+        self._entropy_count   = 0
 
     async def connect(self):
         self.conn = await asyncpg.connect(
@@ -224,6 +243,29 @@ class SKATradingBot:
             })
         return result
 
+    def _record_dp_pair(self, pair_type, p1, p2):
+        # p1 = P at opening transition (neutral→bull or neutral→bear)
+        # p2 = P at closing transition (bull→neutral or bear→neutral)
+        # ΔP_pair = p2 - p1 → negative for bull, positive for bear
+        if p1 is None or p2 is None:
+            return
+        dp = p2 - p1
+        row = {
+            'pair_type': pair_type,
+            'p1':        round(p1, 4),
+            'p2':        round(p2, 4),
+            'dp_pair':   round(dp, 4),
+        }
+        with open(self.dp_pair_file, 'a', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=row.keys())
+            if not self._dp_pair_written:
+                writer.writeheader()
+                self._dp_pair_written = True
+            writer.writerow(row)
+        logging.info(
+            f"ΔP_pair [{pair_type}] P={p1:.4f}→{p2:.4f} ΔP={dp:+.4f}"
+        )
+
     async def process_signal(self, transition):
         trade_id = transition['trade_id']
         price    = transition['price']
@@ -234,6 +276,26 @@ class SKATradingBot:
         if self.last_trade_id is not None and trade_id <= self.last_trade_id:
             return
         self.last_trade_id = trade_id
+
+        # ΔP_pair: gap within paired transition neutral→bull→neutral or neutral→bear→neutral
+        # ΔP = P(closing) − P(opening) → negative for bull, positive for bear
+        PAIR_CLOSE = {'neutral→bull': 'bull→neutral', 'neutral→bear': 'bear→neutral'}
+        if name in ('neutral→bull', 'neutral→bear'):
+            self._last_open_name = name
+            self._last_open_P    = P
+        elif (name in ('bull→neutral', 'bear→neutral') and
+              self._last_open_name is not None and
+              PAIR_CLOSE.get(self._last_open_name) == name and
+              self._entropy_count < 3200):
+            pair_type = 'bull' if name == 'bull→neutral' else 'bear'
+            self._record_dp_pair(pair_type, self._last_open_P, P)
+            if self.position is not None:
+                if pair_type == 'bull':
+                    self.position.bull_pair_count += 1
+                else:
+                    self.position.bear_pair_count += 1
+            self._last_open_name = None
+            self._last_open_P    = None
 
         p_str = f"{P:.4f}" if P is not None else "n/a"
 
@@ -450,14 +512,16 @@ class SKATradingBot:
             'entry': self.position.entry_price,
             'exit': exit_price,
             'pnl': pnl,
-            'entry_transition': self.position.entry_transition
+            'entry_transition': self.position.entry_transition,
+            'bull_pairs': self.position.bull_pair_count,
+            'bear_pairs': self.position.bear_pair_count,
         }
         self.trade_log.append(trade)
 
         header = not hasattr(self, '_csv_written')
         with open(self.results_file, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=[
-                'side', 'entry', 'exit', 'pnl', 'entry_transition'
+                'side', 'entry', 'exit', 'pnl', 'entry_transition', 'bull_pairs', 'bear_pairs'
             ])
             if header:
                 writer.writeheader()
@@ -500,7 +564,7 @@ class SKATradingBot:
         logging.info("LONG:  neutral→bull → bull→neutral → neutral→neutral × N → neutral→bear → bear→neutral (CLOSE)")
         logging.info("SHORT: neutral→bear → bear→neutral → neutral→neutral × N → neutral→bull → bull→neutral (CLOSE)")
 
-        min_trades = 0
+        min_trades = 500
         logging.info(f"Waiting for {min_trades} trades with entropy before trading...")
         while True:
             count = await self.get_entropy_count()
@@ -516,6 +580,7 @@ class SKATradingBot:
                     await self.process_signal(transition)
 
                 count = await self.get_entropy_count()
+                self._entropy_count = count
                 if count >= max_trades:
                     logging.info(f"Auto-stop: {count} trades with entropy >= {max_trades}")
                     break
