@@ -1,19 +1,25 @@
 """
-Paired cycle trading bot v2 — entropy-derived probability regime transitions (ΔP).
+Paired cycle trading bot v3 — entropy-derived probability regime transitions (ΔP tolerance bands).
 
 Regime definition:
   P(n)   = exp(-|ΔH/H|)   where  ΔH/H = (H(n) - H(n-1)) / H(n)
   ΔP(n)  = P(n) - P(n-1)  consecutive change in probability
 
-  ΔP(n) < -BEAR_THRESHOLD              →  regime = 2  ("bear"    — large P drop)
-  -BEAR_THRESHOLD ≤ ΔP(n) < -BULL_THRESHOLD  →  regime = 1  ("bull" — moderate P drop)
-  ΔP(n) ≥ -BULL_THRESHOLD              →  regime = 0  (neutral)
+  |ΔP(n) − (−0.86)| ≤ K × 0.14  →  regime = 2  ("bear"    — neutral→bear, tol=0.004)
+  |ΔP(n) − (−0.34)| ≤ K × 0.66  →  regime = 1  ("bull"    — neutral→bull, tol=0.020)
+  else                             →  regime = 0  (neutral)
 
-  DP_PAIR_BULL = 0.028  # |ΔP_pair| for bull paired transition — market constant
-  DP_PAIR_BEAR = 0.045  #  ΔP_pair  for bear paired transition — market constant
-  BASE_GAP     = 0.19   # P(neutral→neutral) − P(X→neutral) = 0.99 − 0.80
-  BULL_THRESHOLD = BASE_GAP - DP_PAIR_BULL  # = 0.162
-  BEAR_THRESHOLD = BASE_GAP + DP_PAIR_BEAR  # = 0.235
+  P band positions — universal constants at convergence scale (asset-independent):
+    P_NEUTRAL_NEUTRAL = 1.00
+    P_NEUTRAL_BULL    = 0.66
+    P_X_NEUTRAL       = 0.51   (bull→neutral = bear→neutral)
+    P_NEUTRAL_BEAR    = 0.14
+
+  BULL_THRESHOLD = P_NEUTRAL_NEUTRAL − P_NEUTRAL_BULL = 0.34
+  BEAR_THRESHOLD = P_NEUTRAL_NEUTRAL − P_NEUTRAL_BEAR = 0.86
+
+  DP_PAIR_BULL = 0.15  # P_NEUTRAL_BULL − P_X_NEUTRAL  (market constant at convergence)
+  DP_PAIR_BEAR = 0.37  # P_X_NEUTRAL   − P_NEUTRAL_BEAR (market constant at convergence)
 
   ΔP across a paired transition (opening → closing):
     bull pair : ΔP < 0  (P drifts lower — sustained entropy change)
@@ -48,8 +54,15 @@ State machine per position:
 
 import asyncio
 import csv
+import base64
+import math
+import os
+import urllib.parse
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 import logging
+import time
 import asyncpg
+import aiohttp
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
@@ -64,16 +77,47 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
-MIN_NN_COUNT = 3
+MIN_NN_COUNT    = 3
+MIN_TRADES      = 10    # wait for SKA convergence before trading
+ENGINE_RESET_AT = 3500  # engine resets at this entropy count
+DP_PAIR_CUTOFF  = 3200  # stop recording ΔP_pair before engine reset
 
-# Primary observables — measured from market, stable across 45 loops
-DP_PAIR_BULL = 0.028   # |ΔP_pair| for bull paired transition (neutral→bull→neutral)
-DP_PAIR_BEAR = 0.045   #  ΔP_pair  for bear paired transition (neutral→bear→neutral)
-BASE_GAP     = 0.19    # P(neutral→neutral) − P(X→neutral) = 0.99 − 0.80
+DB_HOST         = os.environ.get('QDB_HOST',     '192.168.1.216')
+DB_PORT         = int(os.environ.get('QDB_PORT', '8812'))
+DB_USER         = os.environ.get('QDB_USER',     'admin')
+DB_PASSWORD     = os.environ.get('QDB_PASSWORD', 'quest')
+POLL_INTERVAL   = 1.0   # seconds between DB polls
+RESULTS_DIR     = '/home/coder/project/Real_Time_SKA_trading/bot_results_v3'
 
-# Thresholds derived from observables
-BULL_THRESHOLD = BASE_GAP - DP_PAIR_BULL   # = 0.162
-BEAR_THRESHOLD = BASE_GAP + DP_PAIR_BEAR   # = 0.235
+# Binance API — loaded lazily; validated in connect() only when dry_run=False
+BINANCE_API_KEY          = os.environ.get('BINANCE_API_KEY')
+BINANCE_PRIVATE_KEY_PATH = os.environ.get('BINANCE_PRIVATE_KEY_PATH')
+BINANCE_BASE_URL         = 'https://api.binance.com'
+ORDER_QUANTITY = {
+    'XRPUSDT':  7.0,      # ~$10 at $1.43
+    'XRPUSDC':  7.0,
+    'BTCUSDT':  0.0001,   # ~$8.5 at $85,000
+    'BTCUSDC':  0.0001,
+    'ETHUSDT':  0.005,    # ~$10 at $2,000
+    'ETHUSDC':  0.005,
+    'SOLUSDC':  0.1,      # ~$15 at $150
+}
+
+# P band positions — universal constants at convergence scale, confirmed XRPUSDT+BTCUSDT
+P_NEUTRAL_NEUTRAL = 1.00
+P_NEUTRAL_BULL    = 0.66
+P_X_NEUTRAL       = 0.51   # bull→neutral = bear→neutral
+P_NEUTRAL_BEAR    = 0.14
+
+# Proportional tolerance: tol per transition = K × P_curr_structural
+K        = 0.03
+TOL_BEAR  = K * 0.14   # = 0.0042  neutral→bear band
+TOL_BULL  = K * 0.66   # = 0.0198  neutral→bull band
+TOL_CLOSE = K * 0.51   # = 0.0153  bull→neutral = bear→neutral band
+
+# ΔP_pair — paired transition gap at convergence scale
+DP_PAIR_BULL = P_NEUTRAL_BULL - P_X_NEUTRAL    # = 0.15
+DP_PAIR_BEAR = P_X_NEUTRAL   - P_NEUTRAL_BEAR  # = 0.37
 
 EVENT = {
     'OPEN_LONG':      1,
@@ -83,6 +127,7 @@ EVENT = {
     'PAIR_CONFIRMED': 5,
     'NEUTRAL_GAP':    6,
     'CYCLE_REPEAT':   7,
+    'OPPOSITE_OPEN':  8,
 }
 STATE = {
     WAIT_PAIR:  1,
@@ -111,10 +156,17 @@ class Position:
 
 
 class SKATradingBot:
-    """Paired cycle trading bot v2 — entropy-based regime transitions (ΔH/H)."""
+    """Paired cycle trading bot v3 — regime classified from ΔP tolerance bands where P = exp(-|ΔH/H|).
 
-    def __init__(self, db_host='192.168.1.216', db_port=8812, symbol='XRPUSDT',
-                 poll_interval=1.0, dry_run=True):
+    Execution model (spot only — no margin/futures):
+      LONG open  (neutral→bull, or SHORT close → re-enter) : BUY on exchange
+      LONG close (bear→neutral)                            : SELL on exchange
+      SHORT                                                : synthetic only, no exchange orders
+    Exchange state sequence: BUY → SELL → [flat, tracking SHORT] → BUY → SELL → ...
+    """
+
+    def __init__(self, db_host=DB_HOST, db_port=DB_PORT, symbol='XRPUSDT',
+                 poll_interval=POLL_INTERVAL, dry_run=True):
         self.db_host = db_host
         self.db_port = db_port
         self.symbol = symbol
@@ -124,34 +176,50 @@ class SKATradingBot:
         self.conn = None
         self.position: Optional[Position] = None
         self.last_trade_id = None
+        self._private_key = None
 
         ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.results_file  = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v2/bot_results_v2_{ts}.csv'
-        self.dp_pair_file  = f'/home/coder/project/Real_Time_SKA_trading/bot_results_v2/dp_pair_v2_{ts}.csv'
+        self.results_file  = f'{RESULTS_DIR}/bot_results_v3_{ts}.csv'
+        self.dp_pair_file  = f'{RESULTS_DIR}/dp_pair_v3_{ts}.csv'
 
         self.total_trades = 0
         self.winning_trades = 0
         self.losing_trades = 0
-        self.total_pnl = 0.0
+
+        # PnL split: LONG = real spot execution, SHORT = synthetic signal tracking
+        self.spot_pnl      = 0.0   # realized from real exchange LONGs only
+        self.synthetic_pnl = 0.0   # synthetic SHORTs — no exchange orders
         self.trade_log = []
 
         # ΔP_pair tracking
         self._last_open_name = None   # neutral→bull or neutral→bear
         self._last_open_P    = None
+        self._already_long   = False  # BUY already on exchange after CLOSE_SHORT
         self._dp_pair_written = False
+        self._csv_written     = False
         self._entropy_count   = 0
+        self._lot_filter      = None   # populated by _fetch_lot_filter() at connect
 
     async def connect(self):
         self.conn = await asyncpg.connect(
             host=self.db_host, port=self.db_port,
-            database='qdb', user='admin', password='quest'
+            database='qdb', user=DB_USER, password=DB_PASSWORD
         )
         logging.info(f"Connected to QuestDB at {self.db_host}:{self.db_port}")
+        if not self.dry_run:
+            if not BINANCE_API_KEY:
+                raise RuntimeError("BINANCE_API_KEY env var is not set")
+            if not BINANCE_PRIVATE_KEY_PATH:
+                raise RuntimeError("BINANCE_PRIVATE_KEY_PATH env var is not set")
+            self._lot_filter = await self._fetch_lot_filter()
+            self._private_key = self._load_private_key()
+            logging.info("Ed25519 private key loaded")
         await self.conn.execute("""
-            CREATE TABLE IF NOT EXISTS ska_bot_v2 (
+            CREATE TABLE IF NOT EXISTS ska_bot_v3 (
                 timestamp            TIMESTAMP,
-                trade_id             LONG,
+                trade_id             DOUBLE,
                 price                DOUBLE,
+                P                    DOUBLE,
                 event                INT,
                 event_name           VARCHAR,
                 state                INT,
@@ -162,15 +230,15 @@ class SKATradingBot:
                 neutral_neutral_count INT
             ) TIMESTAMP(timestamp) PARTITION BY DAY WAL;
         """)
-        logging.info("ska_bot_v2 table ready")
+        logging.info("ska_bot_v3 table ready")
 
-    async def _log_event(self, trade_id, price, event, state, side='', pnl=None, neutral_neutral_count=None):
+    async def _log_event(self, trade_id, price, event, state, side='', pnl=None, neutral_neutral_count=None, P=None):
         try:
             await self.conn.execute(
-                """INSERT INTO ska_bot_v2
-                   (timestamp, trade_id, price, event, event_name, state, state_name, side, side_name, pnl, neutral_neutral_count)
-                   VALUES (now(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)""",
-                trade_id, price,
+                """INSERT INTO ska_bot_v3
+                   (timestamp, trade_id, price, P, event, event_name, state, state_name, side, side_name, pnl, neutral_neutral_count)
+                   VALUES (now(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)""",
+                trade_id, price, P,
                 EVENT[event], event,
                 STATE[state], state,
                 SIDE[side], side if side else None,
@@ -180,7 +248,7 @@ class SKATradingBot:
             logging.warning(f"State log failed: {e}")
 
     async def get_new_transitions(self):
-        last_id = self.last_trade_id if self.last_trade_id is not None else 0
+        last_id = max(0, self.last_trade_id - 2) if self.last_trade_id is not None else 0
         query = """
         WITH base AS (
           SELECT
@@ -188,7 +256,7 @@ class SKATradingBot:
             LAG(entropy, 1) OVER (ORDER BY timestamp, trade_id) AS e1,
             LAG(entropy, 2) OVER (ORDER BY timestamp, trade_id) AS e2
           FROM binance_trades
-          WHERE symbol = $1 AND entropy IS NOT NULL AND trade_id >= $2 - 2
+          WHERE symbol = $1 AND entropy IS NOT NULL AND trade_id >= $2
           ORDER BY timestamp, trade_id
         ),
         with_P AS (
@@ -204,8 +272,8 @@ class SKATradingBot:
           SELECT
             timestamp, symbol, trade_id, price, P,
             CASE
-              WHEN prev_P IS NOT NULL AND (P - prev_P) < -$4 THEN 2
-              WHEN prev_P IS NOT NULL AND (P - prev_P) < -$3 THEN 1
+              WHEN prev_P IS NOT NULL AND ABS((P - prev_P) - (-0.86)) <= $3 THEN 2
+              WHEN prev_P IS NOT NULL AND ABS((P - prev_P) - (-0.34)) <= $4 THEN 1
               ELSE 0
             END AS regime
           FROM with_P WHERE P IS NOT NULL AND prev_P IS NOT NULL
@@ -227,7 +295,7 @@ class SKATradingBot:
             6: 'bear→neutral',    7: 'bear→bull',    8: 'bear→bear'
         }
         try:
-            rows = await self.conn.fetch(query, self.symbol, last_id, BULL_THRESHOLD, BEAR_THRESHOLD)
+            rows = await self.conn.fetch(query, self.symbol, last_id, TOL_BEAR, TOL_BULL)
         except Exception:
             return []
         result = []
@@ -277,6 +345,12 @@ class SKATradingBot:
             return
         self.last_trade_id = trade_id
 
+        # Direct jumps (bull→bear, bear→bull) are localized entropy shocks — mean-reversion expected
+        # Do NOT react — keep position open through the spike
+        if name in ('bull→bear', 'bear→bull'):
+            logging.info(f"--- Direct jump {name} ignored (localized entropy shock) | trade_id={trade_id}")
+            return
+
         # ΔP_pair: gap within paired transition neutral→bull→neutral or neutral→bear→neutral
         # ΔP = P(closing) − P(opening) → negative for bull, positive for bear
         PAIR_CLOSE = {'neutral→bull': 'bull→neutral', 'neutral→bear': 'bear→neutral'}
@@ -286,7 +360,7 @@ class SKATradingBot:
         elif (name in ('bull→neutral', 'bear→neutral') and
               self._last_open_name is not None and
               PAIR_CLOSE.get(self._last_open_name) == name and
-              self._entropy_count < 3200):
+              self._entropy_count < DP_PAIR_CUTOFF):
             pair_type = 'bull' if name == 'bull→neutral' else 'bear'
             self._record_dp_pair(pair_type, self._last_open_P, P)
             if self.position is not None:
@@ -302,6 +376,11 @@ class SKATradingBot:
         # === NO POSITION: look for entry ===
         if self.position is None:
             if name == 'neutral→bull':
+                if not self.dry_run and not self._already_long:
+                    if not await self._execute_buy(price):
+                        logging.error("[ORDER] BUY failed — LONG not opened")
+                        return
+                self._already_long = False
                 self.position = Position(
                     side='LONG', entry_price=price,
                     entry_trade_id=trade_id, entry_time=str(ts),
@@ -311,9 +390,7 @@ class SKATradingBot:
                     f">>> OPEN LONG @ {price:.6f} | P={p_str} | trade_id={trade_id} "
                     f"| waiting: bull→neutral"
                 )
-                await self._log_event(trade_id, price, 'OPEN_LONG', WAIT_PAIR, 'LONG')
-                if not self.dry_run:
-                    self._execute_buy(price)
+                await self._log_event(trade_id, price, 'OPEN_LONG', WAIT_PAIR, 'LONG', P=P)
 
             elif name == 'neutral→bear':
                 self.position = Position(
@@ -325,9 +402,8 @@ class SKATradingBot:
                     f">>> OPEN SHORT @ {price:.6f} | P={p_str} | trade_id={trade_id} "
                     f"| waiting: bear→neutral"
                 )
-                await self._log_event(trade_id, price, 'OPEN_SHORT', WAIT_PAIR, 'SHORT')
-                if not self.dry_run:
-                    self._execute_sell(price)
+                await self._log_event(trade_id, price, 'OPEN_SHORT', WAIT_PAIR, 'SHORT', P=P)
+                # No exchange order: spot cannot short-sell — SHORT tracked synthetically only
             return
 
         # === LONG POSITION ===
@@ -340,7 +416,7 @@ class SKATradingBot:
                         f"--- UP pair confirmed (bull→neutral) @ {price:.6f} "
                         f"| IN_NEUTRAL | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'PAIR_CONFIRMED', IN_NEUTRAL, 'LONG')
+                    await self._log_event(trade_id, price, 'PAIR_CONFIRMED', IN_NEUTRAL, 'LONG', P=P)
 
             elif self.position.exit_state == IN_NEUTRAL:
                 if name == 'neutral→neutral':
@@ -357,7 +433,7 @@ class SKATradingBot:
                             f"| READY | nn_count={self.position.neutral_neutral_count} | trade_id={trade_id}"
                         )
                         await self._log_event(trade_id, price, 'NEUTRAL_GAP', READY, 'LONG',
-                                              neutral_neutral_count=self.position.neutral_neutral_count)
+                                              neutral_neutral_count=self.position.neutral_neutral_count, P=P)
                     else:
                         logging.info(
                             f"--- Neutral gap too short nn_count={self.position.neutral_neutral_count} "
@@ -373,17 +449,21 @@ class SKATradingBot:
                         f"--- UP cycle repeating (neutral→bull) @ {price:.6f} "
                         f"| WAIT_PAIR | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG')
+                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG', P=P)
                 elif name == 'neutral→bear':
                     self.position.exit_state = EXIT_WAIT
                     logging.info(
                         f"--- Opposite cycle opening (neutral→bear) @ {price:.6f} "
                         f"| EXIT_WAIT | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'NEUTRAL_GAP', EXIT_WAIT, 'LONG')
+                    await self._log_event(trade_id, price, 'OPPOSITE_OPEN', EXIT_WAIT, 'LONG', P=P)
 
             elif self.position.exit_state == EXIT_WAIT:
-                if name == 'bear→neutral':
+                if name == 'bear→neutral' and P is not None and abs(P - P_X_NEUTRAL) <= TOL_CLOSE:
+                    if not self.dry_run:
+                        if not await self._execute_sell(price):
+                            logging.error("[ORDER] SELL failed — LONG not closed")
+                            return
                     pnl = price - self.position.entry_price
                     pnl_pct = (pnl / self.position.entry_price) * 100
                     self._record_trade(pnl, pnl_pct, price)
@@ -391,21 +471,8 @@ class SKATradingBot:
                         f"<<< CLOSE LONG (bear→neutral) @ {price:.6f} | "
                         f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
                     )
-                    await self._log_event(trade_id, price, 'CLOSE_LONG', EXIT_WAIT, 'LONG', pnl)
-                    if not self.dry_run:
-                        self._execute_sell(price)
-                    self.position = Position(
-                        side='SHORT', entry_price=price,
-                        entry_trade_id=trade_id, entry_time=str(ts),
-                        entry_transition='neutral→bear', exit_state=WAIT_PAIR
-                    )
-                    logging.info(
-                        f">>> OPEN SHORT (new cycle) @ {price:.6f} "
-                        f"| waiting: bear→neutral"
-                    )
-                    await self._log_event(trade_id, price, 'OPEN_SHORT', WAIT_PAIR, 'SHORT')
-                    if not self.dry_run:
-                        self._execute_sell(price)
+                    await self._log_event(trade_id, price, 'CLOSE_LONG', EXIT_WAIT, 'LONG', pnl, P=P)
+                    self.position = None
                 elif name == 'neutral→bull':
                     self.position.exit_state = WAIT_PAIR
                     self.position.neutral_neutral_count = 0
@@ -413,7 +480,7 @@ class SKATradingBot:
                         f"--- Bear cycle aborted (neutral→bull) @ {price:.6f} "
                         f"| WAIT_PAIR | still LONG | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG')
+                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG', P=P)
 
         # === SHORT POSITION ===
         elif self.position.side == 'SHORT':
@@ -425,7 +492,7 @@ class SKATradingBot:
                         f"--- DOWN pair confirmed (bear→neutral) @ {price:.6f} "
                         f"| IN_NEUTRAL | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'PAIR_CONFIRMED', IN_NEUTRAL, 'SHORT')
+                    await self._log_event(trade_id, price, 'PAIR_CONFIRMED', IN_NEUTRAL, 'SHORT', P=P)
 
             elif self.position.exit_state == IN_NEUTRAL:
                 if name == 'neutral→neutral':
@@ -442,7 +509,7 @@ class SKATradingBot:
                             f"| READY | nn_count={self.position.neutral_neutral_count} | trade_id={trade_id}"
                         )
                         await self._log_event(trade_id, price, 'NEUTRAL_GAP', READY, 'SHORT',
-                                              neutral_neutral_count=self.position.neutral_neutral_count)
+                                              neutral_neutral_count=self.position.neutral_neutral_count, P=P)
                     else:
                         logging.info(
                             f"--- Neutral gap too short nn_count={self.position.neutral_neutral_count} "
@@ -458,17 +525,21 @@ class SKATradingBot:
                         f"--- DOWN cycle repeating (neutral→bear) @ {price:.6f} "
                         f"| WAIT_PAIR | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT')
+                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT', P=P)
                 elif name == 'neutral→bull':
                     self.position.exit_state = EXIT_WAIT
                     logging.info(
                         f"--- Opposite cycle opening (neutral→bull) @ {price:.6f} "
                         f"| EXIT_WAIT | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'NEUTRAL_GAP', EXIT_WAIT, 'SHORT')
+                    await self._log_event(trade_id, price, 'OPPOSITE_OPEN', EXIT_WAIT, 'SHORT', P=P)
 
             elif self.position.exit_state == EXIT_WAIT:
-                if name == 'bull→neutral':
+                if name == 'bull→neutral' and P is not None and abs(P - P_X_NEUTRAL) <= TOL_CLOSE:
+                    if not self.dry_run:
+                        if not await self._execute_buy(price):
+                            logging.error("[ORDER] BUY failed — SHORT not closed / LONG not re-entered")
+                            return
                     pnl = self.position.entry_price - price
                     pnl_pct = (pnl / self.position.entry_price) * 100
                     self._record_trade(pnl, pnl_pct, price)
@@ -476,21 +547,9 @@ class SKATradingBot:
                         f"<<< CLOSE SHORT (bull→neutral) @ {price:.6f} | "
                         f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
                     )
-                    await self._log_event(trade_id, price, 'CLOSE_SHORT', EXIT_WAIT, 'SHORT', pnl)
-                    if not self.dry_run:
-                        self._execute_buy(price)
-                    self.position = Position(
-                        side='LONG', entry_price=price,
-                        entry_trade_id=trade_id, entry_time=str(ts),
-                        entry_transition='neutral→bull', exit_state=WAIT_PAIR
-                    )
-                    logging.info(
-                        f">>> OPEN LONG (new cycle) @ {price:.6f} "
-                        f"| waiting: bull→neutral"
-                    )
-                    await self._log_event(trade_id, price, 'OPEN_LONG', WAIT_PAIR, 'LONG')
-                    if not self.dry_run:
-                        self._execute_buy(price)
+                    await self._log_event(trade_id, price, 'CLOSE_SHORT', EXIT_WAIT, 'SHORT', pnl, P=P)
+                    self._already_long = True
+                    self.position = None
                 elif name == 'neutral→bear':
                     self.position.exit_state = WAIT_PAIR
                     self.position.neutral_neutral_count = 0
@@ -498,17 +557,25 @@ class SKATradingBot:
                         f"--- Bull cycle aborted (neutral→bear) @ {price:.6f} "
                         f"| WAIT_PAIR | still SHORT | trade_id={trade_id}"
                     )
-                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT')
+                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT', P=P)
 
     def _record_trade(self, pnl, pnl_pct, exit_price):
         self.total_trades += 1
-        self.total_pnl += pnl
         if pnl > 0:
             self.winning_trades += 1
         else:
             self.losing_trades += 1
+
+        # Route PnL to the correct bucket
+        is_real = (self.position.side == 'LONG')   # LONGs are backed by real exchange orders
+        if is_real:
+            self.spot_pnl += pnl
+        else:
+            self.synthetic_pnl += pnl
+
         trade = {
             'side': self.position.side,
+            'real': is_real,
             'entry': self.position.entry_price,
             'exit': exit_price,
             'pnl': pnl,
@@ -518,34 +585,152 @@ class SKATradingBot:
         }
         self.trade_log.append(trade)
 
-        header = not hasattr(self, '_csv_written')
         with open(self.results_file, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=[
-                'side', 'entry', 'exit', 'pnl', 'entry_transition', 'bull_pairs', 'bear_pairs'
+                'side', 'real', 'entry', 'exit', 'pnl', 'entry_transition', 'bull_pairs', 'bear_pairs'
             ])
-            if header:
+            if not self._csv_written:
                 writer.writeheader()
                 self._csv_written = True
             writer.writerow(trade)
 
-    def _execute_buy(self, price):
-        logging.info(f"[EXECUTE] BUY {self.symbol} @ {price:.6f}")
+    async def _fetch_lot_filter(self) -> dict:
+        """Fetch LOT_SIZE and NOTIONAL filters from Binance exchangeInfo (public, no auth)."""
+        url = f"{BINANCE_BASE_URL}/api/v3/exchangeInfo?symbol={self.symbol}"
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as resp:
+                    if resp.status != 200:
+                        raise RuntimeError(f"exchangeInfo returned HTTP {resp.status}")
+                    data = await resp.json()
+        except Exception as e:
+            raise RuntimeError(f"[FILTERS] Failed to fetch exchangeInfo for {self.symbol}: {e}") from e
 
-    def _execute_sell(self, price):
-        logging.info(f"[EXECUTE] SELL {self.symbol} @ {price:.6f}")
+        symbols = data.get('symbols', [])
+        if not symbols:
+            raise RuntimeError(f"[FILTERS] No symbol data returned for {self.symbol}")
+
+        filter_map = {f['filterType']: f for f in symbols[0].get('filters', [])}
+
+        if 'LOT_SIZE' not in filter_map:
+            raise RuntimeError(f"[FILTERS] LOT_SIZE filter missing for {self.symbol}")
+        lot = filter_map['LOT_SIZE']
+
+        notional_filter = filter_map.get('NOTIONAL') or filter_map.get('MIN_NOTIONAL') or {}
+        result = {
+            'step_size':    float(lot['stepSize']),
+            'min_qty':      float(lot['minQty']),
+            'max_qty':      float(lot['maxQty']),
+            'min_notional': float(notional_filter.get('minNotional', 0)),
+            'step_str':     lot['stepSize'],   # kept as string for precision calculation
+        }
+        logging.info(
+            f"[FILTERS] {self.symbol} stepSize={result['step_size']} "
+            f"minQty={result['min_qty']} maxQty={result['max_qty']} "
+            f"minNotional={result['min_notional']}"
+        )
+        return result
+
+    def _quantize_qty(self, qty: float, price: float) -> float:
+        """Floor qty to stepSize, enforce minQty and minNotional. No-op in dry run."""
+        if self._lot_filter is None:
+            return qty
+        f = self._lot_filter
+        step = f['step_size']
+        # floor to step size using integer arithmetic to avoid float drift
+        qty = math.floor(qty / step) * step
+        # round to the number of decimals in stepSize string
+        step_str = f['step_str'].rstrip('0')
+        decimals = len(step_str.split('.')[1]) if '.' in step_str else 0
+        qty = round(qty, decimals)
+        if qty < f['min_qty']:
+            raise ValueError(
+                f"{self.symbol}: qty {qty} < minQty {f['min_qty']} — increase ORDER_QUANTITY"
+            )
+        if qty > f['max_qty']:
+            raise ValueError(
+                f"{self.symbol}: qty {qty} > maxQty {f['max_qty']} — decrease ORDER_QUANTITY"
+            )
+        notional = qty * price
+        if notional < f['min_notional']:
+            raise ValueError(
+                f"{self.symbol}: notional {notional:.4f} < minNotional {f['min_notional']} "
+                f"— increase ORDER_QUANTITY"
+            )
+        return qty
+
+    def _load_private_key(self) -> Ed25519PrivateKey:
+        """Load Ed25519 private key from PEM file."""
+        from cryptography.hazmat.primitives.serialization import load_pem_private_key
+        with open(BINANCE_PRIVATE_KEY_PATH, 'rb') as f:
+            return load_pem_private_key(f.read(), password=None)
+
+    async def _binance_order(self, side, quantity) -> bool:
+        """Place a market order on Binance using Ed25519 signature. Returns True only if status=FILLED."""
+        params = {
+            'symbol':    self.symbol,
+            'side':      side,
+            'type':      'MARKET',
+            'quantity':  quantity,
+            'timestamp': int(time.time() * 1000),
+        }
+        query = '&'.join(f"{k}={v}" for k, v in params.items())
+        signature = urllib.parse.quote(
+            base64.b64encode(self._private_key.sign(query.encode('ASCII'))).decode()
+        )
+        url = f"{BINANCE_BASE_URL}/api/v3/order?{query}&signature={signature}"
+        headers = {'X-MBX-APIKEY': BINANCE_API_KEY}
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, headers=headers) as resp:
+                    data = await resp.json()
+                    order_status = data.get('status')
+                    if resp.status == 200 and order_status == 'FILLED':
+                        logging.info(
+                            f"[ORDER] {side} {quantity} {self.symbol} FILLED "
+                            f"orderId={data.get('orderId')} "
+                            f"fills={data.get('fills')}"
+                        )
+                        return True
+                    logging.error(
+                        f"[ORDER] {side} not filled: HTTP {resp.status} status={order_status} {data}"
+                    )
+                    return False
+        except Exception as e:
+            logging.error(f"[ORDER] {side} exception: {e}")
+            return False
+
+    async def _execute_buy(self, price) -> bool:
+        qty = self._quantize_qty(ORDER_QUANTITY.get(self.symbol, 1.0), price)
+        logging.info(f"[EXECUTE] BUY {self.symbol} @ {price:.6f} qty={qty}")
+        return await self._binance_order('BUY', qty)
+
+    async def _execute_sell(self, price) -> bool:
+        qty = self._quantize_qty(ORDER_QUANTITY.get(self.symbol, 1.0), price)
+        logging.info(f"[EXECUTE] SELL {self.symbol} @ {price:.6f} qty={qty}")
+        return await self._binance_order('SELL', qty)
 
     def print_stats(self):
         win_rate = (self.winning_trades / self.total_trades * 100) if self.total_trades > 0 else 0
+        combined = self.spot_pnl + self.synthetic_pnl
         logging.info(
             f"=== STATS === Trades: {self.total_trades} | "
             f"Win: {self.winning_trades} | Lose: {self.losing_trades} | "
-            f"Win rate: {win_rate:.1f}% | Total PnL: {self.total_pnl:+.6f}"
+            f"Win rate: {win_rate:.1f}% | "
+            f"Spot PnL (real): {self.spot_pnl:+.6f} | "
+            f"Synthetic PnL: {self.synthetic_pnl:+.6f} | "
+            f"Combined signal PnL: {combined:+.6f}"
         )
 
     def save_results(self):
         win_rate = (self.winning_trades / self.total_trades * 100) if self.total_trades > 0 else 0
+        combined = self.spot_pnl + self.synthetic_pnl
         logging.info(f"Results file: {self.results_file}")
-        logging.info(f"Summary: {self.total_trades} trades | win_rate={win_rate:.1f}% | PnL={self.total_pnl:+.6f}")
+        logging.info(
+            f"Summary: {self.total_trades} trades | win_rate={win_rate:.1f}% | "
+            f"spot_pnl={self.spot_pnl:+.6f} | synthetic_pnl={self.synthetic_pnl:+.6f} | "
+            f"combined={combined:+.6f}"
+        )
 
     async def get_entropy_count(self):
         try:
@@ -557,18 +742,17 @@ class SKATradingBot:
         except Exception:
             return 0
 
-    async def run(self, max_trades=3500):
+    async def run(self, max_trades=ENGINE_RESET_AT):
         await self.connect()
-        logging.info(f"SKA Trading Bot v2 | symbol={self.symbol} | dry_run={self.dry_run} | auto_stop={max_trades}")
-        logging.info(f"Regime: ΔP < -{BEAR_THRESHOLD} → bear | -{BEAR_THRESHOLD} ≤ ΔP < -{BULL_THRESHOLD} → bull | else → neutral")
+        logging.info(f"SKA Trading Bot v3 | symbol={self.symbol} | dry_run={self.dry_run} | auto_stop={max_trades} | K={K}")
+        logging.info(f"Regime: |ΔP−(−0.86)|≤{TOL_BEAR:.4f} → bear | |ΔP−(−0.34)|≤{TOL_BULL:.4f} → bull | else → neutral")
         logging.info("LONG:  neutral→bull → bull→neutral → neutral→neutral × N → neutral→bear → bear→neutral (CLOSE)")
         logging.info("SHORT: neutral→bear → bear→neutral → neutral→neutral × N → neutral→bull → bull→neutral (CLOSE)")
 
-        min_trades = 500
-        logging.info(f"Waiting for {min_trades} trades with entropy before trading...")
+        logging.info(f"Waiting for {MIN_TRADES} trades with entropy before trading...")
         while True:
             count = await self.get_entropy_count()
-            if count >= min_trades:
+            if count >= MIN_TRADES:
                 logging.info(f"SKA ready: {count} trades with entropy. Starting signals.")
                 break
             await asyncio.sleep(self.poll_interval)
@@ -592,6 +776,18 @@ class SKATradingBot:
             if self.position:
                 transitions = await self.get_new_transitions()
                 close_price = transitions[-1]['price'] if transitions else self.position.entry_price
+
+                # In live mode, only LONG holds real inventory — send a market SELL to liquidate.
+                # SHORT is synthetic (no exchange position), so no order is needed.
+                if not self.dry_run and self.position.side == 'LONG':
+                    logging.warning("[END] Live LONG open at shutdown — sending emergency SELL")
+                    sold = await self._execute_sell(close_price)
+                    if not sold:
+                        logging.error(
+                            "[END] Emergency SELL failed — manual intervention required: "
+                            f"sell {ORDER_QUANTITY.get(self.symbol, '?')} {self.symbol} on Binance"
+                        )
+
                 if self.position.side == 'LONG':
                     pnl = close_price - self.position.entry_price
                 else:
@@ -612,15 +808,14 @@ class SKATradingBot:
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='SKA Paired Regime Trading Bot v2')
+    parser = argparse.ArgumentParser(description='SKA Paired Regime Trading Bot v3')
     parser.add_argument('--symbol', default='XRPUSDT', help='Trading symbol')
     parser.add_argument('--poll', type=float, default=1.0, help='Poll interval (seconds)')
     parser.add_argument('--live', action='store_true', help='Enable live trading (default: dry run)')
     parser.add_argument('--host', default='192.168.1.216', help='QuestDB host')
     args = parser.parse_args()
 
-    import os
-    os.makedirs('/home/coder/project/Real_Time_SKA_trading/bot_results_v2', exist_ok=True)
+    os.makedirs(RESULTS_DIR, exist_ok=True)
 
     bot = SKATradingBot(
         db_host=args.host,

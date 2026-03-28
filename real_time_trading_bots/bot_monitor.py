@@ -22,17 +22,17 @@ from email.mime.text import MIMEText
 
 import pandas as pd
 
-VERSION       = 2    # ← change this to switch between bot versions
+VERSION       = int(os.environ.get('BOT_VERSION', '2'))
 
 RESULTS_DIR   = f"/home/coder/project/Real_Time_SKA_trading/bot_results_v{VERSION}"
 CSV_PATTERN   = f"bot_results_v{VERSION}_*.csv"
-POLL_INTERVAL = 30   # seconds
+POLL_INTERVAL = 300   # seconds
 SMTP_SERVER   = "smtp.gmail.com"
 SMTP_PORT     = 587
 
-EMAIL_FROM         = "your@gmail.com"
-EMAIL_TO           = "your@gmail.com"
-GMAIL_APP_PASSWORD = "xxxx xxxx xxxx xxxx"
+EMAIL_FROM         = "bouarfa.mahi@gmail.com"
+EMAIL_TO           = "mairifain@gmail.com"
+GMAIL_APP_PASSWORD = "tayc gzvm bkqz zlxu"
 
 PIP = 0.0001
 
@@ -45,6 +45,28 @@ def get_csv_files():
     return sorted(glob.glob(os.path.join(RESULTS_DIR, CSV_PATTERN)))
 
 
+def get_dp_pair_files():
+    return sorted(glob.glob(os.path.join(RESULTS_DIR, f"dp_pair_v{VERSION}_*.csv")))
+
+
+def analyze_dp_pair(files):
+    if not files:
+        return None
+    per_loop = []
+    for f in files:
+        df = pd.read_csv(f)
+        if 'dp_pair' not in df.columns:
+            continue
+        loop = {'file': os.path.basename(f)}
+        for pair_type in ['bull', 'bear']:
+            sub = df[df.pair_type == pair_type]
+            if len(sub) == 0:
+                continue
+            loop[pair_type] = {'n': len(sub), 'avg': sub['dp_pair'].mean()}
+        per_loop.append(loop)
+    return per_loop if per_loop else None
+
+
 def analyze(files):
     if not files:
         return None
@@ -55,7 +77,15 @@ def analyze(files):
     for i, f in enumerate(files, 1):
         df = pd.read_csv(f)
         if 'pnl' not in df.columns:
-            df = pd.read_csv(f, names=['side', 'entry', 'exit', 'pnl', 'pnl_pct', 'entry_transition'], header=None)
+            with open(f) as _tmp:
+                ncols = len(next(_tmp).split(','))
+            if ncols >= 8:
+                names = ['side', 'real', 'entry', 'exit', 'pnl', 'entry_transition', 'bull_pairs', 'bear_pairs']
+            elif ncols >= 7:
+                names = ['side', 'entry', 'exit', 'pnl', 'entry_transition', 'bull_pairs', 'bear_pairs']
+            else:
+                names = ['side', 'entry', 'exit', 'pnl', 'pnl_pct', 'entry_transition']
+            df = pd.read_csv(f, names=names, header=None, index_col=False)
         all_dfs.append(df)
 
         n        = len(df)
@@ -77,9 +107,12 @@ def analyze(files):
         trades = []
         for _, row in df.iterrows():
             result = 'W' if row.pnl > 0 else ('F' if row.pnl == 0 else 'L')
+            pairs = ""
+            if 'bull_pairs' in df.columns:
+                pairs = f" bull={int(row.bull_pairs)} bear={int(row.bear_pairs)}"
             trades.append(
                 f"    {result} {row.side:<5} | entry={row.entry:.4f} exit={row.exit:.4f} | "
-                f"PnL={pips(row.pnl):>+6.1f} pips | {row.entry_transition}"
+                f"PnL={pips(row.pnl):>+6.1f} pips | {row.entry_transition}{pairs}"
             )
         per_file.append((header, trades))
 
@@ -103,6 +136,19 @@ def analyze(files):
     long_avg  = long_df.pnl.mean()  if len(long_df)  > 0 else 0
     short_avg = short_df.pnl.mean() if len(short_df) > 0 else 0
 
+    dp_pair = analyze_dp_pair(get_dp_pair_files())
+    dp_section = "\nΔP_PAIR PER LOOP\n"
+    if dp_pair:
+        for i, loop in enumerate(dp_pair, 1):
+            parts = []
+            for pair_type in ['bull', 'bear']:
+                if pair_type in loop:
+                    s = loop[pair_type]
+                    parts.append(f"{pair_type}={s['avg']:>+.4f} (n={s['n']})")
+            dp_section += f"  Loop {i:>3}: {' | '.join(parts)}\n"
+    else:
+        dp_section += "  no data yet\n"
+
     header = f"""SKA Trading Bot v{VERSION} — Report ({len(files)} files)
 {'=' * 50}
 Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
@@ -119,7 +165,7 @@ SUMMARY
 BY SIDE
   LONG:  {len(long_df):>4} trades | PnL={pips(long_pnl):>+8.1f} pips | avg={pips(long_avg):>+5.2f} pips | win_rate={long_wr:.1f}%
   SHORT: {len(short_df):>4} trades | PnL={pips(short_pnl):>+8.1f} pips | avg={pips(short_avg):>+5.2f} pips | win_rate={short_wr:.1f}%
-
+{dp_section}
 PER FILE
 """
     summary  = header + '\n'.join(h for h, _ in per_file)
@@ -170,7 +216,7 @@ def main():
                 with open(txt_path, 'w') as f:
                     f.write(detailed)
                 print(f"Report saved: {txt_path}")
-                send_email(subject, summary)
+                send_email(subject, detailed)
                 last_count = current_count
 
         time.sleep(POLL_INTERVAL)
