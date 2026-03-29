@@ -17,34 +17,45 @@ This is not HFT. It is event-driven structural trading operating at tick data re
 
 ---
 
-## Bot v1 — Consecutive same-direction paired cycles, symmetric exit
+## Bot v3 — ΔP band regime, entropy-derived probability
+
+```
+Regime definition:
+  P(n)   = exp(-|ΔH/H|)         where ΔH/H = (H(n) - H(n-1)) / H(n)
+  ΔP(n)  = P(n) - P(n-1)
+
+  |ΔP − (−0.86)| ≤ 0.0042  →  regime = 2  (bear)
+  |ΔP − (−0.34)| ≤ 0.0198  →  regime = 1  (bull)
+  else                       →  regime = 0  (neutral)
+
+P band positions — universal constants at convergence scale:
+  P_NEUTRAL_NEUTRAL = 1.00
+  P_NEUTRAL_BULL    = 0.66
+  P_X_NEUTRAL       = 0.51   (bull→neutral = bear→neutral)
+  P_NEUTRAL_BEAR    = 0.14
+
+Exit filter: abs(P - 0.51) ≤ 0.0153  (TOL_CLOSE)
+```
 
 ```
 LONG:   neutral→bull              (OPEN — WAIT_PAIR)
         bull→neutral              (pair confirmed — IN_NEUTRAL)
-        neutral→neutral × N       (count all — stay IN_NEUTRAL)
-        <first non-neutral>       (gap closes — READY)
-        neutral→bull              (cycle repeats — back to WAIT_PAIR)
-        ...
+        neutral→neutral × N≥3    (neutral gap — READY)
         neutral→bear              (opposite cycle opens — EXIT_WAIT)
-        bear→neutral              (opposite pair confirmed — CLOSE LONG)
+        bear→neutral + TOL_CLOSE  (CLOSE LONG)
 
 SHORT:  neutral→bear              (OPEN — WAIT_PAIR)
         bear→neutral              (pair confirmed — IN_NEUTRAL)
-        neutral→neutral × N       (count all — stay IN_NEUTRAL)
-        <first non-neutral>       (gap closes — READY)
-        neutral→bear              (cycle repeats — back to WAIT_PAIR)
-        ...
+        neutral→neutral × N≥3    (neutral gap — READY)
         neutral→bull              (opposite cycle opens — EXIT_WAIT)
-        bull→neutral              (opposite pair confirmed — CLOSE SHORT)
+        bull→neutral + TOL_CLOSE  (CLOSE SHORT)
 ```
 
 State machine: WAIT_PAIR → IN_NEUTRAL → READY → EXIT_WAIT → CLOSE.
 
-The alpha: the market generates consecutive same-direction paired cycles.
-Hold through all of them — close only when the opposite paired cycle fully confirms.
-Entry and exit require identical structural confirmation — a complete paired cycle.
-The neutral gap (neutral→neutral × N) is counted per cycle as `nn_count`.
+Additional guards:
+- `MIN_TRADES = 60` — no trade until 60 entropy-valid ticks (SKA convergence warmup)
+- Direct jump filter — `bull→bear` and `bear→bull` ignored (localized entropy shocks)
 
 ---
 
@@ -112,54 +123,44 @@ flowchart TD
 ## Data
 
 - Source: Binance XRPUSDT WebSocket — real tick data exported from QuestDB
-- Folder: `XRPUSDT/` — 20 files, July 2025
-- Liquidity: ~875 trades/minute (high liquidity period)
-- Each file: ~2300–4500 trades, 2–20 minutes of market activity
-- Entropy computed by the SKA learning engine (matrix grows 1×1 → N×N per loop)
+- Folder: `XRPUSDT/` — 112 files, March 28–29 2026
+- Liquidity: ~700 trades/5 min (low liquidity period)
+- Each file: ~3500 trades per loop
+- Entropy computed by the SKA learning engine (matrix grows 1×1 → 3500×3500 per loop)
 
 ---
 
 ## Backtest Results
 
-### July 2025 — 20 files (reference dataset)
+### March 2026 — 112 loops, XRPUSDT, bot v3
 
-| Trades | Win%  | Total PnL | Avg PnL/trade | Force closes |
-|--------|-------|-----------|---------------|--------------|
-| 516    | 66.9% | +0.1635   | +0.000317     | 20           |
+| Metric | Value |
+|---|---|
+| Loops | 112 |
+| Total trades | 2979 |
+| Winners | 1293 |
+| Losers | 1170 |
+| Flat | 516 |
+| Win rate | 43.4% |
+| Total PnL | **+3334 pips** |
+| Avg / trade | **+1.12 pips** |
+| LONG (spot) | +1780 pips |
+| SHORT (synth) | +1554 pips |
+| Best loop | +103 pips (13 trades, avg +7.92) |
+| Worst loop | -69 pips (10 trades, avg -6.90) |
+| Force closes | 102 |
 
-### March 2026 — 87 live files
+> Consistent with live bot: 41 live loops = win 43.3%, avg +1.17 pips.
 
-| Trades | Win%  | Total PnL | Avg PnL/trade | Force closes |
-|--------|-------|-----------|---------------|--------------|
-| 2504   | 56.1% | +0.3639   | +0.000145     | 87           |
 
-### Live — 2026-03-16 (2 loops)
+---
 
-| Trades | Win%  | Total PnL | Avg PnL/trade |
-|--------|-------|-----------|---------------|
-| 25     | 80.0% | +0.007600 | +0.000304     |
+## Usage
 
-### Per file — July 2025
+```bash
+# Run backtest on all files in XRPUSDT/
+/opt/venv/bin/python3 backtest.py
 
-| File | Trades | Win% | PnL | Force |
-|------|--------|------|-----|-------|
-| questdb-query-1751814162388.csv | 24 | 70.8% | +0.008900 | 1 |
-| questdb-query-1751823646841.csv | 31 | 54.8% | +0.004800 | 1 |
-| questdb-query-1751880848676.csv | 23 | 60.9% | +0.003100 | 1 |
-| questdb-query-1751909192925.csv | 23 | 73.9% | +0.009100 | 1 |
-| questdb-query-1751924112805.csv | 13 | 38.5% | +0.002200 | 1 |
-| questdb-query-1751958417525.csv | 21 | 57.1% | +0.000400 | 1 |
-| questdb-query-1751984700242.csv | 23 | 65.2% | +0.006800 | 1 |
-| questdb-query-1751987436731.csv | 31 | 67.7% | +0.005800 | 1 |
-| questdb-query-1751990194216.csv | 32 | 78.1% | +0.015600 | 1 |
-| questdb-query-1751993844367.csv | 31 | 77.4% | +0.010100 | 1 |
-| questdb-query-1752000467711.csv | 26 | 80.8% | +0.009700 | 1 |
-| questdb-query-1752003744108.csv | 21 | 57.1% | +0.008100 | 1 |
-| questdb-query-1752056238892.csv | 22 | 59.1% | +0.004500 | 1 |
-| questdb-query-1752059055042.csv | 22 | 63.6% | +0.008200 | 1 |
-| questdb-query-1752255003359.csv | 36 | 77.8% | +0.016400 | 1 |
-| questdb-query-1752509592905.csv | 24 | 79.2% | +0.017300 | 1 |
-| questdb-query-1753534868337.csv | 20 | 35.0% | +0.000300 | 1 |
-| questdb-query-1753551814823.csv | 25 | 76.0% | +0.011900 | 1 |
-| questdb-query-1753564543126.csv | 34 | 70.6% | +0.014200 | 1 |
-| questdb-query-1753612688661.csv | 34 | 61.8% | +0.006100 | 1 |
+# Print formatted report from summary.csv
+/opt/venv/bin/python3 report.py
+```
