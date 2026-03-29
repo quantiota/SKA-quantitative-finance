@@ -126,7 +126,7 @@ flowchart TD
 - Folder: `XRPUSDT/` — 112 files, March 28–29 2026
 - Liquidity: ~700 trades/5 min (low liquidity period)
 - Each file: ~3500 trades per loop
-- Entropy computed by the SKA learning engine
+- Entropy computed by the SKA learning engine.
 
 ---
 
