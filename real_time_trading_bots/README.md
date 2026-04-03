@@ -22,27 +22,24 @@ event (completion of a paired regime cycle), not on a threshold or a price level
 ## Signal Logic — Diagram
 
 ```mermaid
+---
+config:
+  look: classic
+  theme: base
+  layout: elk
+---
 flowchart TD
-    BINANCE[(Binance Tick Data)]
-    ENGINE["SKA ENGINE"]
+    BINANCE[(Binance <br/> Raw Tick Data)]
+    ENGINE[SKA Engine]
+    API["SKA API"]
     BOT@{ shape: diamond, label: "Trading Bot" }
 
     BINANCE -- "symbol" --> ENGINE
-    ENGINE -- "entropy" --> BOT
+    API -- "regime transitions" --> BOT
+    ENGINE -- "entropy" --> API
 
     BOT --> LONG
     BOT --> SHORT
-
-    subgraph LONG["LONG"]
-        direction TB
-        L1["neutral→bull<br/><i>OPEN / WAIT_PAIR</i>"]
-        L2["bull→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
-        L3["neutral→neutral × N (N≥3)<br/><i>neutral gap / READY</i>"]
-        L4["neutral→bear<br/><i>opp. cycle opens / EXIT_WAIT</i>"]
-        L5["bear→neutral<br/><i>opp. pair confirmed / CLOSE LONG</i>"]
-        L1 --> L2 --> L3 --> L4 --> L5
-        L3 -. "↺ repeats" .-> L1
-    end
 
     subgraph SHORT["SHORT"]
         direction TB
@@ -55,6 +52,17 @@ flowchart TD
         S3 -. "↺ repeats" .-> S1
     end
 
+    subgraph LONG["LONG"]
+        direction TB
+        L1["neutral→bull<br/><i>OPEN / WAIT_PAIR</i>"]
+        L2["bull→neutral<br/><i>pair confirmed / IN_NEUTRAL</i>"]
+        L3["neutral→neutral × N (N≥3)<br/><i>neutral gap / READY</i>"]
+        L4["neutral→bear<br/><i>opp. cycle opens / EXIT_WAIT</i>"]
+        L5["bear→neutral<br/><i>opp. pair confirmed / CLOSE LONG</i>"]
+        L1 --> L2 --> L3 --> L4 --> L5
+        L3 -. "↺ repeats" .-> L1
+    end
+
     classDef data      fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px;
     classDef process   fill:#E8F5E9,stroke:#43A047,stroke-width:2px;
     classDef longOpen  fill:#A8DFBC,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
@@ -64,7 +72,9 @@ flowchart TD
     classDef neutral   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
 
     class BINANCE data;
+    class ENGINE process;
     class API,BOT process;
+
     class L1 longOpen;
     class L2 longPair;
     class L3 neutral;
@@ -75,6 +85,7 @@ flowchart TD
     class S3 neutral;
     class S4 longOpen;
     class S5 longPair;
+
 
 ```
 
