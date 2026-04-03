@@ -77,7 +77,7 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
-MIN_NN_COUNT    = 3
+MIN_NN_COUNT    = 10
 MIN_TRADES      = 10    # wait for SKA convergence before trading
 ENGINE_RESET_AT = 3500  # engine resets at this entropy count
 DP_PAIR_CUTOFF  = 3200  # stop recording ΔP_pair before engine reset
@@ -110,10 +110,14 @@ P_X_NEUTRAL       = 0.51   # bull→neutral = bear→neutral
 P_NEUTRAL_BEAR    = 0.14
 
 # Proportional tolerance: tol per transition = K × P_curr_structural
-K        = 0.03
-TOL_BEAR  = K * 0.14   # = 0.0042  neutral→bear band
-TOL_BULL  = K * 0.66   # = 0.0198  neutral→bull band
-TOL_CLOSE = K * 0.51   # = 0.0153  bull→neutral = bear→neutral band
+K         = 0.03
+TOL_BEAR  = K * P_NEUTRAL_BEAR   # = 0.0042  neutral→bear band
+TOL_BULL  = K * P_NEUTRAL_BULL   # = 0.0198  neutral→bull band
+TOL_CLOSE = K * P_X_NEUTRAL      # = 0.0153  bull→neutral = bear→neutral band
+
+# ΔP centers for regime classification (negative — P drops from neutral)
+DP_NEUTRAL_BEAR = -(P_NEUTRAL_NEUTRAL - P_NEUTRAL_BEAR)  # = -0.86
+DP_NEUTRAL_BULL = -(P_NEUTRAL_NEUTRAL - P_NEUTRAL_BULL)  # = -0.34
 
 # ΔP_pair — paired transition gap at convergence scale
 DP_PAIR_BULL = P_NEUTRAL_BULL - P_X_NEUTRAL    # = 0.15
@@ -272,8 +276,8 @@ class SKATradingBot:
           SELECT
             timestamp, symbol, trade_id, price, P,
             CASE
-              WHEN prev_P IS NOT NULL AND ABS((P - prev_P) - (-0.86)) <= $3 THEN 2
-              WHEN prev_P IS NOT NULL AND ABS((P - prev_P) - (-0.34)) <= $4 THEN 1
+              WHEN prev_P IS NOT NULL AND ABS((P - prev_P) - $3) <= $4 THEN 2
+              WHEN prev_P IS NOT NULL AND ABS((P - prev_P) - $5) <= $6 THEN 1
               ELSE 0
             END AS regime
           FROM with_P WHERE P IS NOT NULL AND prev_P IS NOT NULL
@@ -295,7 +299,9 @@ class SKATradingBot:
             6: 'bear→neutral',    7: 'bear→bull',    8: 'bear→bear'
         }
         try:
-            rows = await self.conn.fetch(query, self.symbol, last_id, TOL_BEAR, TOL_BULL)
+            rows = await self.conn.fetch(query, self.symbol, last_id,
+                                         DP_NEUTRAL_BEAR, TOL_BEAR,
+                                         DP_NEUTRAL_BULL, TOL_BULL)
         except Exception:
             return []
         result = []
