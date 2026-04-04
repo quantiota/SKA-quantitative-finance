@@ -34,7 +34,7 @@ flowchart TD
     API["SKA API"]
     BOT@{ shape: diamond, label: "Trading Bot" }
 
-    BINANCE -- "symbol" --> ENGINE
+    BINANCE -- "ticks" --> ENGINE
     API -- "regime transitions" --> BOT
     ENGINE -- "entropy" --> API
 
