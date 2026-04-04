@@ -78,7 +78,7 @@ READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
 MIN_NN_COUNT    = 10
-MIN_TRADES      = 10    # wait for SKA convergence before trading
+MIN_TRADES      = 50    # wait for SKA convergence before trading
 ENGINE_RESET_AT = 3500  # engine resets at this entropy count
 DP_PAIR_CUTOFF  = 3200  # stop recording ΔP_pair before engine reset
 
@@ -366,7 +366,8 @@ class SKATradingBot:
         elif (name in ('bull→neutral', 'bear→neutral') and
               self._last_open_name is not None and
               PAIR_CLOSE.get(self._last_open_name) == name and
-              self._entropy_count < DP_PAIR_CUTOFF):
+              self._entropy_count < DP_PAIR_CUTOFF and
+              P is not None and abs(P - P_X_NEUTRAL) <= TOL_CLOSE):
             pair_type = 'bull' if name == 'bull→neutral' else 'bear'
             self._record_dp_pair(pair_type, self._last_open_P, P)
             if self.position is not None:
