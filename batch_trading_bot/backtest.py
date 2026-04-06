@@ -44,8 +44,8 @@ READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
 # ─── v3 constants (match trading_bot_v3.py exactly) ──────────────────────────
-MIN_NN_COUNT = 3
-MIN_TRADES   = 60       # wait for SKA convergence before first trade
+MIN_NN_COUNT = 10
+MIN_TRADES   = 50       # wait for SKA convergence before first trade
 
 P_X_NEUTRAL  = 0.51    # bull→neutral = bear→neutral band
 K            = 0.03
@@ -158,9 +158,10 @@ class BotV3:
 
     Key v3 behaviours:
       - MIN_TRADES=60: no trade until 60 entropy-valid ticks processed
-      - Direct jump filter: bull→bear / bear→bull ignored
+      - Entry at pair confirmation: open LONG on bull→neutral, SHORT on bear→neutral
+      - Direct jump filter: bull→bear / bear→bull ignored (clears pending flags)
       - TOL_CLOSE filter on exit: abs(P - 0.51) <= 0.0153
-      - _already_long: re-enter LONG immediately after CLOSE_SHORT
+      - Immediate re-entry: CLOSE_LONG → SHORT, CLOSE_SHORT → LONG (pair already confirmed)
       - bull_pair_count / bear_pair_count tracked per position
     """
 
@@ -176,7 +177,8 @@ class BotV3:
         self.spot_pnl         = 0.0   # LONG only (real)
         self.synthetic_pnl    = 0.0   # SHORT only (synthetic)
         self.force_closes     = 0
-        self._already_long    = False
+        self._pending_long    = False  # neutral→bull seen, waiting for bull→neutral confirmation
+        self._pending_short   = False  # neutral→bear seen, waiting for bear→neutral confirmation
         self._last_open_name  = None
 
     def _open(self, side, price, trade_id, ts, transition):
@@ -241,11 +243,13 @@ class BotV3:
         if entropy_count < MIN_TRADES:
             return
 
-        # Direct jump filter: localized entropy shocks — ignore
+        # Direct jump filter: localized entropy shocks — clear pending, ignore
         if name in ('bull→bear', 'bear→bull'):
+            self._pending_long  = False
+            self._pending_short = False
             return
 
-        # ΔP_pair tracking for bull/bear pair counts
+        # ΔP_pair tracking for bull/bear pair counts (while position is open)
         if name in ('neutral→bull', 'neutral→bear'):
             self._last_open_name = name
         elif name == 'bull→neutral' and self._last_open_name == 'neutral→bull':
@@ -257,15 +261,26 @@ class BotV3:
                 self.position.bear_pair_count += 1
             self._last_open_name = None
 
-        # === NO POSITION: look for entry ===
+        # === NO POSITION: wait for pair confirmation before entering ===
         if self.position is None:
             if name == 'neutral→bull':
-                # _already_long gates exchange BUY order only (not position tracking)
-                # — always open the position for signal backtesting
-                self._open('LONG', price, tid, ts, name)
-                self._already_long = False
+                self._pending_long  = True
+                self._pending_short = False
             elif name == 'neutral→bear':
-                self._open('SHORT', price, tid, ts, name)
+                self._pending_short = True
+                self._pending_long  = False
+            elif name == 'bull→neutral' and self._pending_long:
+                # Bull pair confirmed — enter LONG already in IN_NEUTRAL state
+                self._open('LONG', price, tid, ts, 'bull→neutral')
+                self.position.exit_state      = IN_NEUTRAL
+                self.position.bull_pair_count = 1
+                self._pending_long = False
+            elif name == 'bear→neutral' and self._pending_short:
+                # Bear pair confirmed — enter SHORT already in IN_NEUTRAL state
+                self._open('SHORT', price, tid, ts, 'bear→neutral')
+                self.position.exit_state      = IN_NEUTRAL
+                self.position.bear_pair_count = 1
+                self._pending_short = False
             return
 
         # === LONG POSITION ===
@@ -293,7 +308,10 @@ class BotV3:
             elif self.position.exit_state == EXIT_WAIT:
                 if name == 'bear→neutral' and P is not None and abs(P - P_X_NEUTRAL) <= TOL_CLOSE:
                     self._close(price, tid, name)
-                    # SHORT opens on the next neutral→bear via the NO POSITION block
+                    # bear→neutral confirms bear pair — immediately enter SHORT
+                    self._open('SHORT', price, tid, ts, 'bear→neutral')
+                    self.position.exit_state      = IN_NEUTRAL
+                    self.position.bear_pair_count = 1
                 elif name == 'neutral→bull':
                     self.position.exit_state = WAIT_PAIR
                     self.position.neutral_neutral_count = 0
@@ -322,9 +340,11 @@ class BotV3:
 
             elif self.position.exit_state == EXIT_WAIT:
                 if name == 'bull→neutral' and P is not None and abs(P - P_X_NEUTRAL) <= TOL_CLOSE:
-                    self._already_long = True
                     self._close(price, tid, name)
-                    # re-entry LONG handled next tick via _already_long=False guard
+                    # bull→neutral confirms bull pair — immediately enter LONG
+                    self._open('LONG', price, tid, ts, 'bull→neutral')
+                    self.position.exit_state      = IN_NEUTRAL
+                    self.position.bull_pair_count = 1
                 elif name == 'neutral→bear':
                     self.position.exit_state = WAIT_PAIR
                     self.position.neutral_neutral_count = 0
