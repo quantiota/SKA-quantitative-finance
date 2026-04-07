@@ -351,11 +351,6 @@ class SKATradingBot:
             return
         self.last_trade_id = trade_id
 
-        # Direct jumps (bull→bear, bear→bull) are localized entropy shocks — mean-reversion expected
-        # Do NOT react — keep position open through the spike
-        if name in ('bull→bear', 'bear→bull'):
-            logging.info(f"--- Direct jump {name} ignored (localized entropy shock) | trade_id={trade_id}")
-            return
 
         # ΔP_pair: gap within paired transition neutral→bull→neutral or neutral→bear→neutral
         # ΔP = P(closing) − P(opening) → negative for bull, positive for bear
