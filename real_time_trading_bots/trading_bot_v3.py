@@ -424,6 +424,21 @@ class SKATradingBot:
                         f"| IN_NEUTRAL | trade_id={trade_id}"
                     )
                     await self._log_event(trade_id, price, 'PAIR_CONFIRMED', IN_NEUTRAL, 'LONG', P=P)
+                else:
+                    # next transition is not bull→neutral — pair not confirmed, false start
+                    if not self.dry_run:
+                        if not await self._execute_sell(price):
+                            logging.error("[ORDER] SELL failed — LONG false start not closed")
+                            return
+                    pnl = price - self.position.entry_price
+                    pnl_pct = (pnl / self.position.entry_price) * 100
+                    self._record_trade(pnl, pnl_pct, price)
+                    logging.info(
+                        f"<<< CLOSE LONG false start ({name}) @ {price:.6f} | "
+                        f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
+                    )
+                    await self._log_event(trade_id, price, 'FALSE_START', WAIT_PAIR, 'LONG', pnl, P=P)
+                    self.position = None
 
             elif self.position.exit_state == IN_NEUTRAL:
                 if name == 'neutral→neutral':
@@ -500,6 +515,17 @@ class SKATradingBot:
                         f"| IN_NEUTRAL | trade_id={trade_id}"
                     )
                     await self._log_event(trade_id, price, 'PAIR_CONFIRMED', IN_NEUTRAL, 'SHORT', P=P)
+                else:
+                    # next transition is not bear→neutral — pair not confirmed, false start
+                    pnl = self.position.entry_price - price
+                    pnl_pct = (pnl / self.position.entry_price) * 100
+                    self._record_trade(pnl, pnl_pct, price)
+                    logging.info(
+                        f"<<< CLOSE SHORT false start ({name}) @ {price:.6f} | "
+                        f"PnL={pnl:+.6f} ({pnl_pct:+.4f}%) | entry={self.position.entry_price:.6f}"
+                    )
+                    await self._log_event(trade_id, price, 'FALSE_START', WAIT_PAIR, 'SHORT', pnl, P=P)
+                    self.position = None
 
             elif self.position.exit_state == IN_NEUTRAL:
                 if name == 'neutral→neutral':
