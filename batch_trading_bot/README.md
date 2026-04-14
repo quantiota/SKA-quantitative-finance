@@ -159,6 +159,4 @@ flowchart TD
 # Run backtest on all files in XRPUSDT/
 /opt/venv/bin/python3 backtest_v4.py
 
-# Print formatted report from summary.csv
-/opt/venv/bin/python3 report.py
 ```
