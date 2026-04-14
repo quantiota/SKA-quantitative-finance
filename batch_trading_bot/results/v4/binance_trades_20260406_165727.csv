@@ -1,0 +1,9 @@
+side,entry,exit,pnl,pnl_pips,pnl_pct,entry_transition,nn_count,bull_pairs,bear_pairs,close_reason
+SHORT,1.3515,1.3515,0.0,0.0,0.0,neutral→bear,14,1,2,bull→neutral
+LONG,1.3515,1.3512,-0.00029999999999996696,-3.0,-0.022197558268588012,neutral→bull,14,1,2,bear→neutral
+SHORT,1.3512,1.3509,0.00029999999999996696,3.0,0.022202486678505547,neutral→bear,74,3,2,bull→neutral
+LONG,1.3509,1.3502,-0.0006999999999999229,-7.0,-0.05181730698052579,neutral→bull,14,17,2,bear→neutral
+SHORT,1.3502,1.3498,0.00039999999999995595,4.0,0.029625240705077466,neutral→bear,13,5,2,bull→neutral
+LONG,1.3498,1.3499,9.999999999998899e-05,1.0,0.00740850496369751,neutral→bull,22,9,1,bear→neutral
+SHORT,1.3499,1.3499,0.0,0.0,0.0,neutral→bear,45,2,1,bull→neutral
+LONG,1.3499,1.3444,-0.00550000000000006,-55.0,-0.4074375879694837,neutral→bull,1,44,4,force

@@ -1,0 +1,5 @@
+side,entry,exit,pnl,pnl_pips,pnl_pct,entry_transition,nn_count,bull_pairs,bear_pairs,close_reason
+SHORT,1.3439,1.3433,0.000600000000000156,6.0,0.04464617903118952,neutral→bear,45,4,5,bull→neutral
+LONG,1.3433,1.342,-0.0012999999999998568,-13.0,-0.0967765949527177,neutral→bull,13,42,5,bear→neutral
+SHORT,1.342,1.3409,0.001100000000000101,11.0,0.08196721311476161,neutral→bear,114,1,2,bull→neutral
+LONG,1.3409,1.3401,-0.0007999999999999119,-8.0,-0.05966142143335908,neutral→bull,29,23,0,force
