@@ -132,25 +132,23 @@ flowchart TD
 
 ## Backtest Results
 
-### March 2026 — 112 loops, XRPUSDT, bot v3
+## April 6, 2026 — 133 loops, XRPUSDT, bot v4 
 
 | Metric | Value |
 |---|---|
-| Loops | 112 |
-| Total trades | 2979 |
-| Winners | 1293 |
-| Losers | 1170 |
-| Flat | 516 |
-| Win rate | 43.4% |
-| Total PnL | **+3334 pips** |
-| Avg / trade | **+1.12 pips** |
-| LONG (spot) | +1780 pips |
-| SHORT (synth) | +1554 pips |
-| Best loop | +103 pips (13 trades, avg +7.92) |
-| Worst loop | -69 pips (10 trades, avg -6.90) |
-| Force closes | 102 |
-
-> Consistent with live bot: 41 live loops = win 43.3%, avg +1.17 pips.
+| Loops | 133 |
+| Total trades | 3,180 |
+| Winners | 1,517 |
+| Losers | 1,097 |
+| Flat | 566 |
+| Win rate | 47.7% |
+| Total PnL | **+4,491 pips** |
+| Avg / trade | **+1.41 pips** |
+| LONG (spot) | +2,319 pips |
+| SHORT (synth) | +2,172 pips |
+| Available pips | 40,981 pips |
+| Capture rate | **+10.96%** |
+| Force closes | 133 |
 
 
 ---
@@ -159,7 +157,7 @@ flowchart TD
 
 ```bash
 # Run backtest on all files in XRPUSDT/
-/opt/venv/bin/python3 backtest.py
+/opt/venv/bin/python3 backtest_v4.py
 
 # Print formatted report from summary.csv
 /opt/venv/bin/python3 report.py
