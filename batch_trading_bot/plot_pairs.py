@@ -6,7 +6,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 INPUT_DIR = '/XRPUSDT'
-OUTPUT    = '/pairs_accumulation_questdb.png'
+OUTPUT    = '/XRPUSDT/results/pairs_accumulation_questdb.png'
 
 files = sorted([f for f in os.listdir(INPUT_DIR)
                 if f.startswith('binance_trades_') and f.endswith('.csv')])
