@@ -83,6 +83,15 @@ Two parallel layers on the same tick stream:
 
 ---
 
+Two parallel layers on the same tick stream:
+
+| Layer | Input | Output |
+|-------|-------|--------|
+| Binary information flow | entropy → dH/H → regime | 4-bit words, sequences, false start detection |
+| Signal core | entropy → P → ΔP bands | LONG / SHORT / HOLD / CLOSE |
+
+---
+
 ## Layer 1 — Binary Information Flow
 
 ### Encoder
