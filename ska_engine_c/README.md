@@ -48,7 +48,7 @@ end
 
 subgraph BinaryFlow["Binary Information Flow — C++"]
   direction TB
-  ENC[Encoder\ndH/H sign → regime → 4-bit word]
+  ENC[Encoder\nentropy history → dH/H → regime → 4-bit word]
   SEQ[Sequence Detector\nbinary_code as uint64_t]
   PAT[Pattern Matcher\nfalse start library]
   ENC --> SEQ --> PAT
@@ -73,23 +73,6 @@ class ENC,SEQ,PAT flow;
 class SM signal;
 class WS,ORDER io;
 ```
-
-Two parallel layers on the same tick stream:
-
-| Layer | Input | Output |
-|-------|-------|--------|
-| Binary information flow | entropy → dH/H → regime | 4-bit words, sequences, false start detection |
-| Signal core | entropy → P → ΔP bands | LONG / SHORT / HOLD / CLOSE |
-
----
-Two parallel layers on the same tick stream:
-
-| Layer | Input | Output |
-|-------|-------|--------|
-| Binary information flow | entropy → dH/H → regime | 4-bit words, sequences, false start detection |
-| Signal core | entropy → P → ΔP bands | LONG / SHORT / HOLD / CLOSE |
-
----
 
 Two parallel layers on the same tick stream:
 
