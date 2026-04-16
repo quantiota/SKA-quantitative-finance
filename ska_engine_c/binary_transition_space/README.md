@@ -54,3 +54,38 @@ python3 plot_binary_flow.py
 - Hard cutoff at 33 words
 
 The distribution is **not random**. The market selects specific sequence lengths with high probability. Short sequences (4–5 words) are the natural structural unit of market information. The binary information flow is compressible — a random source is not.
+
+
+## Observed sequences — 1,571 CSV files
+
+### 4-word sequences — 2 distinct
+
+```
+count: 70,418
+0000(neutral-neutral)  0001(neutral-bull)  0100(bull-neutral)  0000(neutral-neutral)
+
+count: 69,900
+0000(neutral-neutral)  0010(neutral-bear)  1000(bear-neutral)  0000(neutral-neutral)
+```
+
+### 5-word sequences — 6 distinct
+
+```
+count: 67,936
+0000(neutral-neutral)  0000(neutral-neutral)  0001(neutral-bull)  0100(bull-neutral)  0000(neutral-neutral)
+
+count: 66,609
+0000(neutral-neutral)  0000(neutral-neutral)  0010(neutral-bear)  1000(bear-neutral)  0000(neutral-neutral)
+
+count: 8,694
+0000(neutral-neutral)  0010(neutral-bear)  1001(bear-bull)  0100(bull-neutral)  0000(neutral-neutral)
+
+count: 7,955
+0000(neutral-neutral)  0001(neutral-bull)  0110(bull-bear)  1000(bear-neutral)  0000(neutral-neutral)
+
+count: 62
+0000(neutral-neutral)  0010(neutral-bear)  1010(bear-bear)  1000(bear-neutral)  0000(neutral-neutral)
+
+count: 48
+0000(neutral-neutral)  0001(neutral-bull)  0101(bull-bull)  0100(bull-neutral)  0000(neutral-neutral)
+```
