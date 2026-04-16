@@ -82,7 +82,7 @@ dH_H = (H - H_prev) / H
 
 dH_H > 0  →  bull    (1)
 dH_H < 0  →  bear    (2)
-dH_H = 0  →  neutral (0)
+otherwise →  neutral (0)
 ```
 
 **Transition encoding:**
