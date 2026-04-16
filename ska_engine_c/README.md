@@ -31,49 +31,57 @@ flowchart TD
 BINANCE[(Binance\nRaw Tick Data)]
 EXCHANGE[Binance\nREST API]
 
-subgraph BinaryFlow["Binary Information Flow — C++"]
-  direction TB
-  ENC[Encoder\ndH/H → regime → 4-bit word]
-  SEQ[Sequence Detector\nbinary_code as uint64_t]
-  PAT[Pattern Matcher\nfalse start library]
-  ENC --> SEQ --> PAT
-end
-
-subgraph SignalCore["Signal Core — C"]
-  direction TB
-  ENGINE[SKA Engine\nentropy computation]
-  P["P = exp(-|ΔH/H|)\nregime detection"]
-  SM@{ shape: diamond, label: "State Machine\n1-bit signal" }
-  ENGINE -->|entropy| P
-  P -->|ΔP → regime| SM
-end
-
-subgraph PythonWrapper["Python Wrapper"]
+subgraph IO["I/O — Python"]
   direction TB
   WS[WebSocket\ntick feed]
   ORDER[Order Execution\nREST API]
 end
 
-BINANCE -->|ticks| WS
-WS -->|entropy, delta_t| ENGINE
-WS -->|entropy| ENC
+subgraph SignalCore["Signal Core — C"]
+  direction TB
+  ENGINE[SKA Engine\nentropy computation]
+  P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
+  SM@{ shape: diamond, label: "State Machine\n1 / -1 / 0 / 2" }
+  ENGINE -->|entropy| P
+  P -->|ΔP → regime| SM
+end
+
+subgraph BinaryFlow["Binary Information Flow — C++"]
+  direction TB
+  ENC[Encoder\ndH/H sign → regime → 4-bit word]
+  SEQ[Sequence Detector\nbinary_code as uint64_t]
+  PAT[Pattern Matcher\nfalse start library]
+  ENC --> SEQ --> PAT
+end
+
+BINANCE -->|raw ticks| WS
+WS -->|raw ticks| ENGINE
+ENGINE -->|entropy history| ENC
 PAT -->|valid sequence| SM
-SM -->|1 / -1 / 0| ORDER
+SM -->|signal| ORDER
 ORDER -->|order| EXCHANGE
 
 classDef data     fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px;
 classDef binary   fill:#E8F5E9,stroke:#43A047,stroke-width:2px;
 classDef flow     fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px;
-classDef wrapper  fill:#FFF9C4,stroke:#F9A825,stroke-width:2px;
+classDef io       fill:#FFF9C4,stroke:#F9A825,stroke-width:2px;
 classDef signal   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
 
 class BINANCE,EXCHANGE data;
 class ENGINE,P binary;
 class ENC,SEQ,PAT flow;
 class SM signal;
-class WS,ORDER wrapper;
+class WS,ORDER io;
 ```
 
+Two parallel layers on the same tick stream:
+
+| Layer | Input | Output |
+|-------|-------|--------|
+| Binary information flow | entropy → dH/H → regime | 4-bit words, sequences, false start detection |
+| Signal core | entropy → P → ΔP bands | LONG / SHORT / HOLD / CLOSE |
+
+---
 Two parallel layers on the same tick stream:
 
 | Layer | Input | Output |
