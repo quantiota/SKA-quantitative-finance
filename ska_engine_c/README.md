@@ -48,7 +48,7 @@ end
 
 subgraph BinaryFlow["Binary Information Flow — C++"]
   direction TB
-  ENC[Encoder\nentropy history → dH/H → regime → 4-bit word]
+  ENC[Encoder\ndH/H → regime → 4-bit word]
   SEQ[Sequence Detector\nbinary_code as uint64_t]
   PAT[Pattern Matcher\nfalse start library]
   ENC --> SEQ --> PAT
