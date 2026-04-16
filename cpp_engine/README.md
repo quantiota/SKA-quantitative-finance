@@ -135,8 +135,46 @@ Each comparison is one integer equality check — O(1) per pattern.
 
 ---
 
+## Dev Plan
+
+### Step 1 — Tick ingestion
+- WebSocket client (Binance `XRPUSDT@trade`)
+- Parse: `trade_id`, `price`, `timestamp`
+- Output: raw tick struct `{id, price, ts}`
+
+### Step 2 — Entropy engine (online SKA)
+- Port SKA matrix update from Python
+- Input: tick `x = σ(Δp/p × scale)`
+- Output: `H` (entropy scalar) per tick
+- Validation: match `entropy` column from QuestDB export
+
+### Step 3 — Regime classifier
+- Compute `dH_H = (H - H_prev) / H`
+- Classify: `dH_H > 0 → bull (1)`, `dH_H < 0 → bear (2)`, `otherwise → neutral (0)`
+- Output: `regime` per tick
+
+### Step 4 — 4-bit encoder
+- `transition_code = prev_regime × 3 + regime`
+- Lookup transition table → 4-bit word
+- Output: continuous stream of `uint8_t` words
+
+### Step 5 — Sequence detector
+- Detect open: word `0000` after any non-zero word
+- Accumulate words into current sequence buffer
+- Detect close: word `0000` ending the sequence
+- Compute `binary_code` as integer concatenation of all 4-bit words
+
+### Step 6 — Pattern matcher
+- Load `false_start_library.json` at startup
+- On sequence close: compare `binary_code` against library
+- `is_false_start()` → O(1) per pattern, suppress signal if match
+
+### Step 7 — Signal output
+- Valid sequence (not false start) → emit directional signal
+- Interface to order API (Binance REST or mock)
+
+---
+
 ## Status
 
-Early development.
-
-The architecture is still under construction, and the current focus is on building the foundations of the native engine before expanding toward a full production pipeline.
+Step 1–2 in progress. Steps 3–7 pending.
