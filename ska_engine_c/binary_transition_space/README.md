@@ -10,7 +10,7 @@ Converts QuestDB CSV exports to binary information flow and plots the sequence l
 questdb_export/*.csv → encoder → sequence detector → binary_code (uint64) → distribution plot
 ```
 
----
+
 
 ## Scripts
 
@@ -40,7 +40,7 @@ python3 plot_binary_flow.py --csv /path/to/sequences.csv
 python3 plot_binary_flow.py
 ```
 
----
+
 
 ## Result
 
@@ -56,33 +56,33 @@ python3 plot_binary_flow.py
 The distribution is **not random**. The market selects specific sequence lengths with high probability. Short sequences (4–5 words) are the natural structural unit of market information.
 
 
----
+
 
 ## Observed sequences — 1,571 CSV files
 
 ### 4-word sequences — 2 distinct
 
 ```
-count: 139,507  integer: 320
+count: 139,507  integer: 320   delta_pips: +1
 0000(neutral-neutral)  0001(neutral-bull)  0100(bull-neutral)  0000(neutral-neutral)
 
-count: 137,537  integer: 640
+count: 137,537  integer: 640   delta_pips: -1
 0000(neutral-neutral)  0010(neutral-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
 
 ### 5-word sequences — 4 distinct
 
 ```
-count: 15,812  integer: 10560
+count: 15,812  integer: 10560  delta_pips:  0
 0000(neutral-neutral)  0010(neutral-bear)  1001(bear-bull)  0100(bull-neutral)  0000(neutral-neutral)
 
-count: 14,468  integer: 5760
+count: 14,468  integer: 5760   delta_pips:  0
 0000(neutral-neutral)  0001(neutral-bull)  0110(bull-bear)  1000(bear-neutral)  0000(neutral-neutral)
 
-count: 106  integer: 5440
+count: 106     integer: 5440   delta_pips: +2
 0000(neutral-neutral)  0001(neutral-bull)  0101(bull-bull)  0100(bull-neutral)  0000(neutral-neutral)
 
-count: 105  integer: 10880
+count: 105     integer: 10880  delta_pips: -2
 0000(neutral-neutral)  0010(neutral-bear)  1010(bear-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
 
