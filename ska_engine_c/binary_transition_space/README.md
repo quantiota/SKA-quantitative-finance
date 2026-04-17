@@ -63,25 +63,25 @@ The distribution is **not random**. The market selects specific sequence lengths
 ### 4-word sequences — 2 distinct
 
 ```
-count: 139,507
+count: 139,507  integer: 320
 0000(neutral-neutral)  0001(neutral-bull)  0100(bull-neutral)  0000(neutral-neutral)
 
-count: 137,537
+count: 137,537  integer: 640
 0000(neutral-neutral)  0010(neutral-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
 
 ### 5-word sequences — 4 distinct
 
 ```
-count: 15,812
+count: 15,812  integer: 10560
 0000(neutral-neutral)  0010(neutral-bear)  1001(bear-bull)  0100(bull-neutral)  0000(neutral-neutral)
 
-count: 14,468
+count: 14,468  integer: 5760
 0000(neutral-neutral)  0001(neutral-bull)  0110(bull-bear)  1000(bear-neutral)  0000(neutral-neutral)
 
-count: 106
+count: 106  integer: 5440
 0000(neutral-neutral)  0001(neutral-bull)  0101(bull-bull)  0100(bull-neutral)  0000(neutral-neutral)
 
-count: 105
+count: 105  integer: 10880
 0000(neutral-neutral)  0010(neutral-bear)  1010(bear-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
