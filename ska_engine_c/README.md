@@ -100,17 +100,18 @@ transition_code = prev_regime × 3 + regime
 
 ### Transition table
 
-| Code | Transition       | 4-bit word |
+| Code | Transition      | 4-bit word |
 |------|-----------------|------------|
-| 0    | neutral→neutral | `0000`     |
-| 1    | neutral→bull    | `0001`     |
-| 2    | neutral→bear    | `0010`     |
-| 3    | bull→neutral    | `0100`     |
-| 4    | bull→bull       | `0101`     |
-| 5    | bull→bear       | `0110`     |
-| 6    | bear→neutral    | `1000`     |
-| 7    | bear→bull       | `1001`     |
-| 8    | bear→bear       | `1010`     |
+| 0    | neutral-neutral | `0000`     |
+| 1    | neutral-bull    | `0001`     |
+| 2    | neutral-bear    | `0010`     |
+| 3    | bull-neutral    | `0100`     |
+| 4    | bull-bull       | `0101`     |
+| 5    | bull-bear       | `0110`     |
+| 6    | bear-neutral    | `1000`     |
+| 7    | bear-bull       | `1001`     |
+| 8    | bear-bear       | `1010`     |
+
 
 ### Sequence
 
