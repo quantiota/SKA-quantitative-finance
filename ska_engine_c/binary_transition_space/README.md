@@ -85,3 +85,35 @@ count: 106  integer: 5440
 count: 105  integer: 10880
 0000(neutral-neutral)  0010(neutral-bear)  1010(bear-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
+
+
+
+## The integer as a structural key
+
+Each sequence is uniquely identified by a single `uint64` integer — `binary_code_int`. This has two direct applications.
+
+### Memory operations
+
+Pattern matching reduces to one integer comparison:
+
+```cpp
+bool is_known(uint64_t code) {
+    return library.count(code) > 0;  // O(1)
+}
+```
+
+- The false start library (13 entries) = 13 uint64 lookups — O(1) per sequence
+- The full sequence library (1,381 entries) fits in L1 cache as a sorted array — ~10 comparisons to locate any sequence
+- No string parsing, no word-by-word iteration — one equality check replaces the entire sequence comparison
+
+Two market events are structurally identical **if and only if their integers are equal**.
+
+### Historical archiving
+
+One loop produces ~3,500 ticks and ~273 sequences. At the integer level:
+
+```
+3,500 ticks  →  273 uint64 integers
+```
+
+The integer stream is lossless at the structural level: the full transition path can be reconstructed from the integer by reversing the 4-bit packing. A year of tick data becomes a compact stream of integers — queryable by pattern, not by price.
