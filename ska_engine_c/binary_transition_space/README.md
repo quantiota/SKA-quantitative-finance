@@ -86,6 +86,27 @@ count: 105     integer: 10880  delta_pips: -2
 0000(neutral-neutral)  0010(neutral-bear)  1010(bear-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
 
+## Structural role of the 5-word reversal sequences
+
+The two dominant 5-word sequences (integers 5760 and 10560, delta_pips=0) represent **8.5% of all sequences** across 1,571 loops:
+
+```
+neutral-bull → bull-bear → bear-neutral   (tried up, rejected, returned)
+neutral-bear → bear-bull → bull-neutral   (tried down, rejected, returned)
+```
+
+These are not noise. They are the market's **directional probe** — a test with no commitment.
+
+The market asks a binary question: "is there sustained demand in this direction?" The cross-transition is the answer: **no**. The sequence closes at delta_pips=0 — no structural direction was established, but the question had to be asked.
+
+Without these sequences the market would only produce clean LONG and SHORT pairs. That is impossible — to find the price where supply meets demand, the market must probe both sides and retract when rejected.
+
+| sequence type | delta_pips | role |
+|---|---|---|
+| 4-word (77.7%) | ±1 | commitment — direction established |
+| 5-word reversal (8.5%) | 0 | rejection — direction tested and refused |
+
+From Wheeler's "It from Bit": the reversal sequence encodes one bit — "this direction has no structural support at this moment." The sequence must exist for the market to learn that answer. They are the market's self-correction mechanism between trends.
 
 
 ## The integer as a structural key
