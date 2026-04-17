@@ -95,7 +95,7 @@ neutral-bull → bull-bear → bear-neutral   (tried up, rejected, returned)
 neutral-bear → bear-bull → bull-neutral   (tried down, rejected, returned)
 ```
 
-These are not noise. They are the market's **directional probe** — a test with no commitment.
+They are the market's **directional probe** — a test with no commitment.
 
 The market asks a binary question: "is there sustained demand in this direction?" The cross-transition is the answer: **no**. The sequence closes at delta_pips=0 — no structural direction was established, but the question had to be asked.
 
