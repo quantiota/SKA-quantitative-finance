@@ -53,7 +53,8 @@ python3 plot_binary_flow.py
 - Together: **86.2%** of all sequences
 - Hard cutoff at 33 words
 
-The distribution is **not random**. The market selects specific sequence lengths with high probability. Short sequences (4–5 words) are the natural structural unit of market information. The binary information flow is compressible — a random source is not.
+The distribution is **not random**. The market selects specific sequence lengths with high probability. Short sequences (4–5 words) are the natural structural unit of market information.
+
 
 ---
 
