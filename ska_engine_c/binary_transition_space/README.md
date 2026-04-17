@@ -102,7 +102,6 @@ bool is_known(uint64_t code) {
 }
 ```
 
-- The false start library (13 entries) = 13 uint64 lookups — O(1) per sequence
 - The full sequence library (1,381 entries) fits in L1 cache as a sorted array — ~10 comparisons to locate any sequence
 - No string parsing, no word-by-word iteration — one equality check replaces the entire sequence comparison
 
