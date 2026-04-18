@@ -201,7 +201,7 @@ def write_sequences(sequences, outpath):
 
 def main():
     parser = argparse.ArgumentParser(description="Convert QuestDB CSV to binary information flow")
-    parser.add_argument("--input",  default="/SKA-quantitative-finance/ska_engine_c/questdb_export",
+    parser.add_argument("--input",  default="/SKA-quantitative-finance/ska_engine_c/binary_transition_space/questdb_export",
                         help="Directory containing CSV files")
     parser.add_argument("--output", default="/SKA-quantitative-finance/ska_engine_c/binary_transition_space/output",
                         help="Output directory")

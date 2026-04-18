@@ -26,7 +26,7 @@ import argparse
 
 
 INPUT_DIR  = "/SKA-quantitative-finance/ska_engine_c/binary_transition_space/output"
-OUTPUT_DIR = "/SKA-quantitative-finance/ska_engine_c/binary_transition_space/output"
+OUTPUT_DIR = "/SKA-quantitative-finance/ska_engine_c/binary_transition_space/"
 
 
 def generate_integers(input_dir, output_dir):
