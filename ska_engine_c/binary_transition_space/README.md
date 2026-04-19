@@ -1,10 +1,87 @@
-# Binary Transition Space — Analysis
+
+# Binary Transition Space
+
+We believe—like John Archibald Wheeler—that the ultimate foundation of reality is information:
+
+> "It from bit symbolizes the idea that every item of the physical world has at bottom—a very deep bottom, in most instances—an immaterial source and explanation; that what we call reality arises, in the last analysis, from the posing of yes-no questions and the registering of equipment-evoked responses; in short, that all things physical are information-theoretic in origin and that this is a participatory universe."
+
+*John Archibald Wheeler, "Information, Physics, Quantum: The Search for Links" (1989/1990).*
+
+
+
+## State Encoding
+
+| State   | Code |
+|---------|------|
+| neutral | `00` |
+| bull    | `01` |
+| bear    | `10` |
+
+Code `11` is undefined and never occurs.
+
+---
+
+## Transition Encoding
+
+A transition A→B is a **4-bit word** `[a₁a₀b₁b₀]` (from-state | to-state):
+
+The index is `prev_regime × 3 + regime` where `neutral=0, bull=1, bear=2`:
+
+| Index | Transition       | 4-bit word |
+|-------|-----------------|------------|
+| 0     | neutral→neutral | `0000`     |
+| 1     | neutral→bull    | `0001`     |
+| 2     | neutral→bear    | `0010`     |
+| 3     | bull→neutral    | `0100`     |
+| 4     | bull→bull       | `0101`     | — never observed |
+| 5     | bull→bear       | `0110`     |
+| 6     | bear→neutral    | `1000`     |
+| 7     | bear→bull       | `1001`     |
+| 8     | bear→bear       | `1010`     | — never observed |
+
+
+
+## Sequence
+
+A sequence `S` is the ordered list of 4-bit words including its `0000` (neutral→neutral) boundaries:
+
+```
+S = 0000 a₁ a₂ ... aₖ 0000
+```
+
+where each `aᵢ` is a 4-bit transition word and every consecutive pair composes.
+
+The binary code of `S` is the concatenation of all its 4-bit words:
+
+```
+code(S) = 0000 a₁ a₂ ... aₖ 0000  =  4(k+2) bits
+```
+
+Two sequences are identical if and only if their binary codes are equal. The code is the complete, unambiguous identity of the episode — independent of time, price, and asset.
+
+
+
+## Binary Information Flow
+
+The entire market is a continuous binary stream of 4-bit words:
+
+```
+... 0000 0000 0000 0010 1000 0001 0100 0010 1001 0100 0000 0000 0001 0100 0000 0000 0010 1001 0110 1001 0100 0000 0000 0000 ...
+```
+
+- `0000` — neutral→neutral (silence between episodes)
+- any other word — regime transition (episode content)
+
+
+
+
+## Binary Transition Space — Analysis
 
 Converts QuestDB CSV exports to binary information flow and plots the sequence length distribution.
 
 ---
 
-## Pipeline
+### Pipeline
 
 ```
 questdb_export/*.csv → encoder → sequence detector → binary_code (uint64) → distribution plot
@@ -12,9 +89,9 @@ questdb_export/*.csv → encoder → sequence detector → binary_code (uint64) 
 
 
 
-## Scripts
+### Scripts
 
-### `csv_to_binary_flow.py`
+#### `csv_to_binary_flow.py`
 
 Reads tick data CSVs and produces:
 - `*_stream.csv` — one row per tick: `trade_id, timestamp, regime, transition_code, transition_name, word, dh_h`
@@ -28,7 +105,7 @@ python3 csv_to_binary_flow.py --csv /path/to/file.csv
 python3 csv_to_binary_flow.py --input /path/to/questdb_export --output /path/to/output
 ```
 
-### `plot_binary_flow.py`
+#### `plot_binary_flow.py`
 
 Plots sequence length distribution: bar chart (log scale) + pie chart.
 
@@ -42,7 +119,7 @@ python3 plot_binary_flow.py
 
 
 
-## Result
+### Result
 
 ![binary_flow_all_log](binary_flow_all_log.png)
 
@@ -58,9 +135,9 @@ The distribution is **not random**. The market selects specific sequence lengths
 
 
 
-## Observed sequences — 1,571 CSV files
+### Observed sequences — 1,571 CSV files
 
-### 4-word sequences — 2 distinct
+#### 4-word sequences — 2 distinct
 
 ```
 count: 139,507  integer: 320   delta_pips: +1
@@ -70,7 +147,7 @@ count: 137,537  integer: 640   delta_pips: -1
 0000(neutral-neutral)  0010(neutral-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
 
-### 5-word sequences — 4 distinct
+#### 5-word sequences — 4 distinct
 
 ```
 count: 15,812  integer: 10560  delta_pips:  0
@@ -86,7 +163,7 @@ count: 105     integer: 10880  delta_pips: -2
 0000(neutral-neutral)  0010(neutral-bear)  1010(bear-bear)  1000(bear-neutral)  0000(neutral-neutral)
 ```
 
-## Structural role of the 5-word reversal sequences
+### Structural role of the 5-word reversal sequences
 
 The two dominant 5-word sequences (integers 5760 and 10560, delta_pips=0) represent **8.5% of all sequences** across 1,571 loops:
 
@@ -109,11 +186,11 @@ Without these sequences the market would only produce clean LONG and SHORT pairs
 From Wheeler's "It from Bit": the reversal sequence encodes one bit — "this direction has no structural support at this moment." The sequence must exist for the market to learn that answer. They are the market's self-correction mechanism between trends.
 
 
-## The integer as a structural key
+### The integer as a structural key
 
 Each sequence is uniquely identified by a single `uint64` integer — `binary_code_int`. This has two direct applications.
 
-### Memory operations
+#### Memory operations
 
 Pattern matching reduces to one integer comparison:
 
@@ -128,7 +205,7 @@ bool is_known(uint64_t code) {
 
 Two market events are structurally identical **if and only if their integers are equal**.
 
-### Historical archiving
+#### Historical archiving
 
 One loop produces ~3,500 ticks and ~273 sequences. At the integer level:
 
