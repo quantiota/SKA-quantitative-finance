@@ -214,3 +214,32 @@ One loop produces ~3,500 ticks and ~273 sequences. At the integer level:
 ```
 
 The integer stream is lossless at the structural level: the full transition path can be reconstructed from the integer by reversing the 4-bit packing. A year of tick data becomes a compact stream of integers — queryable by pattern, not by price.
+
+
+## Possible sequences — theoretical count
+
+With self-loops (`0101` bull→bull, `1010` bear→bear) sequences can be arbitrarily long. The number of valid distinct sequences of exactly k inner words follows the recurrence:
+
+$$f(k) = 2f(k-1) + 2f(k-2)$$
+
+| inner words | distinct sequences |
+|---|---|
+| 2 | 2 |
+| 3 | 4 |
+| 4 | 12 |
+| 5 | 32 |
+| 6 | 88 |
+| 7 | 240 |
+| 8 | 656 |
+| 9 | 1,792 |
+| 10 | 4,896 |
+| 11 | 13,376 |
+| 12 | 36,544 |
+| 13 | 99,840 |
+| 14 | 272,768 |
+
+The total number of theoretically possible distinct sequences up to 16 total words (uint64 limit) exceeds **430,000**.
+
+The market uses **1,381**.
+
+Less than 1% of the grammatical space is explored. The market speaks a highly selective, concentrated language — not random, not exhaustive.
