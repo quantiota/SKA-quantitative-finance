@@ -218,28 +218,36 @@ The integer stream is lossless at the structural level: the full transition path
 
 ## Possible sequences — theoretical count
 
-With self-loops (`0101` bull→bull, `1010` bear→bear) sequences can be arbitrarily long. The number of valid distinct sequences of exactly k inner words follows the recurrence:
+With self-loops (`0101` bull→bull, `1010` bear→bear) sequences can be arbitrarily long. The chain rule is embedded in the transfer matrix — each transition is valid only if the "to" state of the current word matches the "from" state of the next:
+
+```
+From neutral : → bull, → bear              (2 options — neutral→neutral excluded)
+From bull    : → neutral, → bull, → bear   (3 options)
+From bear    : → neutral, → bull, → bear   (3 options)
+```
+
+The chain rule is a strong constraint. Without it, k inner words would produce 8^k sequences. With it, the count follows the recurrence:
 
 $$f(k) = 2f(k-1) + 2f(k-2)$$
 
-| inner words | distinct sequences |
-|---|---|
-| 2 | 2 |
-| 3 | 4 |
-| 4 | 12 |
-| 5 | 32 |
-| 6 | 88 |
-| 7 | 240 |
-| 8 | 656 |
-| 9 | 1,792 |
-| 10 | 4,896 |
-| 11 | 13,376 |
-| 12 | 36,544 |
-| 13 | 99,840 |
-| 14 | 272,768 |
+| inner words | with chain rule | without chain rule |
+|---|---|---|
+| 2 | 2 | 64 |
+| 3 | 4 | 512 |
+| 4 | 12 | 4,096 |
+| 5 | 32 | 32,768 |
+| 6 | 88 | 262,144 |
+| 7 | 240 | — |
+| 8 | 656 | — |
+| 9 | 1,792 | — |
+| 10 | 4,896 | — |
+| 11 | 13,376 | — |
+| 12 | 36,544 | — |
+| 13 | 99,840 | — |
+| 14 | 272,768 | — |
 
 The total number of theoretically possible distinct sequences up to 16 total words (uint64 limit) exceeds **430,000**.
 
 The market uses **1,381**.
 
-Less than 1% of the grammatical space is explored. The market speaks a highly selective, concentrated language — not random, not exhaustive.
+Less than 1% of the grammatical space is explored. Two levels of selection: grammar (chain rule), then physics (entropy). The market speaks a highly selective, concentrated language — not random, not exhaustive.
