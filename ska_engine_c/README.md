@@ -26,54 +26,51 @@ Bit domain:    regime (2-bit) → 4-bit word → uint64_t → State Machine → 
 config:
   look: classic
   theme: base
-  layout: dagre
+  layout: elk
 ---
-flowchart TD
+flowchart TB
+ subgraph IO["I/O — Python"]
+    direction TB
+        WS["WebSocket\ntick feed"]
+        ORDER["Order Execution\nREST API"]
+  end
+ subgraph SignalCore["Signal Core — C"]
+    direction TB
+        ENGINE["SKA Engine\nentropy computation"]
+        P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
+        ENC["Encoder\ndH/H → regime → 4-bit word"]
+  end
+ subgraph BitProcessing["CPU Bit Processing — C++"]
+    direction TB
+        SEQ["Sequence Detector\nbinary_code as uint64_t"]
+        PAT["Pattern Matcher\nfalse start library"]
+        SM{"State Machine<br/>1 / -1 / 0 / 2"}
+  end
+    ENGINE -- entropy --> P
+    P -- ΔP → regime --> ENC
+    SEQ -- uint64_t --> PAT
+    PAT -- valid sequence --> SM
+    BINANCE[("Binance\nRaw Tick Data")] -- raw ticks --> WS
+    WS -- raw ticks --> ENGINE
+    ENC -- "4-bit word" --> SEQ
+    SM -- signal --> ORDER
+    ORDER -- order --> EXCHANGE["Binance\nREST API"]
 
-BINANCE[(Binance\nRaw Tick Data)]
-EXCHANGE[Binance\nREST API]
-
-subgraph IO["I/O — Python"]
-  direction TB
-  WS[WebSocket\ntick feed]
-  ORDER[Order Execution\nREST API]
-end
-
-subgraph SignalCore["Signal Core — C"]
-  direction TB
-  ENGINE[SKA Engine\nentropy computation]
-  P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
-  ENC[Encoder\ndH/H → regime → 4-bit word]
-  ENGINE -->|entropy| P
-  P -->|ΔP → regime| ENC
-end
-
-subgraph BitProcessing["CPU Bit Processing — C++"]
-  direction TB
-  SEQ[Sequence Detector\nbinary_code as uint64_t]
-  PAT[Pattern Matcher\nfalse start library]
-  SM@{ shape: diamond, label: "State Machine\n1 / -1 / 0 / 2" }
-  SEQ -->|uint64_t| PAT
-  PAT -->|valid sequence| SM
-end
-
-BINANCE -->|raw ticks| WS
-WS -->|raw ticks| ENGINE
-ENC -->|4-bit word| SEQ
-SM -->|signal| ORDER
-ORDER -->|order| EXCHANGE
-
-classDef data     fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px;
-classDef binary   fill:#E8F5E9,stroke:#43A047,stroke-width:2px;
-classDef flow     fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px;
-classDef io       fill:#FFF9C4,stroke:#F9A825,stroke-width:2px;
-classDef signal   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
-
-class BINANCE,EXCHANGE data;
-class ENGINE,P,ENC binary;
-class SEQ,PAT flow;
-class SM signal;
-class WS,ORDER io;
+     BINANCE:::data
+     EXCHANGE:::data
+     WS:::io
+     ORDER:::io
+     ENGINE:::binary
+     P:::binary
+     ENC:::binary
+     SEQ:::flow
+     PAT:::flow
+     SM:::signal
+    classDef data     fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px
+    classDef binary   fill:#E8F5E9,stroke:#43A047,stroke-width:2px
+    classDef flow     fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px
+    classDef io       fill:#FFF9C4,stroke:#F9A825,stroke-width:2px
+    classDef signal   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px
 ```
 
 The `4-bit word` arrow crossing from Signal Core into CPU Bit Processing is the float-to-bit boundary. Everything downstream is pure integer operations:
