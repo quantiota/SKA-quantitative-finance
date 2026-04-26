@@ -38,7 +38,7 @@ flowchart TB
     direction TB
         ENGINE["SKA Engine\nentropy computation"]
         P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
-        ENC["Encoder\ndH/H → regime → 4-bit word"]
+        ENC["Encoder\nΔH/H → regime → 4-bit word"]
   end
  subgraph BitProcessing["CPU Bit Processing — C++"]
     direction TB
