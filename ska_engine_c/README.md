@@ -26,7 +26,7 @@ Bit domain:    regime (2-bit) → 4-bit word → uint64_t → State Machine → 
 config:
   look: classic
   theme: base
-  layout: elk
+  layout: dagre
 ---
 flowchart TD
 
