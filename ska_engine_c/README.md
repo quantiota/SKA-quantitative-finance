@@ -43,7 +43,7 @@ flowchart TB
  subgraph BitProcessing["CPU Bit Processing — C++"]
     direction TB
         SEQ["Sequence Detector\nbinary_code as uint64_t"]
-        PAT["Pattern Matcher\nfalse start library"]
+        PAT["Pattern Matcher\nfalse start library\n1,381 uint64_t entries\n~11 KB — Fits in L1 Cache"]  
         SM{"State Machine<br/>1 / -1 / 0 / 2"}
   end
     ENGINE -- entropy --> P
