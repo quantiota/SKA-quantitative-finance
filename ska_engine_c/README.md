@@ -16,7 +16,9 @@ The market itself is encoded as a continuous binary stream of 4-bit words — on
 ## Architecture
 
 ```
-Binance WebSocket → SKA entropy → dH/H → Regime → 4-bit word → Binary stream → Pattern match → Signal core → Order API
+Float domain:  raw ticks → entropy (double) → P (double) → regime (2-bit)
+                                                                  ↓
+Bit domain:    regime (2-bit) → 4-bit word → uint64_t → State Machine → 1-bit signal
 ```
 
 ```mermaid
@@ -41,23 +43,23 @@ subgraph SignalCore["Signal Core — C"]
   direction TB
   ENGINE[SKA Engine\nentropy computation]
   P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
-  SM@{ shape: diamond, label: "State Machine\n1 / -1 / 0 / 2" }
+  ENC[Encoder\ndH/H → regime → 4-bit word]
   ENGINE -->|entropy| P
-  P -->|ΔP → regime| SM
+  P -->|ΔP → regime| ENC
 end
 
-subgraph BinaryFlow["Binary Information Flow — C++"]
+subgraph BitProcessing["CPU Bit Processing — C++"]
   direction TB
-  ENC[Encoder\ndH/H → regime → 4-bit word]
   SEQ[Sequence Detector\nbinary_code as uint64_t]
   PAT[Pattern Matcher\nfalse start library]
-  ENC --> SEQ --> PAT
+  SM@{ shape: diamond, label: "State Machine\n1 / -1 / 0 / 2" }
+  SEQ -->|uint64_t| PAT
+  PAT -->|valid sequence| SM
 end
 
 BINANCE -->|raw ticks| WS
 WS -->|raw ticks| ENGINE
-ENGINE -->|entropy history| ENC
-PAT -->|valid sequence| SM
+ENC -->|4-bit word| SEQ
 SM -->|signal| ORDER
 ORDER -->|order| EXCHANGE
 
@@ -68,18 +70,18 @@ classDef io       fill:#FFF9C4,stroke:#F9A825,stroke-width:2px;
 classDef signal   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px;
 
 class BINANCE,EXCHANGE data;
-class ENGINE,P binary;
-class ENC,SEQ,PAT flow;
+class ENGINE,P,ENC binary;
+class SEQ,PAT flow;
 class SM signal;
 class WS,ORDER io;
 ```
 
-Two parallel layers on the same tick stream:
+The `4-bit word` arrow crossing from Signal Core into CPU Bit Processing is the float-to-bit boundary. Everything downstream is pure integer operations:
 
 | Layer | Input | Output |
 |-------|-------|--------|
-| Binary information flow | entropy → dH/H → regime | 4-bit words, sequences, false start detection |
-| Signal core | entropy → P → ΔP bands | LONG / SHORT / HOLD / CLOSE |
+| Signal Core — C | raw ticks → entropy → regime | 4-bit word |
+| CPU Bit Processing — C++ | 4-bit word | signal: LONG / SHORT / HOLD / CLOSE |
 
 ---
 
@@ -111,7 +113,6 @@ transition_code = prev_regime × 3 + regime
 | 6    | bear-neutral    | `1000`     |
 | 7    | bear-bull       | `1001`     |
 | 8    | bear-bear       | `1010`     |
-
 
 ### Sequence
 
