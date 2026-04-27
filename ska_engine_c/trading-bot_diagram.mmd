@@ -1,0 +1,51 @@
+```mermaid
+---
+config:
+  look: classic
+  theme: base
+  layout: elk
+---
+flowchart TB
+ subgraph IO["I/O — Python"]
+    direction TB
+        WS["WebSocket\ntick feed"]
+        ORDER["Order Execution\nREST API"]
+  end
+ subgraph SignalCore["Signal Core — C"]
+    direction TB
+        ENGINE["SKA Engine\nentropy computation"]
+        P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
+        ENC["Encoder\nΔH/H → regime → 4-bit word"]
+  end
+ subgraph BitProcessing["CPU Bit Processing — C++"]
+    direction TB
+        SEQ["Sequence Detector\nbinary_code as uint64_t"]
+        PAT["Pattern Matcher\nfalse start library\n1,381 uint64_t entries\n~11 KB — Fits in L1 Cache"]  
+        SM{"State Machine<br/>1 / -1 / 0 / 2"}
+  end
+    ENGINE -- entropy --> P
+    P -- ΔP → regime --> ENC
+    SEQ -- uint64_t --> PAT
+    PAT -- valid sequence --> SM
+    BINANCE[("Binance\nRaw Tick Data")] -- raw ticks --> WS
+    WS -- raw ticks --> ENGINE
+    ENC -- "4-bit word" --> SEQ
+    SM -- signal --> ORDER
+    ORDER -- order --> EXCHANGE["Binance\nREST API"]
+
+     BINANCE:::data
+     EXCHANGE:::data
+     WS:::io
+     ORDER:::io
+     ENGINE:::binary
+     P:::binary
+     ENC:::binary
+     SEQ:::flow
+     PAT:::flow
+     SM:::signal
+    classDef data     fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px
+    classDef binary   fill:#E8F5E9,stroke:#43A047,stroke-width:2px
+    classDef flow     fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px
+    classDef io       fill:#FFF9C4,stroke:#F9A825,stroke-width:2px
+    classDef signal   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px
+```
