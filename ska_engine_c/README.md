@@ -15,6 +15,19 @@ The market itself is encoded as a continuous binary stream of 4-bit words — on
 
 ## Architecture
 
+### Epistemological Shift: Price is the Shadow
+
+Standard quant models assume: **Price = Reality** → Indicators = Approximations of Reality
+
+The SKA framework proves: **Entropy Transitions (4-bit words) = Reality** → Price = The Shadow cast by Reality
+
+The market does not move price randomly; it resolves structural entropy. Price is simply the registered exhaust of a grammatical transition that has already occurred.
+
+This engine does not predict price. It parses the grammar that dictates the price.
+
+
+
+
 ```
 Float domain:  raw ticks → entropy (double) → P (double) → regime (2-bit)
                                                                   ↓
