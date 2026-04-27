@@ -25,7 +25,7 @@ Bit domain:    regime (2-bit) → 4-bit word → uint64_t → State Machine → 
 
 
 
-<img src="trading-bot_diagram.svg" width="400">
+<img src="trading-bot_diagram.svg" width="500">
 
 
 
