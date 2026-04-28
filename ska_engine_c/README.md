@@ -91,15 +91,14 @@ A sequence opens and closes on `0000` (neutral→neutral). The binary code is th
 ### Pattern Matcher
 
 ```cpp
-bool is_false_start(uint64_t code) {
-    for (auto& pattern : library) {
-        if (code == pattern.binary_code) return true;
-    }
-    return false;
+std::unordered_set<uint64_t> library;  // loaded at startup — 1,381 entries — ~11 KB in L1
+
+bool is_known(uint64_t code) {
+    return library.count(code) > 0;    // O(1)
 }
 ```
 
-Library loaded from `false_start_library.json` at startup (1,381 entries). Each comparison is O(1).
+Library loaded from `false_start_library.json` at startup (1,381 entries). Lookup is O(1) — one hash comparison against an L1-resident set.
 
 ---
 
