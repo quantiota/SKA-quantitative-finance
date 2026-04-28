@@ -15,12 +15,12 @@ flowchart TB
         ENGINE["SKA Engine\nentropy computation"]
         P["P = exp(-|ΔH/H|)\nregime via ΔP bands"]
         ENC["Encoder\nΔH/H → regime → 4-bit word"]
+        SM{"State Machine<br/>1 / -1 / 0 / 2"}
   end
  subgraph BitProcessing["CPU Bit Processing — C++"]
     direction TB
         SEQ["Sequence Detector\nbinary_code as uint64_t"]
-        PAT["Pattern Matcher\nfalse start library\n1,381 uint64_t entries\n~11 KB — Fits in L1 Cache"]  
-        SM{"State Machine<br/>1 / -1 / 0 / 2"}
+        PAT["Pattern Matcher\nfalse start library\n1,381 uint64_t entries\n~11 KB — Fits in L1 Cache"]
   end
     ENGINE -- entropy --> P
     P -- ΔP → regime --> ENC
@@ -29,7 +29,7 @@ flowchart TB
     BINANCE[("Binance\nRaw Tick Data")] -- raw ticks --> WS
     WS -- raw ticks --> ENGINE
     ENC -- "4-bit word" --> SEQ
-    ENC -- "4-bit word\n(regime transition)" --> SM
+    ENC -- "4-bit word<br>(regime transition)" --> SM
     SM -- signal --> ORDER
     ORDER -- order --> EXCHANGE["Binance\nREST API"]
 
@@ -48,3 +48,4 @@ flowchart TB
     classDef flow     fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px
     classDef io       fill:#FFF9C4,stroke:#F9A825,stroke-width:2px
     classDef signal   fill:#E8E8E8,stroke:#AAAAAA,color:#000,stroke-width:1.5px
+

@@ -194,6 +194,8 @@ signal = lib.process_tick(entropy, delta_t, price)
 ```
 ska_engine_c/
 ├── CMakeLists.txt
+├── config/
+│   └── false_start_library.json   # 1,381 uint64_t sequence patterns — ~11 KB
 ├── include/
 │   ├── encoder.h         # 4-bit word encoder
 │   ├── sequence.h        # sequence detector + binary_code as uint64_t
@@ -202,7 +204,7 @@ ska_engine_c/
 ├── src/
 │   ├── encoder.cpp       # dH/H → regime → transition_code → 4-bit word
 │   ├── sequence.cpp      # open/close on 0000, binary_code packing
-│   ├── matcher.cpp       # load false_start_library.json, lookup
+│   ├── matcher.cpp       # load config/false_start_library.json, lookup
 │   └── ska_bot.c         # signal core — regime detection + dual state machine
 ├── test/
 │   ├── replay.cpp        # replay questdb_export CSV → validate sequences
