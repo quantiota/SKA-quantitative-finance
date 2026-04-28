@@ -99,7 +99,7 @@ bool is_false_start(uint64_t code) {
 }
 ```
 
-Library loaded from `false_start_library.json` at startup (13 entries). Each comparison is O(1).
+Library loaded from `false_start_library.json` at startup (1,381 entries). Each comparison is O(1).
 
 ---
 
@@ -207,7 +207,7 @@ ska_engine_c/
 │   └── ska_bot.c         # signal core — regime detection + dual state machine
 ├── test/
 │   ├── replay.cpp        # replay questdb_export CSV → validate sequences
-│   └── cases.cpp         # unit test all 13 false start library entries
+│   └── cases.cpp         # unit test all 1,381 false start library entries
 └── main.cpp              # live Binance WebSocket feed
 ```
 
@@ -216,7 +216,7 @@ ska_engine_c/
 - Build `encoder.cpp`, `sequence.cpp`, `matcher.cpp`
 - Input: `questdb_export/*.csv` — entropy column tick by tick
 - Validate: sequences match known cases in `false_start_panel.md`
-- Validate: all 13 library entries match themselves via `cases.cpp`
+- Validate: all 1,381 library entries match themselves via `cases.cpp`
 
 ### Phase 2 — C signal core
 
