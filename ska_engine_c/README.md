@@ -21,7 +21,7 @@ Standard quant models assume: **Price = Reality** → Indicators = Approximation
 
 The SKA framework proves: **Entropy Transitions (4-bit words) = Reality** → Price = The Shadow cast by Reality
 
-The market does not move price randomly; it resolves structural entropy. Price is simply the registered exhaust of a grammatical transition that has already occurred.
+The market does not move price randomly; it resolves structural entropy. Price is simply the registered answer to a grammatical transition that has already occurred.
 
 This engine does not predict price. It parses the grammar that dictates the price.
 
