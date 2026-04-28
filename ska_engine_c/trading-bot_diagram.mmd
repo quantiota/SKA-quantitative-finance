@@ -29,6 +29,7 @@ flowchart TB
     BINANCE[("Binance\nRaw Tick Data")] -- raw ticks --> WS
     WS -- raw ticks --> ENGINE
     ENC -- "4-bit word" --> SEQ
+    ENC -- "4-bit word\n(regime transition)" --> SM
     SM -- signal --> ORDER
     ORDER -- order --> EXCHANGE["Binance\nREST API"]
 
