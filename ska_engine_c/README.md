@@ -19,7 +19,7 @@ The market itself is encoded as a continuous binary stream of 4-bit words — on
 
 Standard quant models assume: **Price = Reality** → Indicators = Approximations of Reality
 
-The SKA framework proves: **Entropy Transitions (4-bit words) = Reality** → Price = The Shadow cast by Reality
+The SKA framework treats: **Entropy Transitions (4-bit words) = Reality** → Price = The Shadow cast by Reality
 
 The market does not move price randomly; it resolves structural entropy. Price is simply the registered answer to a grammatical transition that has already occurred.
 
@@ -31,7 +31,10 @@ This engine does not predict price. It parses the grammar that dictates the pric
 ```
 Float domain:  raw ticks → entropy (double) → P (double) → regime (2-bit)
                                                                   ↓
-Bit domain:    regime (2-bit) → 4-bit word → uint64_t → State Machine → 1-bit signal
+                                                            4-bit word
+                                                          ↙            ↘
+Bit domain:    uint64_t → sequence → matcher          State Machine → 1-bit signal
+                                 false-start verdict ↗
 ```
 
 
@@ -42,18 +45,46 @@ Bit domain:    regime (2-bit) → 4-bit word → uint64_t → State Machine → 
 
 
 
-The `4-bit word` arrow crossing from Signal Core into CPU Bit Processing is the float-to-bit boundary. Everything downstream is pure integer operations:
+The `4-bit word` arrow crossing from Signal Core into CPU Bit Processing is the float-to-bit boundary. Everything downstream of the encoder output is pure integer and state-machine logic:
 
 | Layer | Input | Output |
 |-------|-------|--------|
-| Signal Core — C | raw ticks → entropy → regime | 4-bit word |
-| CPU Bit Processing — C++ | 4-bit word | signal: LONG / SHORT / HOLD / CLOSE |
+| Signal Core — C | raw ticks → entropy → regime → 4-bit word | signal: LONG / SHORT / HOLD / CLOSE |
+| CPU Bit Processing — C++ | 4-bit word | sequence code / false-start verdict |
+
+The state machine consumes the live 4-bit transition stream and receives a false-start verdict from the C++ matcher before emitting a trade signal.
 
 ---
 
-## Layer 1 — Binary Information Flow
+## Layer 1 — Binary Information Flow — C++
+
+### Sequence
+
+```
+S = 0000 a₁ a₂ ... aₖ 0000   =   4(k+2) bits
+```
+
+A sequence opens and closes on `0000` (neutral→neutral). The binary code is the concatenation of all 4-bit words packed into a `uint64_t`. Two sequences are identical if and only if their binary codes are equal — one integer comparison.
+
+### Pattern Matcher
+
+```cpp
+std::vector<uint64_t> library;  // sorted — 1,381 × 8 bytes = ~11 KB contiguous, L1-resident
+
+bool is_false_start(uint64_t code) {
+    return std::binary_search(library.begin(), library.end(), code);  // O(log 1381) ≈ 11 comparisons
+}
+```
+
+Library loaded from `config/false_start_library.json` at startup (1,381 entries). Lookup is O(log n) — 11 comparisons against a contiguous L1-resident array.
+
+---
+
+## Layer 2 — Signal Core — C
 
 ### Encoder
+
+The encoder is implemented in C and reused by both the live signal core and the offline C++ sequence-validation pipeline.
 
 ```
 dH_H = (H - H_prev) / H
@@ -80,30 +111,6 @@ transition_code = prev_regime × 3 + regime
 | 7    | bear-bull       | `1001`     |
 | 8    | bear-bear       | `1010`     |
 
-### Sequence
-
-```
-S = 0000 a₁ a₂ ... aₖ 0000   =   4(k+2) bits
-```
-
-A sequence opens and closes on `0000` (neutral→neutral). The binary code is the concatenation of all 4-bit words packed into a `uint64_t`. Two sequences are identical if and only if their binary codes are equal — one integer comparison.
-
-### Pattern Matcher
-
-```cpp
-std::vector<uint64_t> library;  // sorted — 1,381 × 8 bytes = ~11 KB contiguous, L1-resident
-
-bool is_known(uint64_t code) {
-    return std::binary_search(library.begin(), library.end(), code);  // O(log 1381) ≈ 11 comparisons
-}
-```
-
-Library loaded from `false_start_library.json` at startup (1,381 entries). Lookup is O(log n) — 11 comparisons against a contiguous L1-resident array.
-
----
-
-## Layer 2 — Signal Core
-
 ### Interface
 
 ```c
@@ -115,7 +122,7 @@ int8_t process_tick(double entropy, double delta_t, double price);
 //   2  = HOLD
 ```
 
-One function call per tick. ~10 CPU instructions. Zero overhead.
+One function call per tick. Minimal branching. No Python state-machine overhead.
 
 ### Regime Detection
 
@@ -197,15 +204,16 @@ ska_engine_c/
 ├── config/
 │   └── false_start_library.json   # 1,381 uint64_t sequence patterns — ~11 KB
 ├── include/
-│   ├── encoder.h         # 4-bit word encoder
-│   ├── sequence.h        # sequence detector + binary_code as uint64_t
-│   ├── matcher.h         # pattern matcher
-│   └── signal_core.h     # process_tick interface
+│   ├── encoder.h         # 4-bit word encoder          (C)
+│   ├── sequence.h        # sequence detector            (C++)
+│   ├── matcher.h         # pattern matcher              (C++)
+│   ├── matcher_api.h     # extern "C" bridge for ska_bot.c integration
+│   └── signal_core.h     # process_tick interface       (C)
 ├── src/
-│   ├── encoder.c       # dH/H → regime → transition_code → 4-bit word
-│   ├── sequence.cpp      # open/close on 0000, binary_code packing
-│   ├── matcher.cpp       # load config/false_start_library.json, lookup
-│   └── ska_bot.c         # signal core — regime detection + dual state machine
+│   ├── encoder.c         # dH/H → regime → transition_code → 4-bit word
+│   ├── sequence.cpp      # open/close on 0000, binary_code as uint64_t
+│   ├── matcher.cpp       # load config/false_start_library.json, O(log n) lookup
+│   └── ska_bot.c         # regime detection + dual state machine → 1-bit signal
 ├── test/
 │   ├── replay.cpp        # replay questdb_export CSV → validate sequences
 │   └── cases.cpp         # unit test all 1,381 false start library entries
@@ -214,7 +222,7 @@ ska_engine_c/
 
 ### Phase 1 — Binary information flow (offline)
 
-- Build `encoder.cpp`, `sequence.cpp`, `matcher.cpp`
+- Build `encoder.c`, `sequence.cpp`, `matcher.cpp`
 - Input: `questdb_export/*.csv` — entropy column tick by tick
 - Validate: sequences match known cases in `false_start_panel.md`
 - Validate: all 1,381 library entries match themselves via `cases.cpp`
@@ -245,14 +253,16 @@ ska_engine_c/
 
 ---
 
-## Why C
+## Why C and C++
 
-| | Python bot | C library |
-|---|---|---|
-| State machine latency | ~ms | ~μs |
-| CPU per tick | High | ~10 instructions |
-| Portability | Python runtime required | Runs anywhere |
-| FPGA path | No | Yes (Verilog port) |
-| Code size | ~300 lines | ~50 lines |
+| | Python bot | C (Signal Core) | C++ (Bit Processing) |
+|---|---|---|---|
+| Latency | ~ms | ~μs | ~μs |
+| CPU per tick | High | constant-time state update | ~11 comparisons |
+| Data type | float / object | double → 2-bit | uint64_t |
+| STL required | No | No | Yes (vector, binary_search) |
+| FPGA path | No | Yes (Verilog port) | Rewrite required |
+| Code size | ~300 lines | ~50 lines | ~50 lines |
 
 The signal is binary. The implementation should match.
+
