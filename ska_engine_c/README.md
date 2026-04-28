@@ -270,7 +270,7 @@ ska_engine_c/
 | Data type | float / object | double → 2-bit | uint64_t |
 | STL required | No | No | Yes (vector, binary_search) |
 | FPGA path | No | Yes (Verilog port) | Rewrite required |
-| Code size | ~300 lines | ~50 lines | ~50 lines |
+| Code size | ~300 lines | ~200 lines | ~110 lines |
 
 The signal is binary. The implementation should match.
 
