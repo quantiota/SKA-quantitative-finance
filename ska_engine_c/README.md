@@ -137,7 +137,15 @@ else                                   regime = NEUTRAL;
 ### State Machine
 
 ```c
-typedef enum { WAIT_PAIR, IN_NEUTRAL, READY, EXIT_WAIT } State;
+typedef enum {
+    WAIT_PAIR,
+    IN_NEUTRAL,
+    READY,
+    EXIT_WAIT,
+    PROBE,          // V2:    bull→bear or bear→bull detected
+    PROBE_EXIT,     // V2:    direct jump during EXIT_WAIT
+    COMPOUND_CHECK  // V2bis: checking for neutral→neutral boundary before close
+} State;
 
 State long_state  = WAIT_PAIR;
 State short_state = WAIT_PAIR;
