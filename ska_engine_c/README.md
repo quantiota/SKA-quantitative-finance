@@ -202,7 +202,7 @@ ska_engine_c/
 │   ├── matcher.h         # pattern matcher
 │   └── signal_core.h     # process_tick interface
 ├── src/
-│   ├── encoder.cpp       # dH/H → regime → transition_code → 4-bit word
+│   ├── encoder.c       # dH/H → regime → transition_code → 4-bit word
 │   ├── sequence.cpp      # open/close on 0000, binary_code packing
 │   ├── matcher.cpp       # load config/false_start_library.json, lookup
 │   └── ska_bot.c         # signal core — regime detection + dual state machine
