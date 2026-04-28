@@ -11,7 +11,7 @@ The entire position logic reduces to a **1-bit register** clocked by structural 
 
 The market itself is encoded as a continuous binary stream of 4-bit words — one per regime transition. Each sequence between two `neutral→neutral` boundaries is uniquely identified by its integer binary code. This is the binary information flow layer.
 
----
+
 
 ## Architecture
 
@@ -54,7 +54,7 @@ The `4-bit word` arrow crossing from Signal Core into CPU Bit Processing is the 
 
 The state machine consumes the live 4-bit transition stream and receives a false-start verdict from the C++ matcher before emitting a trade signal.
 
----
+
 
 ## Layer 1 — Binary Information Flow — C++
 
@@ -78,7 +78,7 @@ bool is_false_start(uint64_t code) {
 
 Library loaded from `config/false_start_library.json` at startup (1,381 entries). Lookup is O(log n) — 11 comparisons against a contiguous L1-resident array.
 
----
+
 
 ## Layer 2 — Signal Core — C
 
@@ -147,14 +147,13 @@ typedef enum {
     COMPOUND_CHECK  // V2bis: checking for neutral→neutral boundary before close
 } State;
 
-State long_state  = WAIT_PAIR;
-State short_state = WAIT_PAIR;
-int   nn_count    = 0;
+State state    = WAIT_PAIR;
+int   nn_count = 0;
 ```
 
-Both LONG and SHORT machines run independently on the same tick stream.
+One state machine handles both LONG and SHORT. Direction is determined by the opening transition: `neutral→bull` opens LONG, `neutral→bear` opens SHORT.
 
----
+
 
 ## P Band Constants
 
@@ -176,7 +175,7 @@ Universal constants at convergence scale — asset-independent:
 #define MIN_TRADES         50
 ```
 
----
+
 
 ## Python Wrapper
 
@@ -200,7 +199,7 @@ lib.process_tick.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double]
 signal = lib.process_tick(entropy, delta_t, price)
 ```
 
----
+
 
 ## Dev Plan
 
@@ -259,7 +258,7 @@ ska_engine_c/
 - Direct market data feed → FPGA → order signal
 - Target latency: ~ns per tick
 
----
+
 
 ## Why C and C++
 
