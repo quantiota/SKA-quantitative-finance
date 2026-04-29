@@ -155,6 +155,10 @@ int   nn_count = 0;
 
 One state machine handles both LONG and SHORT. Direction is determined by the opening transition: `neutral→bull` opens LONG, `neutral→bear` opens SHORT.
 
+### Extension Roadmap
+
+`sequence_library.json` sorted by frequency is both the pattern matcher's input and the state machine's development roadmap. The current V3 machine natively handles ranks 1–8 (92.4% of all market activity). To extend coverage, read the next unhandled rank from the library, identify its grammar structure, and add the corresponding state. Each rank pair is always LONG + SHORT by symmetry — one new state covers both directions simultaneously. The remaining sequences are suppressed by the pattern matcher until the state machine is extended to handle them.
+
 
 
 ## P Band Constants
