@@ -1,3 +1,4 @@
+
 # SKA Engine C — Binary Trading Pipeline
 
 ## Concept
@@ -76,7 +77,7 @@ bool is_false_start(uint64_t code) {
 }
 ```
 
-Library loaded from `config/false_start_library.json` at startup (1,381 entries). Lookup is O(log n) — 11 comparisons against a contiguous L1-resident array.
+Library loaded from `config/sequence_library.json` at startup (1,381 entries). Lookup is O(log n) — 11 comparisons against a contiguous L1-resident array.
 
 
 
@@ -144,7 +145,8 @@ typedef enum {
     EXIT_WAIT,
     PROBE,          // V2:    bull→bear or bear→bull detected
     PROBE_EXIT,     // V2:    direct jump during EXIT_WAIT
-    COMPOUND_CHECK  // V2bis: checking for neutral→neutral boundary before close
+    COMPOUND_CHECK, // V2bis: checking for neutral→neutral boundary before close
+    DETOUR          // V3:    second direct jump during PROBE (double probe)
 } State;
 
 State state    = WAIT_PAIR;
@@ -209,7 +211,7 @@ signal = lib.process_tick(entropy, delta_t, price)
 ska_engine_c/
 ├── CMakeLists.txt
 ├── config/
-│   └── false_start_library.json   # 1,381 uint64_t sequence patterns — ~11 KB
+│   └── sequence_library.json   # 1,381 sequences ranked by frequency — ~11 KB
 ├── include/
 │   ├── encoder.h         # 4-bit word encoder          (C)
 │   ├── sequence.h        # sequence detector            (C++)
@@ -219,11 +221,11 @@ ska_engine_c/
 ├── src/
 │   ├── encoder.c         # dH/H → regime → transition_code → 4-bit word
 │   ├── sequence.cpp      # open/close on 0000, binary_code as uint64_t
-│   ├── matcher.cpp       # load config/false_start_library.json, O(log n) lookup
+│   ├── matcher.cpp       # load config/sequence_library.json, O(log n) lookup
 │   └── ska_bot.c         # regime detection + dual state machine → 1-bit signal
 ├── test/
 │   ├── replay.cpp        # replay questdb_export CSV → validate sequences
-│   └── cases.cpp         # unit test all 1,381 false start library entries
+│   └── cases.cpp         # unit test all 1,381 sequence library entries
 └── main.cpp              # live Binance WebSocket feed
 ```
 
@@ -232,7 +234,7 @@ ska_engine_c/
 - Build `encoder.c`, `sequence.cpp`, `matcher.cpp`
 - Input: `questdb_export/*.csv` — entropy column tick by tick
 - Validate: sequences match known cases in `false_start_panel.md`
-- Validate: all 1,381 library entries match themselves via `cases.cpp`
+- Validate: all 1,381 sequence library entries match themselves via `cases.cpp`
 
 ### Phase 2 — C signal core
 
