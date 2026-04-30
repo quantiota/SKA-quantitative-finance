@@ -1,4 +1,3 @@
-
 # SKA Engine C — Binary Trading Pipeline
 
 ## Concept
@@ -242,7 +241,8 @@ ska_engine_c/
 
 ### Phase 2 — C signal core
 
-- Implement `ska_bot.c` — regime detection via ΔP bands + dual state machine
+- Implement `ska_bot.c` — regime detection via ΔP bands + V3 state machine (8 states: WAIT_PAIR, IN_NEUTRAL, READY, EXIT_WAIT, PROBE, PROBE_EXIT, COMPOUND_CHECK, DETOUR)
+- Coverage: 92.4% of all market sequences (ranks 1–8)
 - Compile: `gcc -shared -fPIC -o ska_bot.so ska_bot.c -lm`
 - Validate against `backtest.py` results (112 loops, XRPUSDT)
 
