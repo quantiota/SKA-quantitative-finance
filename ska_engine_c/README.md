@@ -211,7 +211,7 @@ signal = lib.process_tick(entropy, delta_t, price)
 ### File structure
 
 ```
-ska_engine_c/
+source/
 ├── CMakeLists.txt
 ├── config/
 │   └── sequence_library.json   # 1,381 sequences ranked by frequency — ~11 KB
