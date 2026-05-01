@@ -157,14 +157,23 @@ If you use SKA Quantitative Finance, please cite:
 }
 ```
 
----
+
 ## SKA Framework: Open Science, Proprietary Real-Time Engine
 
 The full mathematical foundation and batch implementation are public for verification on
 [GitHub](https://github.com/quantiota/Arxiv).
 The real-time system extends that foundation to continuous entropy learning — that part is proprietary.
 
----
+
+**Interactive visualization of the SKA forward learning algorithm on MNIST**
+
+- [SKA Explorer](https://huggingface.co/quant-iota)
+
+**SKA Academy**
+
+- [SKA Course](https://quantiota.moodlecloud.com/)
+
+
 
 ## License Notice
 
@@ -174,6 +183,6 @@ are licensed under a **Creative Commons Attribution–NonCommercial–NoDerivati
 No redistribution, reproduction, or modification is permitted without prior written
 permission from **Bouarfa Mahi | Quantiota**.
 
----
+
 
 *SKA Quantitative Finance bridges the theory of Structured Knowledge Accumulation (SKA) with real-time quantitative market research — enabling new scientific discovery at the intersection of AI, entropy, and financial dynamics.*
