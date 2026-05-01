@@ -1,4 +1,3 @@
-
 # SKA Engine C — Binary Trading Pipeline
 
 ## Concept
@@ -235,33 +234,39 @@ source/
 └── main.cpp              # live Binance WebSocket feed
 ```
 
-### Phase 1 — Binary information flow (offline)
+### Phase 1 — SKA learning engine — C
+
+- Implement `ska_engine.c` — weight updates, entropy computation
+- Reference: `python_engine_with_python_trading_bot/ska_core.py`
+- Validate entropy output matches Python engine tick-for-tick
+
+### Phase 2 — Binary information flow (offline)
 
 - Build `encoder.c`, `sequence.cpp`, `matcher.cpp`
 - Input: `questdb_export/*.csv` — entropy column tick by tick
 - Validate: sequences match known cases in `false_start_panel.md`
 - Validate: all 1,381 sequence library entries match themselves via `cases.cpp`
 
-### Phase 2 — C signal core
+### Phase 3 — C signal core
 
 - Implement `ska_bot.c` — regime detection via ΔP bands + V3 state machine (8 states: WAIT_PAIR, IN_NEUTRAL, READY, EXIT_WAIT, PROBE, PROBE_EXIT, COMPOUND_CHECK, DETOUR)
 - Coverage: 92.4% of all market sequences (ranks 1–8)
 - Compile: `gcc -shared -fPIC -o ska_bot.so ska_bot.c -lm`
 - Validate against `backtest.py` results (112 loops, XRPUSDT)
 
-### Phase 3 — Python wrapper
+### Phase 4 — Python wrapper
 
 - Strip state machine logic from `trading_bot_v3.py`
 - Replace with `ctypes` calls to `ska_bot.so`
 - Validate signal output matches original bot tick-for-tick
 
-### Phase 4 — Integration
+### Phase 5 — Integration
 
 - Run live Binance stream through both layers in parallel
 - Binary information flow suppresses false starts before signal core emits
 - Benchmark latency reduction (Python ms → C μs)
 
-### Phase 5 — FPGA (future)
+### Phase 6 — FPGA (future)
 
 - Port C state machine to Verilog / VHDL
 - Direct market data feed → FPGA → order signal
@@ -271,7 +276,7 @@ source/
 
 ## Why C and C++
 
-| | Python bot | C (Signal Core) | C++ (Bit Processing) |
+| | Python bot | C (SKA + Signal Core) | C++ (Bit Processing) |
 |---|---|---|---|
 | Latency | ~ms | ~μs | ~μs |
 | CPU per tick | High | constant-time state update | ~11 comparisons |
@@ -281,4 +286,5 @@ source/
 | Code size | ~300 lines | ~200 lines | ~110 lines |
 
 The signal is binary. The implementation should match.
+
 
