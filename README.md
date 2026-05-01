@@ -44,7 +44,7 @@ This may be the most important realization of the entire framework. The SKA lear
 
 
 
----
+
 ## Installation
 
 **Requirements:**
@@ -95,7 +95,7 @@ This will:
 * Produce: `probability_with_price.png` and `.svg`
   (Scatter plot of transition probabilities, color/shape-coded by transition, overlaid with price)
 
----
+
 
 ## Outputs
 
