@@ -1,3 +1,4 @@
+
 # SKA Engine C — Binary Trading Pipeline
 
 ## Concept
@@ -216,12 +217,14 @@ source/
 ├── config/
 │   └── sequence_library.json   # 1,381 sequences ranked by frequency — ~11 KB
 ├── include/
-│   ├── encoder.h         # 4-bit word encoder          (C)
-│   ├── sequence.h        # sequence detector            (C++)
-│   ├── matcher.h         # pattern matcher              (C++)
+│   ├── ska_engine.h      # SKA learning engine interface (C)
+│   ├── encoder.h         # 4-bit word encoder            (C)
+│   ├── sequence.h        # sequence detector              (C++)
+│   ├── matcher.h         # pattern matcher                (C++)
 │   ├── matcher_api.h     # extern "C" bridge for ska_bot.c integration
-│   └── signal_core.h     # process_tick interface       (C)
+│   └── signal_core.h     # process_tick interface         (C)
 ├── src/
+│   ├── ska_engine.c      # SKA learning engine — weight updates, entropy
 │   ├── encoder.c         # dH/H → regime → transition_code → 4-bit word
 │   ├── sequence.cpp      # open/close on 0000, binary_code as uint64_t
 │   ├── matcher.cpp       # load config/sequence_library.json, O(log n) lookup
