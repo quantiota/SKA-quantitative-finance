@@ -34,7 +34,7 @@ Float domain:  raw ticks → entropy (double) → P (double) → regime (2-bit)
                                                                   ↓
                                                             4-bit word
                                                           ↙            ↘
-Bit domain:    uint64_t → sequence → matcher          State Machine → 1-bit signal
+Bit domain:    sequence → uint64_t → matcher          State Machine → 1-bit signal
                                  false-start verdict ↗
 ```
 
@@ -228,7 +228,7 @@ source/
 │   ├── encoder.c         # dH/H → regime → transition_code → 4-bit word
 │   ├── sequence.cpp      # open/close on 0000, binary_code as uint64_t
 │   ├── matcher.cpp       # load config/sequence_library.json, O(log n) lookup
-│   └── ska_bot.c         # regime detection + dual state machine → 1-bit signal
+│   └── ska_bot.c         # regime detection + V3 directional state machine → 1-bit signal
 ├── test/
 │   ├── replay.cpp        # replay questdb_export CSV → validate sequences
 │   └── cases.cpp         # unit test all 1,381 sequence library entries
