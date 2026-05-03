@@ -251,3 +251,8 @@ The total number of theoretically possible distinct sequences up to 16 total wor
 The market uses **1,381**.
 
 Less than 1% of the grammatical space is explored. Two levels of selection: grammar (chain rule), then physics (entropy). The market speaks a highly selective, concentrated language — not random, not exhaustive.
+
+
+### Variational Principle
+
+The selection mechanism is governed by the variational principle: entropy is the integral of the Lagrangian, and the observed market paths are the solutions to the Euler-Lagrange equation. See: *Structured Knowledge Accumulation: The Principle of Entropic Least Action in Forward-Only Neural Learning* — arXiv:2504.03214.
