@@ -1,6 +1,8 @@
 
 # SKA Quantitative Finance
 
+ ![clones](https://img.shields.io/badge/clones%2014d-701-brightgreen) 
+
 ![SKA Entropy Trajectories Figure](results/entropy_vs_trade_id.png)
 
 *Figure: SKA entropy trajectories for XRPUSDT Binance tick data, color-coded by regime transition (bull, bear, neutral) over \~3,500 trades. The dominant neutral regime and smooth entropy evolution are clear evidence of non-chaotic, structured market dynamics.*
