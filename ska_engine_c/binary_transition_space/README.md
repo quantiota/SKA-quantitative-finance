@@ -257,7 +257,7 @@ Less than 1% of the grammatical space is explored. Two levels of selection: gram
 
 The selection mechanism is governed by the variational principle: entropy is the integral of the Lagrangian, and the observed market paths are the solutions to the Euler-Lagrange equation. See: *Structured Knowledge Accumulation: The Principle of Entropic Least Action in Forward-Only Neural Learning* — arXiv:2504.03214.
 
-Every quant sees the price series. Nobody sees the path across sequences because nobody encodes the market as a binary grammar. Without the 4-bit word, the 9 transitions are invisible. Without the 9 transitions, the variational principle has nothing to act on. Without the variational principle, the concentration at 92.4% looks like a statistical curiosity rather than a physical law.
+Every quant sees the price series. Nobody sees the path across sequences because nobody encodes the market as a binary grammar. Without the 4-bit word, the 9 transitions are invisible. Without the 9 transitions, the variational principle has nothing to act on. Without the variational principle, the concentration at [92.4%](https://github.com/quantiota/SKA-quantitative-finance/blob/main/ska_engine_c/state_machine/state_machine_diagram.md) looks like a statistical curiosity rather than a physical law.
 
 The SKA framework is the lens that makes the structure visible. The market was always doing this — resolving structural entropy along paths of least action. It did not need SKA to do it. SKA is what lets you see it.
 
