@@ -1,7 +1,7 @@
 
 # SKA Quantitative Finance
 
- ![clones](https://img.shields.io/badge/clones%2014d-701-brightgreen) 
+ ![clones](https://img.shields.io/badge/clones%2014d-749-brightgreen) 
 
 ![SKA Entropy Trajectories Figure](results/entropy_vs_trade_id.png)
 
