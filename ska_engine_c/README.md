@@ -187,7 +187,7 @@ Universal constants at convergence scale — asset-independent:
 The wrapper retains all external system responsibilities:
 
 - Binance WebSocket connection (`@trade` stream)
-- Parse tick: `(trade_id, price, entropy, delta_t)`
+- Parse tick: `(trade_id, delta_t, entropy, price)`
 - Call C library via `ctypes.CDLL`
 - Receive signal (1 byte)
 - Place order via Binance REST API (Ed25519 signing)
