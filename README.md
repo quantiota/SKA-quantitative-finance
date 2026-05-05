@@ -1,7 +1,6 @@
 
 # SKA Quantitative Finance
 
-  
 
  [![arXiv](https://img.shields.io/badge/arXiv-2504.03214-b31b1b)](https://arxiv.org/abs/2503.13942)   [![arXiv](https://img.shields.io/badge/arXiv-2504.03214-b31b1b)](https://arxiv.org/abs/2504.03214) ![clones](https://img.shields.io/badge/clones%2014d-749-brightgreen) 
 
