@@ -234,10 +234,11 @@ source/
 └── main.cpp              # live Binance WebSocket feed
 ```
 
-### Phase 1 — SKA learning engine — C
+### Phase 1 — SKA learning engine — C 
+![Done](https://img.shields.io/badge/status-done-brightgreen)
 
-- [x] Implement `ska_engine.c` — weight updates, entropy computation
-- [x] Validate entropy output matches Python engine tick-for-tick
+- Implement `ska_engine.c` — weight updates, entropy computation
+- Validate entropy output matches Python engine tick-for-tick
 
 ### Phase 2 — Binary information flow (offline)
 
