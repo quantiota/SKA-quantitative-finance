@@ -187,7 +187,7 @@ Universal constants at convergence scale — asset-independent:
 The wrapper retains all external system responsibilities:
 
 - Binance WebSocket connection (`@trade` stream)
-- Parse tick: `(trade_id, delta_t, entropy, price)`
+- Parse tick: `(trade_id, entropy, delta_t, price)`
 - Call C library via `ctypes.CDLL`
 - Receive signal (1 byte)
 - Place order via Binance REST API (Ed25519 signing)
@@ -234,7 +234,7 @@ source/
 └── main.cpp              # live Binance WebSocket feed
 ```
 
-### Phase 1 — SKA learning engine — C 
+### Phase 1 — SKA learning engine — C
 ![Done](https://img.shields.io/badge/status-done-brightgreen)
 
 - Implement `ska_engine.c` — weight updates, entropy computation
@@ -289,5 +289,4 @@ source/
 | Code size | ~300 lines | ~200 lines | ~110 lines |
 
 The signal is binary. The implementation should match.
-
 
