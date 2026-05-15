@@ -249,6 +249,7 @@ source/
 - Validate: all 1,381 sequence library entries match themselves via `cases.cpp`
 
 ### Phase 3 — C signal core
+![Done](https://img.shields.io/badge/status-done-brightgreen)
 
 - Implement `ska_bot.c` — regime detection via ΔP bands + V3 state machine (8 states: WAIT_PAIR, IN_NEUTRAL, READY, EXIT_WAIT, PROBE, PROBE_EXIT, COMPOUND_CHECK, DETOUR)
 - Coverage: 92.4% of all market sequences (ranks 1–8)
