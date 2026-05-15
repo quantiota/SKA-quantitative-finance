@@ -241,6 +241,7 @@ source/
 - Validate entropy output matches Python engine tick-for-tick
 
 ### Phase 2 — Binary information flow (offline)
+![Done](https://img.shields.io/badge/status-done-brightgreen)
 
 - Build `encoder.c`, `sequence.cpp`, `matcher.cpp`
 - Input: `questdb_export/*.csv` — entropy column tick by tick
