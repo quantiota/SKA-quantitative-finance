@@ -236,8 +236,8 @@ source/
 
 ### Phase 1 — SKA learning engine — C
 
-- Implement `ska_engine.c` — weight updates, entropy computation
-- Validate entropy output matches Python engine tick-for-tick
+- [x] Implement `ska_engine.c` — weight updates, entropy computation
+- [x] Validate entropy output matches Python engine tick-for-tick
 
 ### Phase 2 — Binary information flow (offline)
 
