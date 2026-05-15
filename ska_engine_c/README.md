@@ -257,6 +257,7 @@ source/
 - Validate against `backtest.py` results (112 loops, XRPUSDT)
 
 ### Phase 4 — Python wrapper
+![Done](https://img.shields.io/badge/status-done-brightgreen)
 
 - Strip state machine logic from `trading_bot_v3.py`
 - Replace with `ctypes` calls to `ska_bot.so`
