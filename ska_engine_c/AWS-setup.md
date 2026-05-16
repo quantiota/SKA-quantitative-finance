@@ -6,7 +6,7 @@
 |-----------|-------|
 | Region | ap-northeast-1 (Tokyo) |
 | Instance | m7i.xlarge (4 vCPU, 16 GB RAM) | 
-| OS | Ubuntu 24.04 LTS x86_64 (ami-067bcf851477ebb78) |  
+| OS | Ubuntu 22.04 LTS x86_64 |  
 | Storage | 20 GB gp3 |
 
 
