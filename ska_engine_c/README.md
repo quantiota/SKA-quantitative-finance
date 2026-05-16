@@ -184,24 +184,32 @@ Universal constants at convergence scale — asset-independent:
 
 ## Python Wrapper
 
-The wrapper retains all external system responsibilities:
+Two layers:
 
-- Binance WebSocket connection (`@trade` stream)
-- Parse tick: `(trade_id, entropy, delta_t, price)`
-- Call C library via `ctypes.CDLL`
-- Receive signal (1 byte)
-- Place order via Binance REST API (Ed25519 signing)
-- Log to QuestDB
-- Persist state to `bot_state.json`
+**`ska_bot_wrapper.py`** — ctypes bridge to `libska_bot.so`:
 
 ```python
-import ctypes
+from ska_bot_wrapper import SKABot
 
-lib = ctypes.CDLL('./ska_bot.so')
-lib.process_tick.restype = ctypes.c_int8
-lib.process_tick.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double]
+bot = SKABot(max_buffer_size=3000, init_std=0.01)
+signal = bot.tick(x_new, delta_t)
+# signal: 1 = OPEN_LONG, -1 = OPEN_SHORT, 0 = CLOSE, 2 = HOLD
+```
 
-signal = lib.process_tick(entropy, delta_t, price)
+Two C calls per tick: `ska_engine_step` (entropy) → `signal_core_step` (state machine). All computation in C, Python receives a single `int8`.
+
+**`ska_trading_bot.py`** — live Binance integration:
+
+- Binance WebSocket connection (`@trade` stream)
+- Price return → sigmoid: `x = σ(Δp/p × 100 × scale)`
+- `SKABot.tick(x, delta_t)` → signal
+- Order execution via Binance REST API (Ed25519 signing)
+- CSV signal logging
+
+```bash
+python3 ska_trading_bot.py                    # dry run, XRPUSDT
+python3 ska_trading_bot.py --symbol BTCUSDT   # different asset
+python3 ska_trading_bot.py --live             # real orders
 ```
 
 
@@ -221,17 +229,24 @@ source/
 │   ├── sequence.h        # sequence detector              (C++)
 │   ├── matcher.h         # pattern matcher                (C++)
 │   ├── matcher_api.h     # extern "C" bridge for ska_bot.c integration
-│   └── signal_core.h     # process_tick interface         (C)
+│   └── signal_core.h     # signal core interface          (C)
 ├── src/
 │   ├── ska_engine.c      # SKA learning engine — weight updates, entropy
 │   ├── encoder.c         # dH/H → regime → transition_code → 4-bit word
 │   ├── sequence.cpp      # open/close on 0000, binary_code as uint64_t
 │   ├── matcher.cpp       # load config/sequence_library.json, O(log n) lookup
 │   └── ska_bot.c         # regime detection + V3 directional state machine → 1-bit signal
+├── python/
+│   ├── ska_bot_wrapper.py    # ctypes bridge to libska_bot.so
+│   └── ska_trading_bot.py    # Binance WebSocket → C engine → signals/orders
 ├── test/
-│   ├── replay.cpp        # replay questdb_export CSV → validate sequences
-│   └── cases.cpp         # unit test all 1,381 sequence library entries
-└── main.cpp              # live Binance WebSocket feed
+│   ├── test_ska_engine.c     # Phase 1 tests
+│   ├── test_phase2.cpp       # Phase 2 tests
+│   ├── test_phase3.c         # Phase 3 tests
+│   ├── test_phase4.py        # Phase 4 tests
+│   └── validate.py           # tick-by-tick entropy match vs Python
+└── build/
+    └── libska_bot.so         # combined library (ska_engine + encoder + signal core)
 ```
 
 ### Phase 1 — SKA learning engine — C
