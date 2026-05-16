@@ -264,7 +264,7 @@ source/
 - Validate signal output matches original bot tick-for-tick
 
 ### Phase 5 — Integration
-![In%20Progress](https://img.shields.io/badge/status-in%20progress-orange)
+![Done](https://img.shields.io/badge/status-done-brightgreen)
 
 - Run live Binance stream through both layers in parallel
 - Binary information flow suppresses false starts before signal core emits
