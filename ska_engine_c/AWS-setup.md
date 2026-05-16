@@ -84,7 +84,9 @@ Keys must have:
 | QuestDB | `https://questdb.<domain>` | Time-series storage — tick, entropy, state, signal per tick |
 | VS Code | `https://vscode.<domain>` | Remote development — code-server (browser-based IDE) |
 
-Both run as Docker containers alongside the bot. Reverse proxy (Nginx/Caddy) routes subdomains to internal ports, handles HTTPS via Let's Encrypt. No code changes to the C engine — `ska_trading_bot.py` writes to QuestDB in addition to CSV.
+All services run as Docker containers managed by `docker-compose`. Reverse proxy (Nginx/Caddy) routes subdomains to internal ports, handles HTTPS via Let's Encrypt. No code changes to the C engine — `ska_trading_bot.py` writes to QuestDB in addition to CSV.
+
+
 
 
 ## Security
