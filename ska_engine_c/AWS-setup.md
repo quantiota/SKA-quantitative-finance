@@ -5,9 +5,64 @@
 | Parameter | Value |
 |-----------|-------|
 | Region | ap-northeast-1 (Tokyo) |
-| Instance | m7i.xlarge (4 vCPU, 16 GB RAM) | 
-| OS | Ubuntu 24.04 LTS x86_64 (ami-067bcf851477ebb78) | 
+| Instance | m7i.xlarge (4 vCPU, 16 GB RAM) |
+| OS | Ubuntu 24.04 LTS x86_64 (ami-067bcf851477ebb78) |
 | Storage | 20 GB gp3 |
+
+
+## Latency Test
+
+Measures delay between Binance trade timestamp and local clock.
+
+```bash
+~/venv/bin/pip install websocket-client
+```
+
+```python
+import websocket
+import json
+import time
+
+count = 0
+latencies = []
+
+def on_message(ws, message):
+    global count, latencies
+    data = json.loads(message)
+    trade_time = data['T']
+    now = int(time.time() * 1000)
+    latency = now - trade_time
+    latencies.append(latency)
+    count += 1
+    if count <= 5 or count % 50 == 0:
+        print(f'tick {count}: latency={latency}ms')
+    if count >= 200:
+        import statistics
+        print(f'--- {count} ticks ---')
+        print(f'min={min(latencies)}ms  median={statistics.median(latencies):.0f}ms  mean={statistics.mean(latencies):.0f}ms  max={max(latencies)}ms')
+        ws.close()
+
+def on_open(ws):
+    print('Connected to Binance XRPUSDT@trade')
+
+ws = websocket.WebSocketApp(
+    'wss://stream.binance.com:9443/ws/xrpusdt@trade',
+    on_message=on_message,
+    on_open=on_open
+)
+ws.run_forever()
+```
+
+### Results (m7i-flex.large, ap-northeast-1)
+
+| Metric | Value |
+|--------|-------|
+| Min | 2ms |
+| Median | 3ms |
+| Mean | 3ms |
+| Max | 5ms |
+
+Full pipeline latency: **~3ms** (network 3ms + C engine 0.01ms).
 
 
 ## Network
