@@ -53,7 +53,7 @@ ws = websocket.WebSocketApp(
 ws.run_forever()
 ```
 
-### Results (m7i-flex.large, ap-northeast-1)
+### Results (m7i.xlarge, ap-northeast-1)
 
 | Metric | Value |
 |--------|-------|
