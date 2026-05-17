@@ -78,7 +78,7 @@ Outbound access required:
 
 ## Docker Environment
 
-Same image as development. Required packages:
+[AI Agent Host](https://github.com/quantiota/AI-Agent-Host) — complete docker-compose stack. Required packages:
 
 ```
 gcc 12.2+
