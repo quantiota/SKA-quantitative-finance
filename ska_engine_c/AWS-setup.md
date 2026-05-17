@@ -62,7 +62,8 @@ ws.run_forever()
 | Mean | 3ms |
 | Max | 5ms |
 
-Full pipeline latency: **~3ms** (network 3ms + C engine 0.01ms).
+Full local signal-generation pipeline latency: ~3ms.
+Order execution latency must be measured separately through Binance REST/WebSocket order response.
 
 
 ## Network
