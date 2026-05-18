@@ -125,14 +125,13 @@ The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neu
 - QuestDB state logging (`ska_bot_v1` table) with event/state/side as both int and string
 
 
+### Live Results — 2026-05-18 (516 loops, XRPUSDT)
 
-### Live Results — 2026-03-16 (63 loops, XRPUSDT)
-
-| Trades | Win%  | Total PnL | Avg PnL/trade | Profitable loops |
-|--------|-------|-----------|---------------|-----------------|
-| 1586   | 63.2% | +0.3821   | +0.000241     | 61/63           |
+| Trades | Win% | Total PnL | Avg PnL/trade | Best | Worst | Profitable loops |
+|---|---|---|---|---|---|---|
+| 10,303 | 49.8% | +17,944 pips | +1.74 pips | +60 | -47 | 516/516 |
 
 **LONG/SHORT symmetry:**
-- LONG:  795 trades | PnL=+0.1985 | win=62.8%
-- SHORT: 791 trades | PnL=+0.1836 | win=63.6%
+- LONG: 5,525 trades | PnL=+9,659 pips | avg=+1.75 | win=50.5%
+- SHORT: 4,778 trades | PnL=+8,285 pips | avg=+1.73 | win=48.9%
 
