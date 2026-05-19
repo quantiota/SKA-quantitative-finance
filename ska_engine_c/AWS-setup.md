@@ -78,7 +78,7 @@ Outbound access required:
 
 ## Docker Environment
 
-[AI Agent Host](https://github.com/quantiota/AI-Agent-Host) — complete docker-compose stack. Required packages:
+[AI Agent Host](https://github.com/quantiota/AI-Agent-Host) — complete docker-compose stack with [Claude Code](https://github.com/quantiota/AI-Agent-Host/tree/main/claude-code) integration for AI-assisted development via `vscode.<domain>`. Required packages:
 
 ```
 gcc 12.2+
