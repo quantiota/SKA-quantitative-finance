@@ -129,7 +129,7 @@ export BINANCE_SECRET_KEY="..."
 Keys must have:
 - Spot trading enabled
 - IP whitelist set to the AWS instance elastic IP
-- Ed25519 signing (used by `trading_bot_v3.py`)
+- Ed25519 signing (used by `trading_bot_v1.py`)
 
 
 ## Monitoring (when ready)

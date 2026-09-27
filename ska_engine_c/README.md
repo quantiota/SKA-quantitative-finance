@@ -274,7 +274,7 @@ source/
 ### Phase 4 — Python wrapper
 ![Done](https://img.shields.io/badge/status-done-brightgreen)
 
-- Strip state machine logic from `trading_bot_v3.py`
+- Strip state machine logic from `trading_bot_v1.py`
 - Replace with `ctypes` calls to `ska_bot.so`
 - Validate signal output matches original bot tick-for-tick
 
