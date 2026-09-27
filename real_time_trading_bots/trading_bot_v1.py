@@ -77,6 +77,10 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
+# Direct jumps (false_start.md) — recognised by their own P so that V1 can IGNORE them, as drawn
+JUMP_BULL_BEAR = (0.015, 0.022)   # bull→bear, P ≈ 0.018
+JUMP_BEAR_BULL = (0.44, 0.46)     # bear→bull, P ≈ 0.45
+
 MIN_NN_COUNT    = 10
 MIN_TRADES      = 50    # wait for SKA convergence before trading
 ENGINE_RESET_AT = 3500  # engine resets at this entropy count
@@ -199,6 +203,7 @@ class SKATradingBot:
         self._last_open_name = None   # neutral→bull or neutral→bear
         self._last_open_P    = None
         self._already_long   = False  # BUY already on exchange after CLOSE_SHORT
+        self._reg            = 'neutral'  # current regime, to recognise direct jumps (ignored in V1)
         self._dp_pair_written = False
         self._csv_written     = False
         self._entropy_count   = 0
@@ -340,6 +345,26 @@ class SKATradingBot:
             f"ΔP_pair [{pair_type}] P={p1:.4f}→{p2:.4f} ΔP={dp:+.4f}"
         )
 
+    def _grammar(self, name, P):
+        """ΔP bands give the paired-regime openings; the transition after an opening is a direct jump
+        (bull→bear / bear→bull) when its P is in the jump band, otherwise the return to neutral.
+        V1 has no edge for direct jumps, so they are IGNORED — as in the Version 1 diagram."""
+        if self._reg == 'bull':
+            if P is not None and JUMP_BULL_BEAR[0] <= P <= JUMP_BULL_BEAR[1]:
+                name, self._reg = 'bull→bear', 'bear'
+            else:
+                name, self._reg = 'bull→neutral', 'neutral'
+        elif self._reg == 'bear':
+            if P is not None and JUMP_BEAR_BULL[0] <= P <= JUMP_BEAR_BULL[1]:
+                name, self._reg = 'bear→bull', 'bull'
+            else:
+                name, self._reg = 'bear→neutral', 'neutral'
+        else:
+            if name not in ('neutral→neutral', 'neutral→bull', 'neutral→bear'):
+                name = 'neutral→neutral'
+            self._reg = {'neutral→bull': 'bull', 'neutral→bear': 'bear'}.get(name, 'neutral')
+        return name
+
     async def process_signal(self, transition):
         trade_id = transition['trade_id']
         price    = transition['price']
@@ -350,6 +375,8 @@ class SKATradingBot:
         if self.last_trade_id is not None and trade_id <= self.last_trade_id:
             return
         self.last_trade_id = trade_id
+
+        name = self._grammar(name, P)   # direct jumps named — no V1 edge reacts to them
 
 
         # ΔP_pair: gap within paired transition neutral→bull→neutral or neutral→bear→neutral
@@ -475,14 +502,6 @@ class SKATradingBot:
                     )
                     await self._log_event(trade_id, price, 'CLOSE_LONG', EXIT_WAIT, 'LONG', pnl, P=P)
                     self.position = None
-                elif name == 'neutral→bull':
-                    self.position.exit_state = WAIT_PAIR
-                    self.position.neutral_neutral_count = 0
-                    logging.info(
-                        f"--- Bear cycle aborted (neutral→bull) @ {price:.6f} "
-                        f"| WAIT_PAIR | still LONG | trade_id={trade_id}"
-                    )
-                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'LONG', P=P)
 
         # === SHORT POSITION ===
         elif self.position.side == 'SHORT':
@@ -552,14 +571,6 @@ class SKATradingBot:
                     await self._log_event(trade_id, price, 'CLOSE_SHORT', EXIT_WAIT, 'SHORT', pnl, P=P)
                     self._already_long = True
                     self.position = None
-                elif name == 'neutral→bear':
-                    self.position.exit_state = WAIT_PAIR
-                    self.position.neutral_neutral_count = 0
-                    logging.info(
-                        f"--- Bull cycle aborted (neutral→bear) @ {price:.6f} "
-                        f"| WAIT_PAIR | still SHORT | trade_id={trade_id}"
-                    )
-                    await self._log_event(trade_id, price, 'CYCLE_REPEAT', WAIT_PAIR, 'SHORT', P=P)
 
     def _record_trade(self, pnl, pnl_pct, exit_price):
         self.total_trades += 1
@@ -814,15 +825,4 @@ if __name__ == '__main__':
     parser.add_argument('--symbol', default='XRPUSDT', help='Trading symbol')
     parser.add_argument('--poll', type=float, default=1.0, help='Poll interval (seconds)')
     parser.add_argument('--live', action='store_true', help='Enable live trading (default: dry run)')
-    parser.add_argument('--host', default='192.168.1.216', help='QuestDB host')
-    args = parser.parse_args()
-
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-
-    bot = SKATradingBot(
-        db_host=args.host,
-        symbol=args.symbol,
-        poll_interval=args.poll,
-        dry_run=not args.live
-    )
-    asyncio.run(bot.run())
+    parser.add_argument('-
