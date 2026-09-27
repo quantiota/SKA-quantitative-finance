@@ -1,5 +1,5 @@
 """
-Paired cycle trading bot v3 — entropy-derived probability regime transitions (ΔP tolerance bands).
+Paired cycle trading bot v1 — entropy-derived probability regime transitions (ΔP tolerance bands).
 
 Regime definition:
   P(n)   = exp(-|ΔH/H|)   where  ΔH/H = (H(n) - H(n-1)) / H(n)
@@ -87,7 +87,7 @@ DB_PORT         = int(os.environ.get('QDB_PORT', '8812'))
 DB_USER         = os.environ.get('QDB_USER',     'admin')
 DB_PASSWORD     = os.environ.get('QDB_PASSWORD', 'quest')
 POLL_INTERVAL   = 1.0   # seconds between DB polls
-RESULTS_DIR     = '/home/coder/project/Real_Time_SKA_trading/bot_results_v3'
+RESULTS_DIR     = '/home/coder/project/Real_Time_SKA_trading/bot_results_v1'
 
 # Binance API — loaded lazily; validated in connect() only when dry_run=False
 BINANCE_API_KEY          = os.environ.get('BINANCE_API_KEY')
@@ -160,7 +160,7 @@ class Position:
 
 
 class SKATradingBot:
-    """Paired cycle trading bot v3 — regime classified from ΔP tolerance bands where P = exp(-|ΔH/H|).
+    """Paired cycle trading bot v1 — regime classified from ΔP tolerance bands where P = exp(-|ΔH/H|).
 
     Execution model (spot only — no margin/futures):
       LONG open  (neutral→bull, or SHORT close → re-enter) : BUY on exchange
@@ -183,8 +183,8 @@ class SKATradingBot:
         self._private_key = None
 
         ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.results_file  = f'{RESULTS_DIR}/bot_results_v3_{ts}.csv'
-        self.dp_pair_file  = f'{RESULTS_DIR}/dp_pair_v3_{ts}.csv'
+        self.results_file  = f'{RESULTS_DIR}/bot_results_v1_{ts}.csv'
+        self.dp_pair_file  = f'{RESULTS_DIR}/dp_pair_v1_{ts}.csv'
 
         self.total_trades = 0
         self.winning_trades = 0
@@ -219,7 +219,7 @@ class SKATradingBot:
             self._private_key = self._load_private_key()
             logging.info("Ed25519 private key loaded")
         await self.conn.execute("""
-            CREATE TABLE IF NOT EXISTS ska_bot_v3 (
+            CREATE TABLE IF NOT EXISTS ska_bot_v1 (
                 timestamp            TIMESTAMP,
                 trade_id             DOUBLE,
                 price                DOUBLE,
@@ -234,12 +234,12 @@ class SKATradingBot:
                 neutral_neutral_count INT
             ) TIMESTAMP(timestamp) PARTITION BY DAY WAL;
         """)
-        logging.info("ska_bot_v3 table ready")
+        logging.info("ska_bot_v1 table ready")
 
     async def _log_event(self, trade_id, price, event, state, side='', pnl=None, neutral_neutral_count=None, P=None):
         try:
             await self.conn.execute(
-                """INSERT INTO ska_bot_v3
+                """INSERT INTO ska_bot_v1
                    (timestamp, trade_id, price, P, event, event_name, state, state_name, side, side_name, pnl, neutral_neutral_count)
                    VALUES (now(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)""",
                 trade_id, price, P,
@@ -746,7 +746,7 @@ class SKATradingBot:
 
     async def run(self, max_trades=ENGINE_RESET_AT):
         await self.connect()
-        logging.info(f"SKA Trading Bot v3 | symbol={self.symbol} | dry_run={self.dry_run} | auto_stop={max_trades} | K={K}")
+        logging.info(f"SKA Trading Bot v1 | symbol={self.symbol} | dry_run={self.dry_run} | auto_stop={max_trades} | K={K}")
         logging.info(f"Regime: |ΔP−(−0.86)|≤{TOL_BEAR:.4f} → bear | |ΔP−(−0.34)|≤{TOL_BULL:.4f} → bull | else → neutral")
         logging.info("LONG:  neutral→bull → bull→neutral → neutral→neutral × N → neutral→bear → bear→neutral (CLOSE)")
         logging.info("SHORT: neutral→bear → bear→neutral → neutral→neutral × N → neutral→bull → bull→neutral (CLOSE)")
@@ -810,7 +810,7 @@ class SKATradingBot:
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='SKA Paired Regime Trading Bot v3')
+    parser = argparse.ArgumentParser(description='SKA Paired Regime Trading Bot v1')
     parser.add_argument('--symbol', default='XRPUSDT', help='Trading symbol')
     parser.add_argument('--poll', type=float, default=1.0, help='Poll interval (seconds)')
     parser.add_argument('--live', action='store_true', help='Enable live trading (default: dry run)')
