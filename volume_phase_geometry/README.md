@@ -24,7 +24,7 @@ This transform serves two purposes:
 By implementing the entire framework in SQL over real-time trade data, this work demonstrates that advanced analytical tools—traditionally reserved for continuous-time models—can be adapted for practical, real-time market monitoring
 
 
-**Most importantly**, this study reveals for the first time a systematic, dynamic, and empirically verifiable correlation between trade volume and market price at the tick level. By projecting volume dynamics into a cumulative angular space and tracing their evolution as geometric paths, we uncover a latent structure where price emerges as a directional projection of volume flow. Under specific geometric regimes of volume flow, price dynamics exhibit conditional coupling to volume geometry, revealing a previously hidden microstructural dependency that vanishes at aggregated timescales. This transforms the classical view of market randomness into one of constrained, trajectory-governed motion. The result is not merely an indicator, but a discovery: **price is not independent of volume—it is embedded within its geometry**.
+**Most importantly**, this study explores whether tick-level price dynamics can be related to the geometry of volume flow. By projecting volume dynamics into a cumulative angular space and tracing their evolution as geometric paths, we obtain a phase-space representation of market activity in which visual alignments with price can be observed. Whether this alignment reflects a genuine coupling, or arises from the cumulative nature of both series, is an open question addressed in the validation note at the end of the Interpretation section.
 
 
 
@@ -500,13 +500,19 @@ The phase portrait in Figure 4 reveals that price evolution traces structured tr
 
 When zooming in at the tick scale (see Figures 1–3), we uncover a striking phenomenon: changes in price align closely with changes in the cumulative projections. This alignment is **not visible** at aggregated timescales, highlighting the temporal fragility of this dependency.
 
-This leads to a major discovery:
+This suggests a hypothesis:
 
-> Under specific geometric regimes of volume flow, price dynamics exhibit conditional coupling to volume geometry, revealing a previously hidden microstructural dependency that vanishes at aggregated timescales.
+> Under specific geometric regimes of volume flow, price dynamics may exhibit conditional coupling to volume geometry. Identifying and testing these regimes is left for future work.
 
-This coupling implies that price does not evolve independently but **synchronizes with the phase flow induced by volume rotation**. In this sense, price becomes interpretable as a projection **onto the directional manifold defined by cumulative phase rotation**, opening the door to a fundamentally new class of volume-based models.
+If confirmed, such coupling would imply that price does not evolve independently but **synchronizes with the phase flow induced by volume rotation**. In this sense, price would become interpretable as a projection **onto the directional manifold defined by cumulative phase rotation**, opening the door to a new class of volume-based models.
 
-While some may interpret the observed phase alignment between price and volume as an artifact of the transform, we emphasize that no smoothing, interpolation, or statistical filtering is applied. The structure arises directly from the raw tick data, and the singularity resolution method is designed to preserve continuity in angular momentum. This makes the coupling effect not artificial—but emergent under geometric constraints.
+No smoothing, interpolation, or statistical filtering is applied; the structure arises directly from the raw tick data.
+
+#### Validation Note
+
+Two cumulative series can appear correlated by chance. On 376 loops of XRPUSDT tick data (3,500 trades each), the correlation between price and $\large \sum \cos(\Theta)$ / $\large \sum \sin(\Theta)$ is 0.42 / 0.44, and 0.43 / 0.43 when the trade volumes are randomly shuffled. The correlation between price increments and $\large \cos(\Theta)$ / $\large \sin(\Theta)$ is ≈ 0. The unconditional alignment is therefore not distinguishable from chance. The conditional hypothesis — coupling within specific geometric regimes of volume flow — remains to be tested against the same shuffled baseline.
+
+Note also that $\large \Theta_i = \sum_j w_j \Delta \tau_j = 2\pi \sum_j \Delta v_j / v_j$: the time step cancels, so the angular argument depends only on relative volume changes. The singularity handling for $\large \Delta \tau_i = 0$ keeps the frequency $\large w_i$ well defined but does not affect $\large \Theta_i$, $\large \cos(\Theta_i)$ or $\large \sin(\Theta_i)$.
 
 
 ### Related Applications
