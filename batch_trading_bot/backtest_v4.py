@@ -18,7 +18,7 @@ IN_NEUTRAL = 'IN_NEUTRAL'
 READY      = 'READY'
 EXIT_WAIT  = 'EXIT_WAIT'
 
-# ─── constants (same as backtest.py / trading_bot_v3.py) ─────────────────────
+# ─── constants (same as backtest.py / trading_bot_v1.py) ─────────────────────
 MIN_NN_COUNT = 10
 MIN_TRADES   = 50
 

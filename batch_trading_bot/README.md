@@ -17,7 +17,7 @@ This is not HFT. It is event-driven structural trading operating at tick data re
 
 ---
 
-## Bot v3 — ΔP band regime, entropy-derived probability
+## Bot v1 — ΔP band regime, entropy-derived probability
 
 ```
 Regime definition:
