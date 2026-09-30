@@ -125,7 +125,7 @@ The neutral gap (neutral→neutral × N) is counted per cycle and logged as `neu
 - QuestDB state logging (`ska_bot_v1` table) with event/state/side as both int and string
 
 
-### Live Results — 2026-05-18 (516 loops, XRPUSDT)
+### Live Results — 2026-05-18 (516 loops, XRPUSDT)  — trading_bot_v2
 
 | Trades | Win% | Total PnL | Avg PnL/trade | Best | Worst | Profitable loops |
 |---|---|---|---|---|---|---|
