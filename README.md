@@ -9,6 +9,11 @@
 
 *Figure: SKA entropy trajectories for XRPUSDT Binance tick data, color-coded by regime transition (bull, bear, neutral) over \~3,500 trades. The dominant neutral regime and smooth entropy evolution are clear evidence of non-chaotic, structured market dynamics.*
 
+
+
+[<img src="xrpusdt_thumbnail.png" width="640" height="360"
+/>](https://www.youtube.com/watch?v=T4qtC8JBCA8)
+
 ## Real-Time Quantitative Research with Structured Knowledge Accumulation
 
 **SKA Quantitative Finance** is a real-time quantitative research project for high-frequency financial data, powered by the **Structured Knowledge Accumulation (SKA)** framework ([arXiv:2503.13942](https://arxiv.org/abs/2503.13942), [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)).
