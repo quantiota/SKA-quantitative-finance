@@ -14,6 +14,8 @@
 [<img src="xrpusdt_thumbnail.png" width="640" height="360"
 />](https://www.youtube.com/watch?v=T4qtC8JBCA8)
 
+*XRPUSDT, trade by trade: each regime transition settles on its own probability band in the SKA phase space (z, ż, P), and the market's path weaves between these fixed levels. This is the hidden information-theoretic process beneath the tick data*
+
 ## Real-Time Quantitative Research with Structured Knowledge Accumulation
 
 **SKA Quantitative Finance** is a real-time quantitative research project for high-frequency financial data, powered by the **Structured Knowledge Accumulation (SKA)** framework ([arXiv:2503.13942](https://arxiv.org/abs/2503.13942), [arXiv:2504.03214](https://arxiv.org/abs/2504.03214)).
