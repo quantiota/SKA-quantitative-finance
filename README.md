@@ -11,7 +11,7 @@
 
 
 
-[<img src="xrpusdt_thumbnail.png" width="640" height="360"
+[<img src="xrpusdt_thumbnail.png" width="1280" height="720"
 />](https://www.youtube.com/watch?v=T4qtC8JBCA8)
 
 *XRPUSDT, trade by trade: each regime transition settles on its own probability band in the SKA phase space (z, ż, P), and the market's path weaves between these fixed levels. This is the hidden information-theoretic process beneath the tick data [Download Video](xrpusdt_transition_bands_path.mp4)*
