@@ -14,7 +14,7 @@
 [<img src="xrpusdt_thumbnail.png" width="1280" height="720"
 />](https://www.youtube.com/watch?v=T4qtC8JBCA8)
 
-*XRPUSDT, trade by trade: each regime transition settles on its own probability band in the SKA phase space (z, ż, P), and the market's path weaves between these fixed levels. As knowledge accumulates, uncertainty decreases, and this reduction of entropy is what makes the structure of the bands emerge in the 3D probability space. This is the hidden information-theoretic process beneath the tick data [Download Video](xrpusdt_transition_bands_path.mp4)*
+*XRPUSDT, trade by trade: each regime transition settles on its own probability band in the SKA phase space (z, ż, P), and the market's path weaves between these fixed levels. As knowledge accumulates, uncertainty decreases, and this reduction of entropy is what makes the structure of the bands emerge in the 3D probability space. This is the hidden information-theoretic process beneath the real-time tick data stream[Download Video](xrpusdt_transition_bands_path.mp4)*
 
 ## Real-Time Quantitative Research with Structured Knowledge Accumulation
 
